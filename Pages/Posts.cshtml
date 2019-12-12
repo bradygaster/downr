@@ -1,0 +1,10 @@
+﻿@page "{slug?}"
+@inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
+@model PostsModel
+
+<div class="text">
+    <h1 class="display-4">@Model.Post.Title</h1>
+    <div id="post">
+        @Html.Raw(Model.Post.Content)
+    </div>
+</div>

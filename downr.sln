@@ -1,9 +1,7 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "downr", "src\downr.csproj", "{541F4458-DE4D-4F75-AB18-F8EF5454E824}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "downr", "downr.csproj", "{EFE8FBB9-BDDD-4554-824B-9E05D56BAD48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +9,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{541F4458-DE4D-4F75-AB18-F8EF5454E824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{541F4458-DE4D-4F75-AB18-F8EF5454E824}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{541F4458-DE4D-4F75-AB18-F8EF5454E824}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{541F4458-DE4D-4F75-AB18-F8EF5454E824}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		{EFE8FBB9-BDDD-4554-824B-9E05D56BAD48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE8FBB9-BDDD-4554-824B-9E05D56BAD48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE8FBB9-BDDD-4554-824B-9E05D56BAD48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE8FBB9-BDDD-4554-824B-9E05D56BAD48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
