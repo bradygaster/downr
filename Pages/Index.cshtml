@@ -13,11 +13,11 @@
 </div>
 
 @{
-    var last10posts = @postService.GetPosts(0, downrOptions.Value.PageSize);
+    var last6Posts = @postService.GetPosts(0, downrOptions.Value.PageSize);
 }
 
 <div class="card-columns">
-    @foreach (var post in last10posts)
+    @foreach (var post in last6Posts)
     {
         <div class="card">
             <div class="card-body">
