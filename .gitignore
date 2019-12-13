@@ -76,3 +76,4 @@ artifacts/
 node_modules/
 bower_components/
 wwwroot/.DS_Store
+wwwroot/posts/.DS_Store

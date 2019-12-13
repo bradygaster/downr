@@ -1,4 +1,12 @@
-# introducing downr
+---
+title: Introducing downr
+slug: introducing-downr
+author: bradygaster
+lastModified: 2017-01-07 12:00:00
+pubDate: 2017-01-07 12:00:00
+categories: downr
+description: downr is a **very** simple blogging engine written for people who like using markdown to write content
+---
 
 downr is a **very** simple blogging engine written for people who like using [Markdown](https://en.wikipedia.org/wiki/Markdown) to write content and Git to maintain their source code and/or content files. The goals of downr are as follows:
 
@@ -15,7 +23,7 @@ downr is written using [.NET Core](https://www.microsoft.com/net/core), and is p
 
 Getting downr running on a development workstation is easy. The project is open source and available on GitHub. 
 
-![downr repo on GitHub](wwwroot/posts/introducing-downr/media/github.png)
+![downr repo on GitHub](media/github.png)
 
 Simply clone the repository:
 
@@ -47,7 +55,7 @@ Here are the basic conventions of blogging with downr:
 
 The screen shot below shows the default folder structure. 
 
-![downr folder structure](wwwroot/posts/introducing-downr/media/folder-structure.png)
+![downr folder structure](media/folder-structure.png)
 
 ## Post Metadata
 
@@ -64,11 +72,11 @@ The top section of each Markdown file must contain a YAML header with some simpl
 
 ## Image Path Fix-ups
 
-As demonstrated by this file earlier, the path you'd use to link to images should be `posts/introducing-downr/media/[filename]`. At run-time, the `src` attributes for each image in your posts will be fixed automatically. This enables you to edit and preview your content in [Visual Studio Code](http://code.visualstudio.com) in exactly the same way it'll be rendered once you publish your blog. 
+As demonstrated by this file earlier, the path you'd use to link to images should be `media/[filename]`. At run-time, the `src` attributes for each image in your posts will be fixed automatically. This enables you to edit and preview your content in [Visual Studio Code](http://code.visualstudio.com) in exactly the same way it'll be rendered once you publish your blog. 
 
-![Image path fix-ups](wwwroot/posts/introducing-downr/media/image-pathing.png)
+![Image path fix-ups](media/image-pathing.png)
 
-Note how the Markdown source code links to the relative path of the image in the `media` subfolder, but in the Chrome F12 tools in the top pane of the screenshot the image path is fixed up to be relative to the site's root at `/posts/introducing-downr/posts/introducing-downr/media/folder-structure.png`. 
+Note how the Markdown source code links to the relative path of the image in the `media` subfolder, but in the Chrome F12 tools in the top pane of the screenshot the image path is fixed up to be relative to the site's root at `/posts/introducing-downr/media/folder-structure.png`. 
 
 ## Project Details
 
@@ -97,11 +105,11 @@ Getting started with downr running on Azure App Service is relatively easy:
 1. Create a new Web App using the Azure portal
 1. Enable local Git repository publishing via the Azure portal
 
-    ![Local Git repo setup](wwwroot/posts/introducing-downr/media/set-up-git-repo.png)
+    ![Local Git repo setup](media/set-up-git-repo.png)
 
 1. Copy the Web App's Git repository URL to your clipboard
 
-    ![Copy Git URL](wwwroot/posts/introducing-downr/media/copy-git-url.png)
+    ![Copy Git URL](media/copy-git-url.png)
 
 1. Use the copied URL as the URL of a new remote for your site's local repository
 
@@ -118,7 +126,7 @@ Getting started with downr running on Azure App Service is relatively easy:
 
 **Note**: In some cases, the very first publish to Azure fails to copy the content and style files. If this happens or you see something unexpected, use the Azure portal to redeploy your previous deployment. The screenshot below demonstrates how you can re-deploy your initial publish with one click in the portal. 
 
-![Redeploying](wwwroot/posts/introducing-downr/media/redeploy.png)
+![Redeploying](media/redeploy.png)
 
 ## Contributing
 
