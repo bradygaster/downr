@@ -77,31 +77,23 @@ namespace downr.Services
                     // convert the dictionary into a model
                     var slug = result[Strings.MetadataNames.Slug];
                     htmlContent = FixUpImageUrls(htmlContent, slug);
-
-                    try
+                    var metadata = new Post
                     {
-                        var metadata = new Post
-                        {
-                            Slug = slug,
-                            Title = result[Strings.MetadataNames.Title],
-                            Author = result[Strings.MetadataNames.Author],
-                            PublicationDate = DateTime.Parse(result[Strings.MetadataNames.PublicationDate]),
-                            LastModified = DateTime.Parse(result[Strings.MetadataNames.LastModified]),
-                            Description = result[Strings.MetadataNames.Description],
-                            Categories = result[Strings.MetadataNames.Categories
-                                                ]?.Split(',')
-                                                .Select(c => c.Trim())
-                                                .ToArray()
-                                                ?? new string[] { },
-                            Content = htmlContent
-                        };
+                        Slug = slug,
+                        Title = result[Strings.MetadataNames.Title],
+                        Author = result[Strings.MetadataNames.Author],
+                        PublicationDate = DateTime.Parse(result[Strings.MetadataNames.PublicationDate]),
+                        LastModified = DateTime.Parse(result[Strings.MetadataNames.LastModified]),
+                        Description = result[Strings.MetadataNames.Description],
+                        Categories = result[Strings.MetadataNames.Categories
+                                            ]?.Split(',')
+                                            .Select(c => c.Trim())
+                                            .ToArray()
+                                            ?? new string[] { },
+                        Content = htmlContent
+                    };
 
-                        return metadata;
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"No description in {slug}");
-                    }
+                    return metadata;
                 }
             }
             return null;

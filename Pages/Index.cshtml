@@ -13,16 +13,17 @@
 </div>
 
 @{
-    var last6Posts = @postService.GetPosts(0, downrOptions.Value.PageSize);
+    var last10posts = @postService.GetPosts(0, downrOptions.Value.PageSize);
 }
 
-<div class="card-columns">
-    @foreach (var post in last6Posts)
+<div class="card-deck">
+    @foreach (var post in last10posts)
     {
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title"><a href="@($"/posts/{post.Slug}")">@post.Title</a></h5>
                 <p class="card-text">@post.Description</p>
+                <p class="card-text"><a href="@($"/posts/{post.Slug}")">Read More</a></p>
             </div>
             <div class="card-footer">
                 <small class="text-muted">@post.PublicationDate.Humanize()</small>
