@@ -68,6 +68,7 @@ The top section of each Markdown file must contain a YAML header with some simpl
     lastModified: 2017-01-06 12:00:00
     pubDate: 2017-01-06 12:00:00
     categories: downr
+    description: Each post should have a description for the index page and for the RSS feed
     ---
 
 ## Image Path Fix-ups

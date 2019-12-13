@@ -48,7 +48,6 @@
         currentPage++;
 
         var offset = (currentPage * downrOptions.Value.PageSize);
-        Console.WriteLine($"Offset: {offset}");
         
         var nextSetOfPosts = postService.GetPosts(offset, downrOptions.Value.PageSize);
 
