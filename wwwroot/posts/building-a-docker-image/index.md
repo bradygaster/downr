@@ -1,5 +1,5 @@
 ---
-title: 04 - Building a Docker image
+title: Building a Docker image
 slug: building-a-docker-image
 author: bradygaster
 lastModified: 2019-12-12 03:00:00

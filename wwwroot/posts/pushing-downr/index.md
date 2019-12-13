@@ -1,5 +1,5 @@
 ---
-title: 05 - Pushing downr
+title: Pushing downr
 slug: pushing-downr
 author: bradygaster
 lastModified: 2019-12-12 05:00:00
