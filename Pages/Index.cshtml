@@ -1,8 +1,7 @@
 ﻿@page
-@inject downr.Services.PostService postService
 @inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
 @model IndexModel
-@using Humanizer
+@using downr.Components
 @{
     ViewData["Title"] = "Home page";
 }
@@ -12,21 +11,9 @@
     <p>@downrOptions.Value.IndexPageText</p>
 </div>
 
-@{
-    var last6Posts = @postService.GetPosts(0, downrOptions.Value.PageSize);
-}
+<component type="typeof(PostList)" render-mode="ServerPrerendered" />
 
-<div class="card-columns">
-    @foreach (var post in last6Posts)
-    {
-        <div class="card box-shadow">
-            <div class="card-body">
-                <h5 class="card-title"><a href="@($"/posts/{post.Slug}")">@post.Title</a></h5>
-                <p class="card-text">@post.Description</p>
-            </div>
-            <div class="card-footer">
-                <small class="text-muted">@post.PublicationDate.Humanize()</small>
-            </div>
-        </div>
-    }
-</div>
+@section scripts
+{
+    <script src="_framework/blazor.server.js"></script>
+}

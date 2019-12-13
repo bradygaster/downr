@@ -1,5 +1,5 @@
 ---
-title: Creating new posts
+title: 02 - Creating new posts
 slug: creating-new-posts
 author: bradygaster
 lastModified: 2019-12-12 01:00:00

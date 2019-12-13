@@ -1,0 +1,57 @@
+@using downr.Models
+@using System.Collections.Generic
+@using System.Linq
+@inject downr.Services.PostService postService
+@inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
+@using Humanizer
+
+<div class="container">
+  <div class="row">
+    <div class="card-columns">
+    @foreach (var post in MostRecentPosts)
+    {
+        <div class="card box-shadow">
+            <div class="card-body">
+                <h5 class="card-title"><a href="@($"/posts/{post.Slug}")">@post.Title</a></h5>
+                <p class="card-text">@post.Description</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">@post.PublicationDate.Humanize()</small>
+            </div>
+        </div>
+    }
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-center">
+      <button class="btn btn-secondary" @onclick="OnLoadMoreButtonClicked">load more posts</button>
+    </div>
+  </div>
+</div>
+
+@code {
+    List<Post> MostRecentPosts = new List<Post>();
+    int currentPage = 0;
+
+#pragma warning disable CS1998
+    protected override async Task OnInitializedAsync()
+    {
+        var nextSetOfPosts = postService.GetPosts((currentPage*downrOptions.Value.PageSize),
+            downrOptions.Value.PageSize);
+
+        nextSetOfPosts.ToList().ForEach(x => MostRecentPosts.Add(x));
+    }
+#pragma warning restore CS1998
+
+    void OnLoadMoreButtonClicked()
+    {
+        currentPage++;
+
+        var offset = (currentPage * downrOptions.Value.PageSize);
+        Console.WriteLine($"Offset: {offset}");
+        
+        var nextSetOfPosts = postService.GetPosts(offset, downrOptions.Value.PageSize);
+
+        nextSetOfPosts.ToList().ForEach(x => MostRecentPosts.Add(x));
+    }
+}

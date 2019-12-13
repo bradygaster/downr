@@ -1,5 +1,5 @@
 ---
-title: Using the new post snippet
+title: 03 - Using the new post snippet
 slug: using-the-snippet
 author: bradygaster
 lastModified: 2019-12-12 02:00:00

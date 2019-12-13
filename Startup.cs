@@ -42,6 +42,7 @@ namespace downr
             // add site services
             services.AddSingleton<IYamlIndexer, DefaultYamlIndexer>();
             services.AddSingleton<PostService>();
+            services.AddServerSideBlazor();
 
             services.Configure<DownrOptions>(Configuration.GetSection("downr"));
         }
@@ -78,22 +79,13 @@ namespace downr
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapBlazorHub();
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "blog-feed-rss",
                     pattern: "/feed/rss",
                     defaults: new { controller = "Feed", Action = "Rss" }
-                );
-                endpoints.MapControllerRoute(
-                    name: "blog-post",
-                    pattern: "/posts/{slug}",
-                    defaults: new { controller = "Posts", Action = "Post" }
-                );
-                endpoints.MapControllerRoute(
-                    name: "blog-categories",
-                    pattern: "/category/{name}",
-                    defaults: new { controller = "Posts", Action = "Category" }
                 );
             });
 
