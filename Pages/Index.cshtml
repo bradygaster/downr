@@ -19,7 +19,7 @@
 <div class="card-columns">
     @foreach (var post in last6Posts)
     {
-        <div class="card">
+        <div class="card box-shadow">
             <div class="card-body">
                 <h5 class="card-title"><a href="@($"/posts/{post.Slug}")">@post.Title</a></h5>
                 <p class="card-text">@post.Description</p>

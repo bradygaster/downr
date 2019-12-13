@@ -1,4 +1,19 @@
 ﻿/* custom downr elements */
+h1, h2, h3, h4, h5, h6, .card-title {
+  font-family: 'Fjalla One', sans-serif;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.card {
+  font-size: 1.2em;
+}
+
+.card-title {
+  font-size: 1.4em;
+}
 
 .card-title a {
   color: #333;
@@ -61,11 +76,11 @@ a, a:hover {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
 @media (min-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
