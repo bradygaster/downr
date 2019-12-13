@@ -2,10 +2,10 @@
 title: Introducing downr
 slug: introducing-downr
 author: bradygaster
-lastModified: 2017-01-07 12:00:00
-pubDate: 2017-01-07 12:00:00
+lastModified: 2019-12-12 00:00:00
+pubDate: 2019-12-12 00:00:00
 categories: downr
-description: downr is a **very** simple blogging engine written for people who like using markdown to write content
+description: downr is a very simple blogging engine written for people who like using Visual Studio Code to write content in Markdown format
 ---
 
 downr is a **very** simple blogging engine written for people who like using [Markdown](https://en.wikipedia.org/wiki/Markdown) to write content and Git to maintain their source code and/or content files. The goals of downr are as follows:

@@ -24,15 +24,15 @@
 			"title: ${1}",
 			"slug: ${2}",
 			"author: ${3}",
-			"lastModified: 2019-${4}-${5} 12:00:00",
-			"pubDate: 2019-${4}-${5} 12:00:00",
-			"categories: ${6}",
-			"description: ${7}",
+			"lastModified: 2019-${4}-${5} ${6}:00:00",
+			"pubDate: 2019-${4}-${5} ${6}:00:00",
+			"categories: ${7}",
+			"description: ${8}",
 			"---",
 			"",
 			"Your content here in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) format.",
 			"",
-			"${8}"
+			"${9}"
 		],
 		"description": "Adds the required YAML to a markdown file to make it a downr post"
 	}
