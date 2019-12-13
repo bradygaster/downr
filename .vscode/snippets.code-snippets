@@ -1,0 +1,39 @@
+{
+	// Place your downr workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"New Post Metadata" : {
+		"scope":"markdown",
+		"prefix":"downr-new-post",
+		"body":[
+			"---",
+			"title: ${1}",
+			"slug: ${2}",
+			"author: ${3}",
+			"lastModified: 2019-${4}-${5} 12:00:00",
+			"pubDate: 2019-${4}-${5} 12:00:00",
+			"categories: ${6}",
+			"description: ${7}",
+			"---",
+			"",
+			"Your content here in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) format.",
+			"",
+			"${8}"
+		],
+		"description": "Adds the required YAML to a markdown file to make it a downr post"
+	}
+}
