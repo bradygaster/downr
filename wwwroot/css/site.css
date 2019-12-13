@@ -13,7 +13,7 @@
 }
 
 .card-columns {
-  column-count: 3;
+  column-count: 2;
   @include media-breakpoint-only(lg) {
     column-count: 4;
   }
