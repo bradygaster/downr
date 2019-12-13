@@ -3,6 +3,7 @@
 @using System.Linq
 @inject downr.Services.PostService postService
 @inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
+@inject IJSRuntime JSRuntime
 @using Humanizer
 
 <div class="container">
@@ -27,7 +28,7 @@
   </div>
   <div class="row">
     <div class="col text-center">
-      <button class="btn btn-secondary" @onclick="OnLoadMoreButtonClicked">load more posts</button>
+      <button id="loadMorePostsButton" class="btn btn-secondary" @onclick="OnLoadMoreButtonClicked">load more posts</button>
     </div>
   </div>
 </div>
@@ -44,6 +45,15 @@
 
         MostRecentPosts.Add(nextSetOfPosts);
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("scrollIntoView");
+        }
+    }
+
 #pragma warning restore CS1998
 
     void OnLoadMoreButtonClicked()
@@ -55,5 +65,7 @@
         var nextSetOfPosts = postService.GetPosts(offset, downrOptions.Value.PageSize);
 
         MostRecentPosts.Add(nextSetOfPosts);
+
+        StateHasChanged();
     }
 }
