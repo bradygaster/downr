@@ -7,20 +7,23 @@
 
 <div class="container">
   <div class="row">
-    <div class="card-columns">
-    @foreach (var post in MostRecentPosts)
+    @foreach (var page in MostRecentPosts)
     {
-        <div class="card box-shadow">
-            <div class="card-body">
-                <h5 class="card-title"><a href="@($"/posts/{post.Slug}")">@post.Title</a></h5>
-                <p class="card-text">@post.Description</p>
+        <div class="card-columns">
+        @foreach (var post in page)
+        {
+            <div class="card box-shadow">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="@($"/posts/{post.Slug}")">@post.Title</a></h5>
+                    <p class="card-text">@post.Description</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">@post.PublicationDate.Humanize()</small>
+                </div>
             </div>
-            <div class="card-footer">
-                <small class="text-muted">@post.PublicationDate.Humanize()</small>
-            </div>
+        }
         </div>
     }
-    </div>
   </div>
   <div class="row">
     <div class="col text-center">
@@ -30,7 +33,7 @@
 </div>
 
 @code {
-    List<Post> MostRecentPosts = new List<Post>();
+    List<Post[]> MostRecentPosts = new List<Post[]>();
     int currentPage = 0;
 
 #pragma warning disable CS1998
@@ -39,7 +42,7 @@
         var nextSetOfPosts = postService.GetPosts((currentPage*downrOptions.Value.PageSize),
             downrOptions.Value.PageSize);
 
-        nextSetOfPosts.ToList().ForEach(x => MostRecentPosts.Add(x));
+        MostRecentPosts.Add(nextSetOfPosts);
     }
 #pragma warning restore CS1998
 
@@ -51,6 +54,6 @@
         
         var nextSetOfPosts = postService.GetPosts(offset, downrOptions.Value.PageSize);
 
-        nextSetOfPosts.ToList().ForEach(x => MostRecentPosts.Add(x));
+        MostRecentPosts.Add(nextSetOfPosts);
     }
 }
