@@ -1,10 +1,10 @@
 ﻿/* custom downr elements */
-h1, h2, h3, h4, h5, h6, .card-title {
+h1, h2, h3, h4, h5, h6, .card-title, .navbar, .footer {
   font-family: 'Fjalla One', sans-serif;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .card {
