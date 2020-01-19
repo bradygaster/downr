@@ -2,8 +2,8 @@
 title: Introducing downr
 slug: introducing-downr
 author: bradygaster
-lastModified: 2019-12-12 03:00:00
-pubDate: 2019-12-12 03:00:00
+lastModified: 2020-01-17 00:00:00
+pubDate: 2020-01-17 00:00:00
 categories: downr
 description: downr is a very simple blogging engine written for people who like using Visual Studio Code to write content in Markdown format
 ---

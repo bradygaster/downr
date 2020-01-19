@@ -8,6 +8,7 @@ using YamlDotNet.Serialization;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using Markdig;
+using Microsoft.Extensions.Options;
 
 namespace downr.Services
 {
@@ -20,12 +21,16 @@ namespace downr.Services
     public class DefaultYamlIndexer : IYamlIndexer
     {
         private readonly ILogger _logger;
+        private readonly IOptions<DownrOptions> _options;
+
         public List<Post> Metadata { get; set; }
 
 
-        public DefaultYamlIndexer(ILogger<DefaultYamlIndexer> logger)
+        public DefaultYamlIndexer(ILogger<DefaultYamlIndexer> logger,
+            IOptions<DownrOptions> options)
         {
             _logger = logger;
+            _options = options;
         }
         public void IndexContentFiles(string contentPath)
         {
@@ -41,6 +46,9 @@ namespace downr.Services
                                 .Where(m => m != null)
                                 .OrderByDescending(x => x.PublicationDate)
                                 .ToList();
+
+            if(_options.Value.OldestOnTop) list.Reverse();
+
             _logger.LogInformation("Loaded {0} posts", list.Count);
             return list;
         }
