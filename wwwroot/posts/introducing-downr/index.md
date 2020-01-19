@@ -8,21 +8,18 @@ categories: downr
 description: downr is a very simple blogging engine written for people who like using Visual Studio Code to write content in Markdown format
 ---
 
-downr is a **very** simple blogging engine written for people who like using [Markdown](https://en.wikipedia.org/wiki/Markdown) to write content and Git to maintain their source code and/or content files. The goals of downr are as follows:
+downr is a **very** simple blogging engine written for people who like using [Markdown](https://en.wikipedia.org/wiki/Markdown) to write content and Git to maintain their source code and/or content files. The goals of downr are to create a blogging engine that:
 
-* Enable bloggers with Markdown syntax-driven blogging
-* Create an enjoyable experience for developer bloggers using [Visual Studio Code](http://code.visualstudio.com) or the [Visual Studio Markdown Editor](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor) extension to author their content and maintain their site
-* Support CI/CD
-
-downr is written using [.NET Core](https://www.microsoft.com/net/core) and is open-source and available on GitHub at [http://github.com/bradygaster/downr](http://github.com/bradygaster/downr). 
+* Is build using .NET 3.1 so it can run anywhere
+* Enables authors to use Markdown
+* Supports being CI/CD'd anywhere
+* Feels natural for developer bloggers using [Visual Studio Code](http://code.visualstudio.com) or the [Visual Studio Markdown Editor](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor) extension to author their content and maintain their site
+* Feels natural to .NET developers who frequently use the `dotnet` CLI
+* Is open source and available on [GitHub](http://github.com/bradygaster/downr)
 
 ## Getting downr Running Locally
 
-Getting downr running on a development workstation is easy. The project is open source and available on GitHub. 
-
-![downr repo on GitHub](media/github.png)
-
-Here are the steps you'll take to get downr running locally:
+Getting downr running on a development workstation is easy. Open your favorite terminal window and run this:
 
     git clone https://github.com/bradygaster/downr.git
     cd downr
@@ -32,19 +29,17 @@ Here are the steps you'll take to get downr running locally:
 
 Blogging with downr is deliberately very simple - you just write Markdown. downr operates on two conventions - how you organize your markdown and content files and some simple YAML metadata in each post's Markdown file. 
 
-### Example post
+### Example post structure
 
-Consider this post, the introduction to downr. This post's slug is `introducing-downr`. Hence, the folder structure of the site, this post and all the content files associated with it inclusive, looks like the folder structure below. 
+Consider this post, the introduction to downr. This post's slug is `introducing-downr`. This post's folder structure on disk looks like this:
 
-    |-- wwwroot
-        |-- posts
-            |-- introducing-downr
-                |-- index.md
-                |-- media
-                    |-- img1.png
-                    |-- img2.png
+    |-- introducing-downr
+        |-- index.md
+        |-- media
+            |-- img1.png
+            |-- img2.png
 
-This ensures all your posts follow a nice, neat conventional folder structure, which results in something like the folders below once you have a few posts. 
+This ensures all your posts follow a nice, neat conventional folder structure. Once you have a gaggle of posts published to your site, it'll be all tidy like this:
 
     |-- wwwroot
         |-- posts
