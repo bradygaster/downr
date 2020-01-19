@@ -10,10 +10,9 @@ description: downr is a very simple blogging engine written for people who like 
 
 downr is a **very** simple blogging engine written for people who like using [Markdown](https://en.wikipedia.org/wiki/Markdown) to write content and Git to maintain their source code and/or content files. The goals of downr are to create a blogging engine that:
 
-* Is build using .NET 3.1 so it can run anywhere
-* Enables authors to use Markdown
+* Is built using .NET 3.1 so it can run anywhere
+* Feels natural for developer bloggers who use [Visual Studio Code](http://code.visualstudio.com) to author their content in Markdown
 * Supports being CI/CD'd anywhere
-* Feels natural for developer bloggers using [Visual Studio Code](http://code.visualstudio.com) or the [Visual Studio Markdown Editor](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor) extension to author their content and maintain their site
 * Feels natural to .NET developers who frequently use the `dotnet` CLI
 * Is open source and available on [GitHub](http://github.com/bradygaster/downr)
 
