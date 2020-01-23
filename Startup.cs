@@ -36,14 +36,13 @@ namespace downr
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/svg+xml", "application/font-woff2" });
             });
 
-            // Add framework services.
+            // add .NET Core services.
             services.AddMvc();
-
-            // add site services
-            services.AddSingleton<IYamlIndexer, DefaultYamlIndexer>();
-            services.AddSingleton<PostService>();
             services.AddServerSideBlazor();
 
+            // add downr services
+            services.AddSingleton<YamlIndexer>();
+            services.AddSingleton<PostService>();
             services.Configure<DownrOptions>(Configuration.GetSection("downr"));
         }
 
@@ -51,7 +50,7 @@ namespace downr
         public void Configure(IApplicationBuilder app, 
             IWebHostEnvironment env,
             IOptions<DownrOptions> downrOptions,
-            IYamlIndexer yamlIndexer)
+            YamlIndexer yamlIndexer)
         {
             if (env.IsDevelopment())
             {

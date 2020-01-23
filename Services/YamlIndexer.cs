@@ -12,13 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace downr.Services
 {
-    public interface IYamlIndexer
-    {
-        List<Post> Metadata { get; set; }
-        void IndexContentFiles(string contentPath);
-    }
-
-    public class DefaultYamlIndexer : IYamlIndexer
+    public class YamlIndexer
     {
         private readonly ILogger _logger;
         private readonly IOptions<DownrOptions> _options;
@@ -26,7 +20,7 @@ namespace downr.Services
         public List<Post> Metadata { get; set; }
 
 
-        public DefaultYamlIndexer(ILogger<DefaultYamlIndexer> logger,
+        public YamlIndexer(ILogger<YamlIndexer> logger,
             IOptions<DownrOptions> options)
         {
             _logger = logger;

@@ -7,9 +7,9 @@ namespace downr.Services
 {
     public class PostService
     {
-        private readonly IYamlIndexer _indexer;
+        private readonly YamlIndexer _indexer;
 
-        public PostService(IYamlIndexer indexer)
+        public PostService(YamlIndexer indexer)
         {
             _indexer = indexer;
         }
