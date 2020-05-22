@@ -1,0 +1,82 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.Extensions.Configuration
+@using downr
+@inject DownrOptions options
+
+<header id="header">
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-9">
+                    <h1 class="display-4 title"><NavLink href="/">@options.Title</NavLink></h1>
+                    <p class="lead">@options.IndexPageText</p>
+                </div>
+                <div class="col col-lg-3">
+                    <img src="https://pbs.twimg.com/profile_images/929847585761779713/G3K4ZGpR_400x400.jpg" class="img-fluid" alt="me">
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @Body
+    </main>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <h2 class="col text-center">other interesting stuff</h2>
+        </div>
+        <hr/>
+        <div class="card-deck">
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Connect with me</h5>
+                <p class="card-text">
+                    <ul>
+                        <li><a href="https://github.com/bradygaster">GitHub</a></li>
+                        <li><a href="https://twitter.com/bradygaster">Twitter</a></li>
+                        <li><a href="https://www.linkedin.com/in/bradygaster/">LinkedIn</a></li>
+                        <li><a href="https://www.youtube.com/user/bradygaster">YouTube</a></li>
+                        <li><a href="https://twitch.tv/bradygaster">Twitch</a></li>
+                    </ul>
+                </p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Code Conversations</h5>
+                    <p class="card-text">Learn more about the the experimental Teams bot that enables collaborative code conversations within Microsoft Teams.</p>
+                </div>
+                <div class="card-footer">
+                    <p class="card-text"><small class="text-muted"><a href="https://aka.ms/codeconversations">Learn More</a></small></p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">.NET Core & Azure</h5>
+                <p class="card-text">
+                    <ul>
+                        <li><a href="https://docs.microsoft.com/en-us/aspnet/core">ASP.NET Core docs</a></li>
+                        <li><a href="https://docs.microsoft.com/en-us/dotnet/azure/">Azure for .NET developers</a></li>
+                        <li><a href="https://dotnet.microsoft.com/learn/dotnet/architecture-guides">.NET Architecture Guides</a></li>
+                        <li><a href="https://dotnet.microsoft.com/learn/aspnet/microservice-tutorial/intro">Build microservices with .NET</a></li>
+                        <li><a href="https://dotnet.microsoft.com/learn/aspnet/microservices-architecture">.NET microservice architecture</a></li>
+                        <li><a href="https://github.com/dotnet/interactive">.NET Interactive</a></li>
+                    </ul>
+                </p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row justify-content-md-center">
+            <h2 class="col text-center">copyright &copy; @options.Author </h2>
+        </div>
+        <div class="row justify-content-md-center">
+            <button id="topButton" class="btn btn-secondary btn-center" onclick="scrollToTop();">back to top</button>
+        </div>
+    </div>
+</footer>
