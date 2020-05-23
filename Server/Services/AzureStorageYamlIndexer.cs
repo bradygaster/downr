@@ -5,6 +5,7 @@ using Azure.Storage.Blobs;
 using downr.Models;
 using downr.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace downr.Services {
 
@@ -17,8 +18,8 @@ namespace downr.Services {
         private readonly ILogger<AzureStorageYamlIndexer> logger;
         private readonly AzureStorageConfiguration config; 
         public AzureStorageYamlIndexer (ILogger<AzureStorageYamlIndexer> logger,
-            AzureStorageConfiguration config) {
-            this.config = config;
+            IOptions<AzureStorageConfiguration> config) {
+            this.config = config.Value;
             this.logger = logger;
         }
 
@@ -26,9 +27,8 @@ namespace downr.Services {
 
         public async Task IndexContentFiles (string contentPath) 
         {
-            contentPath = config.Container;
             BlobContainerClient container = 
-                new BlobContainerClient (config.ConnectionString, contentPath);
+                new BlobContainerClient (config.ConnectionString, config.Container);
             await container.CreateIfNotExistsAsync ();
         }
 
