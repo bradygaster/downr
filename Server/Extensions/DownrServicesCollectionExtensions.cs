@@ -8,6 +8,10 @@ namespace downr.Services
         public static DownrServicesCollectionExtensionsConfigurator AddDownr(this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddSingleton<PostFileParser>();
+            services.AddSingleton<PostService>();
+            services.Configure<DownrOptions>(configuration.GetSection("downr"));
+            
             return new DownrServicesCollectionExtensionsConfigurator(services, configuration);
         }
     }

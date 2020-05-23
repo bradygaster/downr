@@ -5,13 +5,26 @@ using System.Linq;
 using System.Text;
 using downr.Models;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
 
 namespace downr.Services
 {
-    public static class PostFileParser
+    public class PostFileParser
     {
-        public static Post CreatePostFromReader(StreamReader postReader)
+        private readonly ILogger<PostFileParser> logger;
+        private readonly IOptions<DownrOptions> downrOptions;
+
+        public PostFileParser(ILogger<PostFileParser> logger, 
+            IOptions<DownrOptions> downrOptions
+        )
+        {
+            this.logger = logger;
+            this.downrOptions = downrOptions;
+        }
+
+        public Post CreatePostFromReader(StreamReader postReader)
         {
             var deserializer = new Deserializer();
             
@@ -39,7 +52,7 @@ namespace downr.Services
 
                 // convert the dictionary into a model
                 var slug = result[Strings.MetadataNames.Slug];
-                htmlContent = PostFileParser.FixUpImageUrls(htmlContent, slug);
+                htmlContent = FixUpImageUrls(htmlContent, slug);
 
                 try
                 {
@@ -63,14 +76,15 @@ namespace downr.Services
                 }
                 catch
                 {
-                    Console.WriteLine($"No description in {slug}");
+                    logger.LogError($"No description in {slug}");
                 }
             }
 
             return null;
         }
 
-        internal static string FixUpImageUrls(string html, string slug)
+        internal string FixUpImageUrls(string html, 
+            string slug)
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
@@ -81,7 +95,7 @@ namespace downr.Services
                 foreach (HtmlNode node in nodes)
                 {
                     var src = node.Attributes["src"].Value;
-                    src = src.Replace("media/", string.Format("/posts/{0}/media/", slug));
+                    src = src.Replace("media/", string.Format(downrOptions.Value.ImagePathFormat, slug));
                     node.SetAttributeValue("src", src);
                 }
             }

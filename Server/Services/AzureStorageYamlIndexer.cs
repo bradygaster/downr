@@ -22,9 +22,12 @@ namespace downr.Services {
         private readonly ILogger<AzureStorageYamlIndexer> logger;
         private readonly AzureStorageConfiguration config; 
         public List<Post> Posts { get; set; } = new List<Post>();
+        private readonly PostFileParser postFileParser;
 
         public AzureStorageYamlIndexer (ILogger<AzureStorageYamlIndexer> logger,
-            IOptions<AzureStorageConfiguration> config) {
+            IOptions<AzureStorageConfiguration> config,
+            PostFileParser postFileParser) {
+            this.postFileParser = postFileParser;
             this.config = config.Value;
             this.logger = logger;
         }
@@ -53,7 +56,7 @@ namespace downr.Services {
 
         public Task<Post> ReadPost (StreamReader postFileReader) 
         {
-            var post = PostFileParser.CreatePostFromReader(postFileReader);
+            var post = postFileParser.CreatePostFromReader(postFileReader);
             logger.LogInformation($"Indexed post {post.Title}");
             return Task.FromResult<Post>(post);
         }

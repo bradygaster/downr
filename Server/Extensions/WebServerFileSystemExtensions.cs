@@ -12,8 +12,6 @@ namespace downr.Services
             this DownrServicesCollectionExtensionsConfigurator configurator)
         {
             configurator.Services.AddSingleton<IYamlIndexer, WebServerFileSystemContentIndexer>();
-            configurator.Services.AddSingleton<PostService>();
-            configurator.Services.Configure<DownrOptions>(configurator.Configuration.GetSection("downr"));
         }
 
         public static void UseWebServerFileSystemStorage(

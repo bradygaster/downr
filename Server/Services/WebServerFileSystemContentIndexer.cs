@@ -16,9 +16,12 @@ namespace downr.Services
     {
         private readonly ILogger _logger;
         public List<Post> Posts { get; set; }
+        private readonly PostFileParser postFileParser;
 
-        public WebServerFileSystemContentIndexer(ILogger<WebServerFileSystemContentIndexer> logger)
+        public WebServerFileSystemContentIndexer(ILogger<WebServerFileSystemContentIndexer> logger,
+            PostFileParser postFileParser)
         {
+            this.postFileParser = postFileParser;
             _logger = logger;
         }
         public Task IndexContentFiles(string contentPath)
@@ -39,7 +42,7 @@ namespace downr.Services
 
         public Task<Post> ReadPost(StreamReader postFileReader)
         {
-            var post = PostFileParser.CreatePostFromReader(postFileReader);
+            var post = postFileParser.CreatePostFromReader(postFileReader);
             _logger.LogInformation($"Loaded post {post.Title}");
             return Task.FromResult<Post>(post);
         }
