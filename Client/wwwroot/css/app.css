@@ -46,6 +46,15 @@ h6,
   font-family: "Fjalla One", sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #328BBC;
+}
+
 .jumbotron {
   background-color: #7e8c97;
   box-shadow: 0 0 5px 0 #000;
@@ -174,6 +183,11 @@ button.accept-policy {
 
 .footer ul a:hover {
   color: #000;
+}
+
+.footer .title { 
+  color: #dcf4e2;
+  text-shadow: 2px 5px 5px #000;
 }
 
 #blazor-error-ui {

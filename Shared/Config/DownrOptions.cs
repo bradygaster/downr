@@ -17,10 +17,4 @@ namespace downr
         // the text displayed on the index page if the index page isn't edited from the default content
         public string IndexPageText { get; set; }
     }
-
-    public enum HomePageStyle
-    {
-        LatestPost,
-        SummaryList
-    }
 }

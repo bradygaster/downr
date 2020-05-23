@@ -36,10 +36,12 @@ namespace downr.Server
             // Add framework services.
             services.AddMvc();
 
-            // add site services
-            services.AddSingleton<IYamlIndexer, DefaultYamlIndexer>();
-            services.AddSingleton<PostService>();
-            services.Configure<DownrOptions>(Configuration.GetSection("downr"));
+            // get configuration
+            services.Configure<AzureStorageConfiguration>(Configuration.GetSection("downr.AzureStorage"));
+
+            // add downr 
+            services.AddDownr(Configuration)
+                    .WithWebServerFileSystemStorage(); // with web server storasge
             
             // add asp.net services
             services.AddControllersWithViews();
@@ -83,14 +85,7 @@ namespace downr.Server
                 );
             });
 
-            if (string.IsNullOrWhiteSpace(env.WebRootPath))
-            {
-                env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            }
-
-            // index the content files once the site is ready
-            var contentPath = Path.Combine(env.WebRootPath, "posts");
-            yamlIndexer.IndexContentFiles(contentPath);
+            app.UseDownr().UseWebServerFileSystemStorage();
         }
     }
 }
