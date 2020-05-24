@@ -13,12 +13,11 @@ namespace downr.Controllers
     {
         private readonly DownrOptions _options;
         private readonly PostService _postService;
+        private readonly IYamlIndexer _yamlIndexer;
 
-        public PostsController(
-            PostService postService,
-            IOptions<DownrOptions> options
-            )
+        public PostsController(PostService postService, IOptions<DownrOptions> options, IYamlIndexer yamlIndexer)
         {
+            _yamlIndexer = yamlIndexer;
             _postService = postService;
             _options = options.Value;
         }
@@ -46,6 +45,14 @@ namespace downr.Controllers
         public ActionResult<Post> GetPost([FromRoute] string slug)
         {
             return _postService.GetPostBySlug(slug);
+        }
+
+        [HttpGet]
+        [Route("api/index")]
+        public ActionResult ReIndex()
+        {
+            _yamlIndexer.IndexContentFiles();
+            return Ok();
         }
 
         private PostListModel GetPostList(int page, string category = null)
