@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using downr;
 using downr.Models;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using YamlDotNet.Serialization;
 
@@ -14,20 +15,31 @@ namespace downr.Services
 {
     public class WebServerFileSystemContentIndexer : IYamlIndexer
     {
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
         public List<Post> Posts { get; set; }
         private readonly PostFileParser postFileParser;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
         public WebServerFileSystemContentIndexer(ILogger<WebServerFileSystemContentIndexer> logger,
-            PostFileParser postFileParser)
+            PostFileParser postFileParser,
+            IWebHostEnvironment webHostEnvironment)
         {
+            this.webHostEnvironment = webHostEnvironment;
             this.postFileParser = postFileParser;
-            _logger = logger;
+            this.logger = logger;
         }
-        public Task IndexContentFiles(string contentPath)
+        public Task IndexContentFiles()
         {
-            _logger.LogInformation("Loading posts from disk...");
+            logger.LogInformation("Loading posts from disk...");
+
+            if (string.IsNullOrWhiteSpace(webHostEnvironment.WebRootPath))
+            {
+                webHostEnvironment.WebRootPath = 
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            }
             
+            var contentPath = Path.Combine(webHostEnvironment.WebRootPath, "posts");
+
             Posts = Directory.GetDirectories(contentPath)
                                 .Select(dir => Path.Combine(dir, "index.md"))
                                 .Select(ParseMetadataPrivate)
@@ -35,7 +47,7 @@ namespace downr.Services
                                 .OrderByDescending(x => x.PublicationDate)
                                 .ToList();
 
-            _logger.LogInformation("Loaded {0} posts", Posts.Count);
+            logger.LogInformation("Loaded {0} posts", Posts.Count);
 
             return Task.CompletedTask;
         }
@@ -43,7 +55,7 @@ namespace downr.Services
         public Task<Post> ReadPost(StreamReader postFileReader)
         {
             var post = postFileParser.CreatePostFromReader(postFileReader);
-            _logger.LogInformation($"Loaded post {post.Title}");
+            logger.LogInformation($"Loaded post {post.Title}");
             return Task.FromResult<Post>(post);
         }
 

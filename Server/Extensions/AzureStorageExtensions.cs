@@ -21,7 +21,7 @@ namespace downr.Services
             IOptions<AzureStorageConfiguration> config = (IOptions<AzureStorageConfiguration>)
                 configurator.Builder.ApplicationServices.GetService(typeof(IOptions<AzureStorageConfiguration>));
             
-            yamlIndexer.IndexContentFiles(config.Value.Container);
+            yamlIndexer.IndexContentFiles();
         }
     }
 }

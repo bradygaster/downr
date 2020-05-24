@@ -26,13 +26,14 @@ namespace downr.Services {
 
         public AzureStorageYamlIndexer (ILogger<AzureStorageYamlIndexer> logger,
             IOptions<AzureStorageConfiguration> config,
-            PostFileParser postFileParser) {
+            PostFileParser postFileParser) 
+        {
             this.postFileParser = postFileParser;
             this.config = config.Value;
             this.logger = logger;
         }
 
-        public async Task IndexContentFiles (string contentPath) 
+        public async Task IndexContentFiles () 
         {
             BlobContainerClient container = 
                 new BlobContainerClient (config.ConnectionString, config.Container);

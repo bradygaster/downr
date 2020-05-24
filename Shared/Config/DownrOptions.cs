@@ -44,5 +44,12 @@ namespace downr
         /// </summary>
         /// <value></value>
         public string ImagePathFormat { get; set; } = "/posts/{0}/media/";
+
+        /// <summary>
+        /// This value is optional. If it is provided in your configuration, the Google tracking 
+        /// JavaScript code will be injected into your pages. 
+        /// </summary>
+        /// <value></value>
+        public string GoogleTrackingCode { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace downr.Services
     public interface IYamlIndexer
     {
         List<Post> Posts { get; set; }
-        Task IndexContentFiles(string contentPath);
+        Task IndexContentFiles();
         Task<Post> ReadPost(StreamReader postFileReader);
     }
 }

@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-@inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
+@inject DownrOptions options
 @inject IJSRuntime JSRuntime
 @using downr.Models
 @using Humanizer
@@ -34,6 +34,8 @@
     <button id="loadMorePostsButton" class="btn btn-secondary btn-center" @onclick="OnLoadMoreButtonClicked">more</button>
   </div>
 </div>
+
+<Tracker/>
 
 @code {
     List<Post[]> MostRecentPosts = new List<Post[]>();
@@ -76,7 +78,7 @@
 
     protected async Task LoadPageOfPosts(int page)
     {
-      var postListModel = await Http.GetFromJsonAsync<PostListModel>($"api/posts/{page}");
+      var postListModel = await Http.GetFromJsonAsync<PostListModel>($"{options.RootUrl}/api/posts/{page}");
       MostRecentPosts.Add(postListModel.Posts);
     }
 }
