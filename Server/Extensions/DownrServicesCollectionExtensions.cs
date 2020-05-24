@@ -1,3 +1,4 @@
+using downr.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,12 @@ namespace downr.Services
             services.AddSingleton<PostFileParser>();
             services.AddSingleton<PostService>();
             services.Configure<DownrOptions>(configuration.GetSection("downr"));
+
+            if(configuration.GetSection("downr")
+                .Get<DownrOptions>().AutoRefreshInterval > 0)
+            {
+                services.AddHostedService<ContentRefreshWorker>();
+            }
             
             return new DownrServicesCollectionExtensionsConfigurator(services, configuration);
         }

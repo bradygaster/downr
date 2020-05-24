@@ -51,5 +51,15 @@ namespace downr
         /// </summary>
         /// <value></value>
         public string GoogleTrackingCode { get; set; }
+
+        /// <summary>
+        /// Use this property in the downr configuration to control how often 
+        /// the content is refreshed from disk or from Azure Storage. This property 
+        /// reflects the number of minutes in between each content refresh. 
+        /// 
+        /// When set to 0 or omitted from appsettings.json, auto-refresh is disabled.
+        /// </summary>
+        /// <value></value>
+        public int AutoRefreshInterval { get; set; } = 0;
     }
 }
