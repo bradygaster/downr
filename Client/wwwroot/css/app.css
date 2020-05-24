@@ -15,12 +15,14 @@ gunmetal blue:    8AB1C6
 html {
   position: relative;
   min-height: 100%;
+  font-size: 16px;
 }
 
 body {
   font-family: "Source Sans Pro", sans-serif;
   margin-bottom: 60px;
   background-color: #e8ebec;
+  font-size: 16px;
 }
 
 pre {
@@ -84,6 +86,7 @@ h6 {
 
 .card {
   font-size: 1.2em;
+  margin: 2px;
 }
 
 .card-title {
