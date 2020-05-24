@@ -1,0 +1,84 @@
+﻿@page "/"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject DownrOptions options
+@inject IJSRuntime JSRuntime
+@using downr.Models
+@using Humanizer
+
+<div class="row">
+  @foreach (var page in MostRecentPosts)
+  {
+      <div class="card-columns">
+      @foreach (var post in page)
+      {
+          <div class="card box-shadow">
+              <div class="card-body">
+                  <h5 class="card-title">
+                    <NavLink href="@($"/posts/{post.Slug}")">@post.Title</NavLink>
+                  </h5>
+                  <p class="card-text">@post.Description</p>
+              </div>
+              <div class="card-footer">
+                  <small class="text-muted">@post.PublicationDate.Humanize()</small>
+              </div>
+          </div>
+      }
+      </div>
+  }
+</div>
+<div class="row">
+  <div class="col text-center">
+    <button id="resetPostListButton" class="btn btn-secondary btn-center" @onclick="OnLessButtonClicked">less</button>
+    <button id="topButton" class="btn btn-secondary btn-center" onclick="scrollToTop();">top</button>
+    <button id="loadMorePostsButton" class="btn btn-secondary btn-center" @onclick="OnLoadMoreButtonClicked">more</button>
+  </div>
+</div>
+
+<Tracker/>
+
+@code {
+    List<Post[]> MostRecentPosts = new List<Post[]>();
+    const string currentPageKey = "currentPage";
+
+    protected override async Task OnInitializedAsync()
+    {
+      await LoadPosts();
+    }
+
+    protected async Task OnLoadMoreButtonClicked()
+    {
+      var currentPage = await localStorage.GetItemAsync<int>(currentPageKey) + 1;
+      await localStorage.SetItemAsync(currentPageKey, currentPage);
+      await LoadPageOfPosts(currentPage);
+      await JSRuntime.InvokeVoidAsync("scrollIntoView");
+    }
+
+    protected async Task OnLessButtonClicked()
+    {
+      var currentPage = await localStorage.GetItemAsync<int>(currentPageKey) - 1;
+      Console.WriteLine(currentPage);
+      if(currentPage <= 0) currentPage = 0;
+      await localStorage.SetItemAsync(currentPageKey, currentPage);
+      MostRecentPosts.Clear();
+      await LoadPosts();
+    }
+
+    protected async Task LoadPosts()
+    {
+      var currentPage = await localStorage.GetItemAsync<int>(currentPageKey);
+        
+      if(currentPage == 0) currentPage = 1;
+
+      for (int i = 0; i < currentPage; i++)
+      {
+        await LoadPageOfPosts(i);
+      }
+    }
+
+    protected async Task LoadPageOfPosts(int page)
+    {
+      var postListModel = await Http.GetFromJsonAsync<PostListModel>($"{options.RootUrl}/api/posts/{page}");
+      MostRecentPosts.Add(postListModel.Posts);
+    }
+}

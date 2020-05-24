@@ -1,0 +1,14 @@
+@inherits ComponentBase
+@using downr
+@inject DownrOptions options
+@inject IJSRuntime JSRuntime
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        if(!string.IsNullOrEmpty(options.GoogleTrackingCode))
+        {
+            await JSRuntime.InvokeVoidAsync("trackWithGoogle", options.GoogleTrackingCode);
+        }
+    }
+}

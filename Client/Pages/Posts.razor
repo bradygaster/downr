@@ -1,0 +1,27 @@
+@page "/posts/{slug}"
+@using downr.Models
+@inject HttpClient Http
+@inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
+
+<div class="text">
+    <h1 class="display-4">@Post.Title</h1>
+    <div id="post">
+        @((MarkupString)Post.Content)
+    </div>
+</div>
+
+<Tracker/>
+
+@code {
+    [Parameter]
+    public string Slug { get; set; }
+
+    public Post Post { get; set; } = new Post();
+
+    protected override async Task OnInitializedAsync()
+    {
+      Slug = Slug ?? "";
+      if(string.IsNullOrEmpty(Slug)) return;
+      Post = await Http.GetFromJsonAsync<Post>($"{downrOptions.Value.RootUrl}/api/post/{Slug}");
+    }
+}
