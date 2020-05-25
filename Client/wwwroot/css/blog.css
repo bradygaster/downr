@@ -1,16 +1,40 @@
 /* stylelint-disable selector-list-comma-newline-after */
+@import url("https://fonts.googleapis.com/css2?family=Fjalla+One&family=Source+Sans+Pro");
+
+/*
+--------------
+color palette
+--------------
+light background: E8EBEC
+main blue:        328BBC
+grey:             7E8C97
+aqua highlight:   DCF4E2
+gunmetal blue:    8AB1C6
+--------------
+*/
+
+body {
+  font-family: "Source Sans Pro";
+  background-color: #E8EBEC;
+}
 
 main img {
   max-width: 100%;
 }
 
+footer, .footer {
+  background-color: #8AB1C6;
+  box-shadow: 0 0 5px 0 #000;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
 .blog-header {
   line-height: 1;
-  border-bottom: 1px solid #e5e5e5;
 }
 
 .blog-header-logo {
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-family: "Fjalla One", Georgia, "Times New Roman", serif;
   font-size: 2.25rem;
 }
 
@@ -19,7 +43,43 @@ main img {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-family: "Fjalla One", Georgia, "Times New Roman", serif;
+}
+
+footer .post, .footer .post, .post, .blog-main {
+  background-color: #fff;
+}
+
+footer .post ul, .footer .post ul {
+  list-style-type: none;
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+.jumbotron {
+  background-color: #328BBC !important;
+  box-shadow: 0 0 5px 0 #000;
+}
+
+.jumbotron img {
+  border-radius: 50%;
+  box-shadow: 2px 5px 5px #000;
+}
+
+.jumbotron .title {
+  color: #dcf4e2;
+  text-shadow: 2px 5px 5px #000;
+}
+
+.jumbotron p {
+  color: #e8ebec;
+  font-size: 1.4em;
+}
+
+.jumbotron a,
+.jumbotron a:hover {
+  text-decoration: none;
+  color: #dcf4e2;
 }
 
 .display-4 {

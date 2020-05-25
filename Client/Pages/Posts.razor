@@ -13,7 +13,7 @@
     {
         <div class="col-md-6">
             <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
+                <div class="col p-4 d-flex flex-column position-static post">
                     <strong class="d-inline-block mb-2 text-primary">Previous</strong>
                     <h4 class="mb-0">@PostPageModel.PreviousPost.Title</h4>
                     <div class="mb-1 text-muted">@PostPageModel.PreviousPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
@@ -27,7 +27,7 @@
     {
         <div class="col-md-6">
             <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
+                <div class="col p-4 d-flex flex-column position-static post">
                     <strong class="d-inline-block mb-2 text-success">Next</strong>
                     <h4 class="mb-0">@PostPageModel.NextPost.Title</h4>
                     <div class="mb-1 text-muted">@PostPageModel.NextPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
@@ -44,8 +44,8 @@
 @if(PostPageModel != null && PostPageModel.Post != null)
 {
     <main role="main" class="container">
-        <div class="row">
-            <div class="col-md-12 blog-main">
+        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm position-relative">
+            <div class="col-md-12 p-4 d-flex flex-column position-static blog-main">
                 <div class="blog-post">
                     <h2 class="blog-post-title">@PostPageModel.Post.Title</h2>
                     <p class="blog-post-meta">@PostPageModel.Post.PublicationDate.ToString("MMMM dd, yyyy") by <a href="#">@PostPageModel.Post.Author</a></p>
@@ -54,8 +54,14 @@
             </div>
         </div>
         <nav class="blog-pagination">
-            <NavLink class="btn btn-outline-primary" href="@($"/posts/{PostPageModel.PreviousPost.Slug}")">older</NavLink>
-            <NavLink class="btn btn-outline-primary" href="@($"/posts/{PostPageModel.NextPost.Slug}")">newer</NavLink>
+            @if(PostPageModel.PreviousPost != null)
+            {
+                <NavLink class="btn btn-outline-primary" href="@($"/posts/{PostPageModel.PreviousPost.Slug}")">older</NavLink>
+            }
+            @if(PostPageModel.NextPost != null)
+            {
+                <NavLink class="btn btn-outline-primary" href="@($"/posts/{PostPageModel.NextPost.Slug}")">newer</NavLink>   
+            }
         </nav>
     </main>
 }
