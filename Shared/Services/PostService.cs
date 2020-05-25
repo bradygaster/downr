@@ -14,6 +14,12 @@ namespace downr.Services
             _indexer = indexer;
         }
 
+        public Post[] GetPostsInCategory(string category)
+        {
+            var found = _indexer.Posts.Where(p => p.Categories.Contains(category)).ToArray();
+            return found;
+        }
+
         public Post[] GetPosts(int offset = 0, int count = -1, string category = null)
         {
             var posts = (IEnumerable<Post>)_indexer.Posts;

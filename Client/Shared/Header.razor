@@ -23,7 +23,7 @@
     <nav class="nav d-flex justify-content-between">
         @foreach (var category in Categories)
         {
-            <a class="p-2 text-muted" href="#">@category</a>
+            <NavLink class="p-2 text-muted" href="@($"/category/{category}")">@category</NavLink>
         }
     </nav>
 </div>

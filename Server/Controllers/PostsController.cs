@@ -70,6 +70,18 @@ namespace downr.Controllers
             return new JsonResult(_postService.GetCategories());
         }
 
+        [HttpGet]
+        [Route("api/categories/{name}/posts")]
+        public ActionResult<PostListModel> GetPostsInCategory([FromRoute] string name)
+        {
+            var posts = _postService.GetPostsInCategory(name);
+            var model = new PostListModel
+            {
+                Posts = posts
+            };
+            return new JsonResult(model);
+        }
+
         private PostListModel GetPostList(int page, string category = null)
         {
             var pageSize = _options.PageSize;

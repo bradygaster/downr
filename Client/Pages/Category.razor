@@ -1,0 +1,46 @@
+﻿@page "/category/{name}"
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject DownrOptions options
+@inject IJSRuntime JSRuntime
+@using downr.Models
+@using Humanizer
+
+<Header />
+
+<div class="container">
+  <div class="row mb-2">
+    @foreach (var page in MostRecentPosts)
+    {
+      @foreach (var post in page)
+      {
+        <div class="col-md-6">
+          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <h4 class="mb-0">@post.Title</h4>
+              <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
+              <p class="card-text mb-auto">@post.Description</p>
+              <NavLink class="stretched-link" href="@($"/posts/{post.Slug}")">Continue reading</NavLink>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<Tracker/>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    List<Post[]> MostRecentPosts = new List<Post[]>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+      MostRecentPosts.Clear();
+      var postListModel = await Http.GetFromJsonAsync<PostListModel>($"api/categories/{Name}/posts");
+      MostRecentPosts.Add(postListModel.Posts);
+    }
+}
