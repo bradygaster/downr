@@ -11,6 +11,8 @@ namespace downr
             public static string Author { get { return "author"; } }
             public static string Categories { get { return "categories"; } }
             public static string Description { get { return "description"; } }
+            public static string Phase { get { return "phase"; } }
+            public static string Step { get { return "step"; } }
         }
     }
 

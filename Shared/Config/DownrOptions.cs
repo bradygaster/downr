@@ -61,5 +61,25 @@ namespace downr
         /// </summary>
         /// <value></value>
         public int AutoRefreshInterval { get; set; } = 0;
+
+        /// <summary>
+        /// The site mode, which can either be set to "Blog" (the default) or "Workshop." 
+        /// When in Workshop mode, posts will need to have a "Phase" and a "Step" property identified,
+        /// otherwise they will be omitted during indexing.
+        /// 
+        /// When in Blog mode, the posts will be shown chronologically, newest-to-oldest.
+        /// 
+        /// When in Workshop mode, the posts will be shown ordered by their Phase and Step 
+        /// properties. They'll be sorted first by Phase, then by Step, as each workshop Phase
+        /// will have multiple steps.
+        /// </summary>
+        /// <value></value>
+        public SiteMode SiteMode { get; set; } = SiteMode.Blog;
+    }
+
+    public enum SiteMode : int
+    {
+        Blog = 0,
+        Workshop = 1
     }
 }

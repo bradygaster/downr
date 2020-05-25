@@ -12,5 +12,7 @@ namespace downr.Models
         public string[] Categories { get; set; }
         public string Content { get; set; }
         public string Description { get; set; }
+        public int Phase { get; set; }
+        public int Step { get; set; }
     }
 }

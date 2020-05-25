@@ -11,10 +11,12 @@ namespace downr.Services
         {
             services.AddSingleton<PostFileParser>();
             services.AddSingleton<PostService>();
+            services.AddSingleton<PostFileSorter>();
             services.Configure<DownrOptions>(configuration.GetSection("downr"));
 
-            if(configuration.GetSection("downr")
-                .Get<DownrOptions>().AutoRefreshInterval > 0)
+            var downrConfig = configuration.GetSection("downr").Get<DownrOptions>();
+
+            if(downrConfig.AutoRefreshInterval > 0)
             {
                 services.AddHostedService<ContentRefreshWorker>();
             }

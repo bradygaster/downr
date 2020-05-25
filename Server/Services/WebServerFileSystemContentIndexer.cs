@@ -19,14 +19,17 @@ namespace downr.Services
         public List<Post> Posts { get; set; }
         private readonly PostFileParser postFileParser;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly PostFileSorter postFileSorter;
 
         public WebServerFileSystemContentIndexer(ILogger<WebServerFileSystemContentIndexer> logger,
             PostFileParser postFileParser,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            PostFileSorter postFileSorter)
         {
             this.webHostEnvironment = webHostEnvironment;
             this.postFileParser = postFileParser;
             this.logger = logger;
+            this.postFileSorter = postFileSorter;
         }
         public Task IndexContentFiles()
         {
@@ -48,6 +51,8 @@ namespace downr.Services
                                 .ToList();
 
             logger.LogInformation("Loaded {0} posts", Posts.Count);
+
+            this.Posts = postFileSorter.Sort(this.Posts);
 
             return Task.CompletedTask;
         }

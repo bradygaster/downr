@@ -11,38 +11,44 @@ using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace downr.Services {
+namespace downr.Services
+{
 
-    public class AzureStorageConfiguration {
+    public class AzureStorageConfiguration
+    {
         public string ConnectionString { get; set; }
         public string Container { get; set; }
     }
 
-    public class AzureStorageYamlIndexer : IYamlIndexer {
+    public class AzureStorageYamlIndexer : IYamlIndexer
+    {
         private readonly ILogger<AzureStorageYamlIndexer> logger;
-        private readonly AzureStorageConfiguration config; 
+        private readonly AzureStorageConfiguration config;
         public List<Post> Posts { get; set; } = new List<Post>();
         private readonly PostFileParser postFileParser;
+        private readonly PostFileSorter postFileSorter;
 
-        public AzureStorageYamlIndexer (ILogger<AzureStorageYamlIndexer> logger,
+        public AzureStorageYamlIndexer(ILogger<AzureStorageYamlIndexer> logger,
             IOptions<AzureStorageConfiguration> config,
-            PostFileParser postFileParser) 
+            PostFileParser postFileParser,
+            PostFileSorter postFileSorter)
         {
             this.postFileParser = postFileParser;
             this.config = config.Value;
             this.logger = logger;
+            this.postFileSorter = postFileSorter;
         }
 
-        public async Task IndexContentFiles () 
+        public async Task IndexContentFiles()
         {
-            BlobContainerClient container = 
-                new BlobContainerClient (config.ConnectionString, config.Container);
+            BlobContainerClient container =
+                new BlobContainerClient(config.ConnectionString, config.Container);
 
             await container.CreateIfNotExistsAsync();
 
             await foreach (BlobItem blobItem in container.GetBlobsAsync())
             {
-                if(blobItem.Name.EndsWith("index.md"))
+                if (blobItem.Name.EndsWith("index.md"))
                 {
                     logger.LogInformation($"Indexing {blobItem.Name}");
                     var blobClient = new BlobClient(config.ConnectionString, config.Container, blobItem.Name);
@@ -52,10 +58,10 @@ namespace downr.Services {
                 }
             }
 
-            Posts = Posts.OrderByDescending(x => x.PublicationDate).ToList();
+            this.Posts = postFileSorter.Sort(this.Posts);
         }
 
-        public Task<Post> ReadPost (StreamReader postFileReader) 
+        public Task<Post> ReadPost(StreamReader postFileReader)
         {
             var post = postFileParser.CreatePostFromReader(postFileReader);
             logger.LogInformation($"Indexed post {post.Title}");

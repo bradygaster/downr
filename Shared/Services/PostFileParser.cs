@@ -14,14 +14,14 @@ namespace downr.Services
     public class PostFileParser
     {
         private readonly ILogger<PostFileParser> logger;
-        private readonly IOptions<DownrOptions> downrOptions;
+        private readonly DownrOptions downrOptions;
 
         public PostFileParser(ILogger<PostFileParser> logger, 
             IOptions<DownrOptions> downrOptions
         )
         {
             this.logger = logger;
-            this.downrOptions = downrOptions;
+            this.downrOptions = downrOptions.Value;
         }
 
         public Post CreatePostFromReader(StreamReader postReader)
@@ -72,6 +72,20 @@ namespace downr.Services
                         Content = htmlContent
                     };
 
+                    if(downrOptions.SiteMode == SiteMode.Workshop)
+                    {
+                        if(result.ContainsKey(Strings.MetadataNames.Phase) && 
+                            result.ContainsKey(Strings.MetadataNames.Step))
+                        {
+                            post.Phase = Convert.ToInt32(result[Strings.MetadataNames.Phase]);
+                            post.Step = Convert.ToInt32(result[Strings.MetadataNames.Step]);
+                        }
+                        else
+                        {
+                            return post; // if we're in workshop mode, we need phases & steps
+                        }
+                    }
+
                     return post;
                 }
                 catch
@@ -95,7 +109,7 @@ namespace downr.Services
                 foreach (HtmlNode node in nodes)
                 {
                     var src = node.Attributes["src"].Value;
-                    src = src.Replace("media/", string.Format(downrOptions.Value.ImagePathFormat, slug));
+                    src = src.Replace("media/", string.Format(downrOptions.ImagePathFormat, slug));
                     node.SetAttributeValue("src", src);
                 }
             }
