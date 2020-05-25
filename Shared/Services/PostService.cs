@@ -67,5 +67,28 @@ namespace downr.Services
             }
             return result;
         }
+
+        public IEnumerable<string> GetCategories()
+        {
+            var categories = new List<string>();
+            var categoryCounts = new Dictionary<string,int>();
+            _indexer.Posts.ForEach(x => categories.AddRange(x.Categories));
+
+            categories.ForEach(x => 
+            {
+                if(categoryCounts.ContainsKey(x))
+                {
+                    categoryCounts[x] += 1;
+                }
+                else
+                {
+                    categoryCounts.Add(x, 1);
+                }
+            });
+
+            var sortedCategories = categoryCounts.OrderByDescending(x => x.Value);
+
+            return sortedCategories.Select(x => x.Key.ToLower());
+        }
     }
 }

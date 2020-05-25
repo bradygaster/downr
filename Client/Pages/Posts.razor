@@ -1,7 +1,8 @@
 @page "/posts/{slug}"
 @using downr.Models
 @inject HttpClient Http
-@inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
+@inject DownrOptions downrOptions
+@inject IJSRuntime JSRuntime
 
 <div class="container">
     @if(PostPageModel != null)
@@ -44,7 +45,7 @@
 {
     <main role="main" class="container">
         <div class="row">
-            <div class="col-md-8 blog-main">
+            <div class="col-md-12 blog-main">
                 <div class="blog-post">
                     <h2 class="blog-post-title">@PostPageModel.Post.Title</h2>
                     <p class="blog-post-meta">@PostPageModel.Post.PublicationDate.ToString("MMMM dd, yyyy") by <a href="#">@PostPageModel.Post.Author</a></p>
@@ -53,8 +54,8 @@
             </div>
         </div>
         <nav class="blog-pagination">
-            <a class="btn btn-outline-primary" href="#">Older</a>
-            <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
+            <NavLink class="btn btn-outline-primary" href="@($"/posts/{PostPageModel.PreviousPost.Slug}")">older</NavLink>
+            <NavLink class="btn btn-outline-primary" href="@($"/posts/{PostPageModel.NextPost.Slug}")">newer</NavLink>
         </nav>
     </main>
 }
@@ -76,6 +77,11 @@
     protected override async Task OnParametersSetAsync()
     {
         if(string.IsNullOrEmpty(Slug)) return;
-        PostPageModel = await Http.GetFromJsonAsync<PostPageModel>($"{downrOptions.Value.RootUrl}/api/post/{Slug}");
+        PostPageModel = await Http.GetFromJsonAsync<PostPageModel>($"{downrOptions.RootUrl}/api/post/{Slug}");
+        
+        if(PostPageModel != null && PostPageModel.Post != null)
+        {
+            await JSRuntime.InvokeVoidAsync("setTitle", $"{PostPageModel.Post.Title} - {downrOptions.Title}");
+        }
     }
 }

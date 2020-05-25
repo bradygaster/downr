@@ -61,11 +61,10 @@ namespace downr.Controllers
                 {
                     foreach (var article in posts)
                     {
+                        var uri = new Uri($"{_options.RootUrl}/posts/{article.Slug}");
                         writer.WriteStartElement("item");
-
                         writer.WriteElementString("title", article.Title);
-                        var relativeUrl = Url.Action("Post", "Posts", new {article.Slug});
-                        writer.WriteElementString("link", new Uri(rootUri, relativeUrl).ToString());
+                        writer.WriteElementString("link", uri.ToString());
                         writer.WriteElementString("description", article.Description);
 
                         writer.WriteEndElement();
