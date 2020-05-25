@@ -42,9 +42,17 @@ namespace downr.Controllers
 
         [HttpGet]
         [Route("api/post/{slug}")]
-        public ActionResult<Post> GetPost([FromRoute] string slug)
+        public ActionResult<PostPageModel> GetPost([FromRoute] string slug)
         {
-            return _postService.GetPostBySlug(slug);
+            var post = _postService.GetPostBySlug(slug);
+            var others = _postService.GetPreviousAndNextPosts(slug);
+
+            return new PostPageModel
+            {
+                Post = post,
+                NextPost = others.next,
+                PreviousPost = others.previous
+            };
         }
 
         [HttpGet]

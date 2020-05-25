@@ -38,8 +38,8 @@ namespace downr.Server
 
             // add downr 
             services.AddDownr(Configuration) // wires up downr services
-                    .WithWebServerFileSystemStorage(); // with web server storasge
-                    //.WithAzureStorage(); // using azure storage blobs
+                    //.WithWebServerFileSystemStorage(); // with web server storasge
+                    .WithAzureStorage(); // using azure storage blobs
             
             // add asp.net services
             services.AddControllersWithViews();
@@ -82,8 +82,8 @@ namespace downr.Server
             });
 
             app.UseDownr() // use the services we dialed in
-                  .UseWebServerFileSystemStorage(); // use local web server storage
-                  //.UseAzureStorage(); // use azure blob storage
+                  //.UseWebServerFileSystemStorage(); // use local web server storage
+                  .UseAzureStorage(); // use azure blob storage
         }
     }
 }

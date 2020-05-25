@@ -3,22 +3,6 @@
 @using downr
 @inject DownrOptions options
 
-<header id="header">
-    <div class="jumbotron">
-        <div class="container">
-            <div class="row justify-content-md-center">
-                <div class="col col-lg-9">
-                    <h1 class="display-4 title"><NavLink href="/">@options.Title</NavLink></h1>
-                    <p class="lead">@options.IndexPageText</p>
-                </div>
-                <div class="col col-lg-3">
-                    <img src="/img/me.jpg" class="img-fluid" alt="me">
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
 <div class="container">
     <main role="main" class="pb-3">
         @Body

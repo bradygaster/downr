@@ -75,6 +75,12 @@ namespace downr
         /// </summary>
         /// <value></value>
         public SiteMode SiteMode { get; set; } = SiteMode.Blog;
+
+        /// <summary>
+        /// If this is omitted from appsettings.json the image will be hidden.
+        /// </summary>
+        /// <value></value>
+        public string HeaderImage { get; set; }
     }
 
     public enum SiteMode : int

@@ -3,25 +3,79 @@
 @inject HttpClient Http
 @inject Microsoft.Extensions.Options.IOptions<downr.DownrOptions> downrOptions
 
-<div class="text">
-    <h1 class="display-4">@Post.Title</h1>
-    <div id="post">
-        @((MarkupString)Post.Content)
+<div class="container">
+    @if(PostPageModel != null)
+    {
+    <Header Post="PostPageModel.Post"/>
+    <div class="row mb-2">
+    @if(PostPageModel.PreviousPost != null)
+    {
+        <div class="col-md-6">
+            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary">Previous</strong>
+                    <h4 class="mb-0">@PostPageModel.PreviousPost.Title</h4>
+                    <div class="mb-1 text-muted">@PostPageModel.PreviousPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
+                    <p class="card-text mb-auto">@PostPageModel.PreviousPost.Description</p>
+                    <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.PreviousPost.Slug}")">Continue reading</NavLink>
+                </div>
+            </div>
+        </div>
+    }
+    @if(PostPageModel.NextPost != null)
+    {
+        <div class="col-md-6">
+            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-success">Next</strong>
+                    <h4 class="mb-0">@PostPageModel.NextPost.Title</h4>
+                    <div class="mb-1 text-muted">@PostPageModel.NextPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
+                    <p class="mb-auto">@PostPageModel.NextPost.Title</p>
+                    <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Continue reading</NavLink>
+                </div>
+            </div>
+        </div>
+    }  
     </div>
+    }
 </div>
+
+@if(PostPageModel != null && PostPageModel.Post != null)
+{
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8 blog-main">
+                <div class="blog-post">
+                    <h2 class="blog-post-title">@PostPageModel.Post.Title</h2>
+                    <p class="blog-post-meta">@PostPageModel.Post.PublicationDate.ToString("MMMM dd, yyyy") by <a href="#">@PostPageModel.Post.Author</a></p>
+                    @((MarkupString)PostPageModel.Post.Content)
+                </div>
+            </div>
+        </div>
+        <nav class="blog-pagination">
+            <a class="btn btn-outline-primary" href="#">Older</a>
+            <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
+        </nav>
+    </main>
+}
 
 <Tracker/>
 
 @code {
     [Parameter]
-    public string Slug { get; set; }
+    public string Slug{ get; set; }
 
-    public Post Post { get; set; } = new Post();
+    public PostPageModel PostPageModel { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-      Slug = Slug ?? "";
-      if(string.IsNullOrEmpty(Slug)) return;
-      Post = await Http.GetFromJsonAsync<Post>($"{downrOptions.Value.RootUrl}/api/post/{Slug}");
+        Slug = Slug ?? "";
+        return Task.CompletedTask;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(string.IsNullOrEmpty(Slug)) return;
+        PostPageModel = await Http.GetFromJsonAsync<PostPageModel>($"{downrOptions.Value.RootUrl}/api/post/{Slug}");
     }
 }

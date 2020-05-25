@@ -6,33 +6,31 @@
 @using downr.Models
 @using Humanizer
 
-<div class="row">
-  @foreach (var page in MostRecentPosts)
-  {
-      <div class="card-columns">
+<Header />
+
+<div class="container">
+  <div class="row mb-2">
+    @foreach (var page in MostRecentPosts)
+    {
       @foreach (var post in page)
       {
-          <div class="card box-shadow">
-              <div class="card-body">
-                  <h5 class="card-title">
-                    <NavLink href="@($"/posts/{post.Slug}")">@post.Title</NavLink>
-                  </h5>
-                  <p class="card-text">@post.Description</p>
-              </div>
-              <div class="card-footer">
-                  <small class="text-muted">@post.PublicationDate.Humanize()</small>
-              </div>
+        <div class="col-md-6">
+          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <h4 class="mb-0">@post.Title</h4>
+              <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
+              <p class="card-text mb-auto">@post.Description</p>
+              <NavLink class="stretched-link" href="@($"/posts/{post.Slug}")">Continue reading</NavLink>
+            </div>
           </div>
+        </div>
       }
-      </div>
-  }
-</div>
-<div class="row">
-  <div class="col text-center">
-    <button id="resetPostListButton" class="btn btn-secondary btn-center" @onclick="OnLessButtonClicked">less</button>
-    <button id="topButton" class="btn btn-secondary btn-center" onclick="scrollToTop();">top</button>
-    <button id="loadMorePostsButton" class="btn btn-secondary btn-center" @onclick="OnLoadMoreButtonClicked">more</button>
+    }
   </div>
+  <nav class="blog-pagination">
+    <a class="btn btn-outline-primary" @onclick="OnLessButtonClicked">less</a>
+    <a class="btn btn-outline-primary" @onclick="OnLoadMoreButtonClicked">more</a>
+  </nav>
 </div>
 
 <Tracker/>
