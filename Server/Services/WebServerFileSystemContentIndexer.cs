@@ -34,6 +34,7 @@ namespace downr.Services
         public Task IndexContentFiles()
         {
             logger.LogInformation("Loading posts from disk...");
+            this.Posts.Clear();
 
             if (string.IsNullOrWhiteSpace(webHostEnvironment.WebRootPath))
             {

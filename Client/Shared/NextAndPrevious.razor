@@ -1,0 +1,26 @@
+@inherits ComponentBase
+@inject DownrOptions downrOptions
+@using downr.Models
+
+@if(PostPageModel != null)
+{
+<div class="container">
+    <div class="row mb-2">
+        @if(downrOptions.SiteMode == SiteMode.Blog)
+        {
+        <PreviousButton PostPageModel="PostPageModel"/>
+        <NextButton PostPageModel="PostPageModel"/>
+        }
+        @if(downrOptions.SiteMode == SiteMode.Workshop)
+        {
+        <NextButton PostPageModel="PostPageModel"/>
+        <PreviousButton PostPageModel="PostPageModel"/>
+        }
+    </div>
+</div>
+}
+
+@code {
+    [Parameter]
+    public PostPageModel PostPageModel { get; set; }
+}
