@@ -1,0 +1,28 @@
+@inherits ComponentBase
+@using downr
+@using downr.Models
+@inject DownrOptions downrOptions
+
+<div class="col-md-6">
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static post">
+            @if(PostPageModel.NextPost != null)
+            {
+            @if(downrOptions.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
+                <strong class="d-inline-block mb-2 text-primary">Next</strong>
+            } else {
+                <strong class="d-inline-block mb-2 text-primary">Previous</strong>
+            }
+            <h4 class="mb-0">@PostPageModel.NextPost.Title</h4>
+            <div class="mb-1 text-muted">@PostPageModel.NextPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
+            <p class="mb-auto">@PostPageModel.NextPost.Title</p>
+            <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Continue reading</NavLink>
+            }
+        </div>
+    </div>
+</div> 
+
+@code {
+    [Parameter]
+    public PostPageModel PostPageModel { get; set; }
+}
