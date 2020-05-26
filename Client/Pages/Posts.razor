@@ -9,34 +9,17 @@
     {
     <Header Post="PostPageModel.Post"/>
     <div class="row mb-2">
-    @if(PostPageModel.PreviousPost != null)
-    {
-        <div class="col-md-6">
-            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static post">
-                    <strong class="d-inline-block mb-2 text-primary">Previous</strong>
-                    <h4 class="mb-0">@PostPageModel.PreviousPost.Title</h4>
-                    <div class="mb-1 text-muted">@PostPageModel.PreviousPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
-                    <p class="card-text mb-auto">@PostPageModel.PreviousPost.Description</p>
-                    <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.PreviousPost.Slug}")">Continue reading</NavLink>
-                </div>
-            </div>
-        </div>
-    }
-    @if(PostPageModel.NextPost != null)
-    {
-        <div class="col-md-6">
-            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static post">
-                    <strong class="d-inline-block mb-2 text-success">Next</strong>
-                    <h4 class="mb-0">@PostPageModel.NextPost.Title</h4>
-                    <div class="mb-1 text-muted">@PostPageModel.NextPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
-                    <p class="mb-auto">@PostPageModel.NextPost.Title</p>
-                    <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Continue reading</NavLink>
-                </div>
-            </div>
-        </div>
-    }  
+        @if(downrOptions.SiteMode == SiteMode.Blog)
+        {
+        <PreviousButton PostPageModel="PostPageModel"/>
+        <NextButton PostPageModel="PostPageModel"/>
+        }
+        @if(downrOptions.SiteMode == SiteMode.Workshop)
+        {
+        <NextButton PostPageModel="PostPageModel"/>
+        <PreviousButton PostPageModel="PostPageModel"/>
+        }
+        
     </div>
     }
 </div>
