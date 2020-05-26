@@ -16,7 +16,11 @@
             <h4 class="mb-0">@PostPageModel.NextPost.Title</h4>
             <div class="mb-1 text-muted">@PostPageModel.NextPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
             <p class="mb-auto">@PostPageModel.NextPost.Title</p>
-            <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Continue reading</NavLink>
+            @if(downrOptions.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
+                <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Next</NavLink>
+            } else {
+                <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Previous</NavLink>
+            }
             }
         </div>
     </div>
