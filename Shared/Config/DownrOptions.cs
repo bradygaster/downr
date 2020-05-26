@@ -81,6 +81,18 @@ namespace downr
         /// </summary>
         /// <value></value>
         public string HeaderImage { get; set; }
+
+        /// <summary>
+        /// When set to false, the topmost bar in the UI is hidden. Default is true.
+        /// </summary>
+        /// <value></value>
+        public bool ShowTopMostTitleBar { get; set; } = true;
+
+        /// <summary>
+        /// When set to false, the category bar is hidden. Default is true.
+        /// </summary>
+        /// <value></value>
+        public bool ShowCategoryMenu { get; set; } = true;
     }
 
     public enum SiteMode : int
