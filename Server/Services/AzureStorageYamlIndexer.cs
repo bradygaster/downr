@@ -41,6 +41,8 @@ namespace downr.Services
 
         public async Task IndexContentFiles()
         {
+            this.Posts.Clear();
+            
             BlobContainerClient container =
                 new BlobContainerClient(config.ConnectionString, config.Container);
 
