@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using downr.Models;
+using Microsoft.Extensions.Options;
 
 namespace downr.Services
 {
     public class PostService
     {
         private readonly IYamlIndexer _indexer;
+        private readonly DownrOptions _downrOptions;
 
-        public PostService(IYamlIndexer indexer)
+        public PostService(IYamlIndexer indexer, IOptions<DownrOptions> downrOptions)
         {
+            _downrOptions = downrOptions.Value;
             _indexer = indexer;
         }
 
@@ -77,24 +80,52 @@ namespace downr.Services
         public IEnumerable<string> GetCategories()
         {
             var categories = new List<string>();
-            var categoryCounts = new Dictionary<string,int>();
-            _indexer.Posts.ForEach(x => categories.AddRange(x.Categories));
 
-            categories.ForEach(x => 
+            if(_downrOptions.SiteMode == SiteMode.Blog)
             {
-                if(categoryCounts.ContainsKey(x))
-                {
-                    categoryCounts[x] += 1;
-                }
-                else
-                {
-                    categoryCounts.Add(x, 1);
-                }
-            });
+                var categoryCounts = new Dictionary<string,int>();
+                _indexer.Posts.ForEach(x => categories.AddRange(x.Categories));
 
-            var sortedCategories = categoryCounts.OrderByDescending(x => x.Value);
+                categories.ForEach(x => 
+                {
+                    if(categoryCounts.ContainsKey(x))
+                    {
+                        categoryCounts[x] += 1;
+                    }
+                    else
+                    {
+                        categoryCounts.Add(x, 1);
+                    }
+                });
 
-            return sortedCategories.Select(x => x.Key.ToLower());
+                var sortedCategories = categoryCounts.OrderByDescending(x => x.Value);
+
+                categories = sortedCategories.Select(x => x.Key.ToLower()).ToList();
+            }
+
+            // -------------------------------------------------------------
+            // when in workshop mode order the category list by phase order
+            // since, in workshop mode, the convention is to use Category
+            // to identify the phase name
+            // -------------------------------------------------------------
+            if(_downrOptions.SiteMode == SiteMode.Workshop)
+            {
+                var categoriesByPhase = new Dictionary<string,int>();
+
+                _indexer.Posts.ForEach(x => 
+                {
+                    if(!categoriesByPhase.ContainsKey(x.Categories[0]))
+                    {
+                        categoriesByPhase.Add(x.Categories[0], x.Phase);
+                    }
+                });
+                
+                var sortedCategories = categoriesByPhase.OrderBy(x => x.Value);
+
+                categories = sortedCategories.Select(x => x.Key.ToLower()).ToList();
+            }
+
+            return categories;
         }
     }
 }
