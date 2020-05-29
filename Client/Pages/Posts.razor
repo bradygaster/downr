@@ -19,7 +19,11 @@
         <div class="col-md-12 p-4 d-flex flex-column position-static blog-main">
             <div class="blog-post">
                 <h2 class="blog-post-title">@PostPageModel.Post.Title</h2>
-                <p class="blog-post-meta">@PostPageModel.Post.PublicationDate.ToString("MMMM dd, yyyy") by <a href="#">@PostPageModel.Post.Author</a></p>
+                @if(downrOptions.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
+                    <p class="blog-post-meta">@PostPageModel.Post.PublicationDate.ToString("MMMM dd, yyyy") by <a href="#">@PostPageModel.Post.Author</a></p>
+                } else {
+                    <p class="blog-post-meta">Phase @PostPageModel.Post.Phase, Step @PostPageModel.Post.Step</p>
+                }
                 @((MarkupString)PostPageModel.Post.Content)
             </div>
         </div>
