@@ -16,3 +16,9 @@ window.trackWithGoogle = (ua) => {
 window.setTitle = (title) => {
     document.title = title;
 };
+
+window.readyHighlightJs = () => {
+    document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+    });
+};

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using downr.Models;
 using HtmlAgilityPack;
+using Markdig;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
@@ -45,6 +46,7 @@ namespace downr.Services
                 }
 
                 var htmlContent = postReader.ReadToEnd().TrimStart('\r', '\n', '\t', ' ');
+
                 htmlContent = Markdig.Markdown.ToHtml(htmlContent);
 
                 var yaml = stringBuilder.ToString();
