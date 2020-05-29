@@ -8,7 +8,7 @@
 
 <Header />
 
-<div class="container">
+<div class="container-fluid">
   <div class="row mb-2">
     @foreach (var page in MostRecentPosts)
     {
@@ -27,10 +27,13 @@
       }
     }
   </div>
+  @if(options.SiteMode == SiteMode.Blog)
+  {
   <nav class="blog-pagination">
     <a class="btn btn-outline-primary" @onclick="OnLessButtonClicked">less</a>
     <a class="btn btn-outline-primary" @onclick="OnLoadMoreButtonClicked">more</a>
   </nav>
+  }
 </div>
 
 <Tracker/>

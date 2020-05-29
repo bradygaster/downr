@@ -4,7 +4,7 @@
 @inject DownrOptions downrOptions
 @inject IJSRuntime JSRuntime
 
-<div class="container">
+<div class="container-fluid">
     @if(PostPageModel != null)
     {
     <Header Post="PostPageModel.Post"/>
@@ -40,6 +40,11 @@
     {
         Slug = Slug ?? "";
         return Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("readyHighlightJs");
     }
 
     protected override async Task OnParametersSetAsync()
