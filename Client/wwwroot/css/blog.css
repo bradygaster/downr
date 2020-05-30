@@ -14,19 +14,29 @@ gunmetal blue:    8AB1C6
 */
 
 body {
-  font-family: "Source Sans Pro";
+  font-family: "Segoe UI", "Source Sans Pro";
   background-color: #E8EBEC;
+}
+
+pre {
+  padding: 15px;
+  border: dotted 1px #555;
+  background-color: #f0f0f0;
+  font-size: 1.1em;
 }
 
 main img {
   max-width: 100%;
 }
 
-footer, .footer {
-  background-color: #8AB1C6;
-  box-shadow: 0 0 5px 0 #000;
-  padding-top: 20px;
-  padding-bottom: 10px;
+blockquote {
+  font-family: "Segoe UI", "Source Sans Pro";
+  padding-top: 10px;
+  padding-bottom: 2px;
+  padding-left: 20px;
+  border-left: solid 5px #7014eb;
+  font-size: 1.1em;
+  background-color: #e0d5f0;
 }
 
 .blog-header {
@@ -34,7 +44,7 @@ footer, .footer {
 }
 
 .blog-header-logo {
-  font-family: "Fjalla One", Georgia, "Times New Roman", serif;
+  font-family: "Segoe UI Light", "Fjalla One", Georgia, "Times New Roman", serif;
   font-size: 2.25rem;
 }
 
@@ -43,27 +53,13 @@ footer, .footer {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Fjalla One", Georgia, "Times New Roman", serif;
-}
-
-footer .post, .footer .post, .post, .blog-main {
-  background-color: #fff;
-}
-
-footer .post ul, .footer .post ul {
-  list-style-type: none;
-  list-style-position: inside;
-  padding-left: 0;
+  font-family: "Segoe UI Light", "Fjalla One", Georgia, "Times New Roman", serif;
 }
 
 .jumbotron {
+  background-image: linear-gradient(to bottom right, #7014eb, #4931de);
   background-color: #328BBC !important;
   box-shadow: 0 0 5px 0 #000;
-}
-
-.jumbotron img {
-  border-radius: 50%;
-  box-shadow: 2px 5px 5px #000;
 }
 
 .jumbotron .title {
@@ -158,6 +154,57 @@ footer .post ul, .footer .post ul {
 /*
  * Footer
  */
+footer, .footer {
+  background-image: linear-gradient(to bottom right, #7014eb, #4931de);
+  box-shadow: 0 0 5px 0 #000;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+footer .post, .footer .post, .post, .blog-main {
+  background-color: #fff;
+}
+
+.blog-main img { 
+  filter: drop-shadow(0 0 0.75rem #999);
+  max-width: 90%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+footer .post ul, .footer .post ul {
+  list-style-type: none;
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+footer h1, 
+footer h2, 
+footer h3, 
+footer h4, 
+footer h5, 
+footer h6, 
+.footer h1, 
+.footer h2, 
+.footer h3, 
+.footer h4, 
+.footer h5, 
+.footer h6 {
+  color: #E8EBEC;
+}
+
+.post h1, 
+.post h2, 
+.post h3, 
+.post h4, 
+.post h5, 
+.post h6 {
+  color: #000;
+}
+
 .blog-footer {
   padding: 2.5rem 0;
   color: #999;

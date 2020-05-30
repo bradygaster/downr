@@ -8,7 +8,7 @@
 
 <Header />
 
-<div class="container">
+<div class="container-fluid">
   <div class="row mb-2">
     @foreach (var page in MostRecentPosts)
     {
@@ -18,7 +18,11 @@
           <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
             <div class="col p-4 d-flex flex-column position-static post">
               <h4 class="mb-0">@post.Title</h4>
-              <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
+              @if(options.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
+                    <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
+                } else {
+                    <div class="mb-1 text-muted">Phase @post.Phase, Step @post.Step</div>
+                }
               <p class="card-text mb-auto">@post.Description</p>
               <NavLink class="stretched-link" href="@($"/posts/{post.Slug}")">Continue reading</NavLink>
             </div>
@@ -27,10 +31,13 @@
       }
     }
   </div>
+  @if(options.SiteMode == SiteMode.Blog)
+  {
   <nav class="blog-pagination">
     <a class="btn btn-outline-primary" @onclick="OnLessButtonClicked">less</a>
     <a class="btn btn-outline-primary" @onclick="OnLoadMoreButtonClicked">more</a>
   </nav>
+  }
 </div>
 
 <Tracker/>

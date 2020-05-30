@@ -60,7 +60,7 @@ namespace downr.Controllers
         public ActionResult ReIndex()
         {
             _yamlIndexer.IndexContentFiles();
-            return Ok();
+            return Redirect("/");
         }
 
         [HttpGet]

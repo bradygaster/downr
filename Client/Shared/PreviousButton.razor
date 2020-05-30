@@ -14,7 +14,11 @@
                 <strong class="d-inline-block mb-2 text-primary">Next</strong>
             }
             <h4 class="mb-0">@PostPageModel.PreviousPost.Title</h4>
-            <div class="mb-1 text-muted">@PostPageModel.PreviousPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
+             @if(downrOptions.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
+                <div class="mb-1 text-muted">@PostPageModel.PreviousPost.PublicationDate.ToString("MMMM dd, yyyy")</div>
+            } else {
+                <div class="mb-1 text-muted">Phase @PostPageModel.PreviousPost.Phase, Step @PostPageModel.PreviousPost.Step</div>
+            }
             <p class="card-text mb-auto">@PostPageModel.PreviousPost.Description</p>
             @if(downrOptions.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
                 <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.PreviousPost.Slug}")">Previous</NavLink>
