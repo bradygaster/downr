@@ -93,6 +93,25 @@ namespace downr
         /// </summary>
         /// <value></value>
         public bool ShowCategoryMenu { get; set; } = true;
+
+        /// <summary>
+        /// The text displayed at the top of the footer.
+        /// </summary>
+        /// <value></value>
+        public string FooterHeadingText { get; set; } = "Other interesting stuff";
+
+        /// <summary>
+        /// Defines if the copyright message in the footer should be shown. Default is true.
+        /// </summary>
+        /// <value></value>
+        public bool ShowCopyright { get; set; } = true;
+
+        /// <summary>
+        /// Defines whether "Phase X:" labels are shown in the phase menu 
+        /// when in workshop mode. Default is true.
+        /// </summary>
+        /// <value></value>
+        public bool ShowPhaseLabels { get; set; } = true;
     }
 
     public enum SiteMode : int

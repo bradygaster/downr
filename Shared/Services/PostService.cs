@@ -100,7 +100,7 @@ namespace downr.Services
 
                 var sortedCategories = categoryCounts.OrderByDescending(x => x.Value);
 
-                categories = sortedCategories.Select(x => x.Key.ToLower()).ToList();
+                categories = sortedCategories.Select(x => x.Key).ToList();
             }
 
             // -------------------------------------------------------------
@@ -122,7 +122,7 @@ namespace downr.Services
                 
                 var sortedCategories = categoriesByPhase.OrderBy(x => x.Value);
 
-                categories = sortedCategories.Select(x => x.Key.ToLower()).ToList();
+                categories = sortedCategories.Select(x => x.Key).ToList();
             }
 
             return categories;

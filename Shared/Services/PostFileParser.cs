@@ -68,7 +68,7 @@ namespace downr.Services
                         Description = result[Strings.MetadataNames.Description],
                         Categories = result[Strings.MetadataNames.Categories
                                             ]?.Split(',')
-                                            .Select(c => c.Trim().ToLower())
+                                            .Select(c => c.Trim())
                                             .ToArray()
                                             ?? new string[] { },
                         Content = htmlContent

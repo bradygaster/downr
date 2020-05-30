@@ -23,13 +23,22 @@
 
 @if(options.ShowCategoryMenu)
 {
+var index = 1;
 <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
+        <NavLink class="p-2 text-muted" href="/">Home</NavLink>
         @foreach (var category in Categories)
         {
-            <NavLink class="p-2 text-muted" href="@($"/category/{category}")">@category</NavLink>
+            var categoryLinkLabel = category;
+            
+            if(options.SiteMode == SiteMode.Workshop && options.ShowPhaseLabels == true)
+            {
+                categoryLinkLabel = $"Phase {index}: {category}";
+                index += 1;
+            }
+
+            <NavLink class="p-2 text-muted" href="@($"/category/{category}")">@categoryLinkLabel</NavLink>
         }
-        <NavLink class="p-2 text-muted float-right" href="/">home</NavLink>
     </nav>
 </div>
 }
