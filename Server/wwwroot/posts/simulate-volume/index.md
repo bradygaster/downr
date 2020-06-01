@@ -61,7 +61,7 @@ Task.Run(() => {
 });
 ```
 
-> Note: You may see a compiler warning that reports *Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.* This is okay, just ignore this warning during compilation.
+> **Note**: You may see a compiler warning that reports *Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.* This is expected. Ignore this warning during compilation.
 
 Finally, reduce the amount of time the `Worker` class waits in between each execution of `ExecuteAsync` so that it is set to `500` or something similar. The code for `ExecuteAsync` will now call the `heartbeat` service far faster than it will respond, without waiting between each request for the response to return.
 
@@ -76,7 +76,7 @@ protected override async Task ExecuteAsync(CancellationToken stoppingToken)
                 var json = _httpClient.GetStringAsync("http://heartbeat/").Result;
                 var instanceInfo = JsonSerializer.Deserialize<InstanceInfo>(json);
                 _logger.LogInformation($"Internal API from host {instanceInfo.HostName} received at {instanceInfo.HostTimeStamp}");
-            });                  
+            });
         }
         catch(Exception ex)
         {
@@ -92,4 +92,4 @@ Package the `workerservice` back up into a Docker container and push it to ACR. 
 
 ![Different instances](media/different-instances.png)
 
-Now you'll see that the `workerservice`'s requests are being randomly spread across the `heartbeat` service instances. This shows how Kubernetes is actively routing requests to the most appropriate instance. One microservice needs only to know the **service endpoint address** - in this example case, `http://heartbeat` - and Kubernetes does the rest of the work.
+Now you'll see that the `workerservice`'s requests are being randomly spread across the `heartbeat` service instances. This shows how Kubernetes is actively routing requests to the most appropriate instance. One microservice needs only to know the **service endpoint address**&mdash;in this example case, `http://heartbeat`&mdash;and Kubernetes does the rest of the work.

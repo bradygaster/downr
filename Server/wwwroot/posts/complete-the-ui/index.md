@@ -5,12 +5,12 @@ author: Brady
 lastModified: 2020-06-01 12:47:04
 pubDate: 2020-06-01 12:47:04
 categories: Create a Public UI
-description: In this step you'll finish up the user interface, along with adding a gRPC service to the AKS cluster that streams heartbeat data to the UI.
+description: In this step, you'll finish up the user interface, along with adding a gRPC service to the AKS cluster that streams heartbeat data to the UI.
 phase: 5
 step: 6
 ---
 
-This is the final step in getting the Blazor WebAssembly wired up. To make this final step short, less error-prone, and hopefully, provide a climactic end to the development experience, the `workerservice`, `publicui`, and a new service, the `grpcservice`, which will stream the heartbeat data from the `workerservice` to the `publicui`, have been packaged up as three separate repositories, complete with their own `devcontainer.json` files.
+This is the final step in getting the Blazor WebAssembly wired up. To make this final step short, less error-prone, and hopefully, provide a climactic end to the development experience, the `workerservice`, `publicui`, and a new service, the `grpcservice`, which will stream the heartbeat data from the `workerservice` to the `publicui`, have been packaged as three separate repositories, complete with their own *devcontainer.json* files.
 
 Control-click each of these links to open up the repositories in new browser tabs.
 
@@ -18,31 +18,31 @@ Control-click each of these links to open up the repositories in new browser tab
 1. [Public UI Service](https://github.com/bradygaster/PublicUi)
 1. [Worker Service](https://github.com/bradygaster/WorkerService)
 
-As you open each repository in a new tab you'll see that each has a convenient Visual Studio Codespaces button in each. Click each one, and walk through the process of creating a new Codespace for each repository.
+As you open each repository in a new tab, you'll see that each has a convenient Visual Studio Codespaces button in each. Click each one, and walk through the process of creating a new Codespace for each repository.
 
 ![Worker button](media/worker-button.png)
 
 Once each Codespace is set up and initialized, and once all the extensions have loaded for each, do the following actions in each Codespace:
 
-> Note: Do this in this order: `grpcservice`, `publicui`, `workerservice`.
+> **Note**: Do this in this order: `grpcservice`, `publicui`, `workerservice`.
 
 1. Use the **Azure: Sign In** command in the command palette to sign in to your tenant and Azure subscription.
-1. Add the right AKS cluster to your `.kubeconfig` using the Kubernetes tools.
-1. Open the `deployment.yml` file in each of the Codespaces.
-1. Replace the string `{acr-prefix}` with the prefix of your ACR registry in each of the `deployment.yml` files.
-1, Open the `Dockerfile` in each of the Codespaces.
+1. Add the right AKS cluster to your *.kubeconfig* file using the Kubernetes tools.
+1. Open the *deployment.yml* file in each of the Codespaces.
+1. Replace the string `{acr-prefix}` with the prefix of your ACR registry in each of the *deployment.yml* files.
+1, Open the *Dockerfile* in each of the Codespaces.
 1. Rebuild the Docker image.
 1. Once the image has rebuilt, push it to your ACR registry.
 
 Delete each of the deployments for the `grpcservice`, `publicui`, and `workerservice` deployments using the Kubernetes tools for Visual Studio.
 
-Then, use the **Kubernetes: Apply** command in the Codespace's command palette to apply each of the `deployment.yml` files against the cluster.
+Then, use the **Kubernetes: Apply** command in the Codespace's command palette to apply each of the *deployment.yml* files against the cluster.
 
 Once this has completed, browsing to the home page of the AKS cluster will return a pie chart of the heartbeat data being fed into the UI by the streaming gRPC service.
 
 ![Pie chart](media/pie-chart.png)
 
-The pie chart will be as up-to-date as the "last refresh," so as you refresh it, you'll see how the Worker iterates over multiples instances of the `heartbeat` API as it executes.
+The pie chart will be as up-to-date as the "last refresh". As you refresh it, you'll see how the Worker iterates over multiples instances of the `heartbeat` API as it executes.
 
 From there:
 
@@ -55,7 +55,6 @@ From there:
         {
             try
             {
-                
                 Task.Run(() => {
                     var json = _httpClient.GetStringAsync("http://heartbeat/").Result;
                     var instanceInfo = JsonSerializer.Deserialize<InstanceInfo>(json);
@@ -198,7 +197,7 @@ From there:
     }
     ```
 
-1. Finally, the data is rendered using a 3rd party Blazor WebAssembly pie charting component and in a table to provide a legend for the data.
+1. Finally, the data is rendered using a third-party Blazor WebAssembly pie charting component and in a table to provide a legend for the data.
 
     ```html
     <div class="container">

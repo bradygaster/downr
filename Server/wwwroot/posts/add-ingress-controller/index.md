@@ -1,16 +1,16 @@
 ---
-title: Add an nginx ingress controller
+title: Add an NGINX ingress controller
 slug: add-ingress-controller
 author: Brady
 lastModified: 2020-05-31 07:30:45
 pubDate: 2020-05-31 07:30:45
 categories: Create a Public UI
-description: If the public UI were pushed now, it wouldn't be visible outside the AKS cluster because there's no ingress controller set up yet. We'll add an nginx controller next to enable ingress.
+description: If the public UI were pushed now, it wouldn't be visible outside the AKS cluster because there's no ingress controller set up yet. We'll add an NGINX controller next to enable ingress.
 phase: 4
 step: 3
 ---
 
-In this step you'll use Helm and the Kubernetes command line (`kubectl`), along with Helm, to create a public nginx ingress and enable external access to the AKS cluster.
+In this step, you'll use Helm and the Kubernetes command line (`kubectl`) to create a public NGINX ingress and enable external access to the AKS cluster.
 
 Create a namespace for your ingress resources.
 
@@ -29,9 +29,9 @@ helm install nginx-ingress stable/nginx-ingress \
     --set controller.service.loadBalancerIP="{ip-you-copied}"
 ```
 
-Once the command executes you'll be provided details on setting up an nginx controller in the terminal output.
+Once the command executes, you'll be provided details on setting up an NGINX controller in the terminal output.
 
-![nginix installed](media/install-nginx.png)
+![NGINX installed](media/install-nginx.png)
 
 Now, use the Kubernetes CLI (`kubectl`) to validate that the public IP address is associated.
 
@@ -39,11 +39,11 @@ Now, use the Kubernetes CLI (`kubectl`) to validate that the public IP address i
 kubectl get service -l app=nginx-ingress --namespace ingress
 ```
 
-Within a few moments you should see the `EXTERNAL-IP` column update to reflect the public IP address you created earlier.
+Within a few moments, you should see the `EXTERNAL-IP` column update to reflect the public IP address you created earlier.
 
 ![External IP ready](media/external-ip-ready.png)
 
-When you browse to the FQDN you created and mapped to the public IP address, you reach the AKS cluster and the nginx controller, but aren't being shown any UI yet, since we've not yet mapped the ingress to any individual services.
+When you browse to the FQDN you created and mapped to the public IP address, you reach the AKS cluster and the NGINX controller. The UI doesn't appear yet because we haven't yet mapped the ingress to any individual services.
 
 ![Browse to controller](media/browse-to-controller.png)
 

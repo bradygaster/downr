@@ -14,7 +14,7 @@ Now that the `heartbeat` and `workerservice` microservices are running in the cl
 
 Since the `heartbeat` API has been set up as a service, the Kubernetes internal DNS will handle all requests to `http://heartbeat` by routing the request to the most appropriate instance of the container.
 
-Now, open the `WorkerService.csproj` file. You'll see the project references. The `Worker` class is going to need to create instances of the `HttpClient` class to make HTTP calls to the heartbeat API within the cluster. Rather than create new instances of the `HttpClient` manually in code, we'll use the `IHttpFactory` service to create them for us, as this approach is much safer.
+Now, open the *WorkerService.csproj* file. You'll see the project references. The `Worker` class is going to need to create instances of the `HttpClient` class to make HTTP calls to the heartbeat API within the cluster. Rather than create new instances of the `HttpClient` manually in code, we'll use the `IHttpFactory` service to create them for us, as this approach is much safer.
 
 ```xml
 <ItemGroup>
@@ -22,13 +22,13 @@ Now, open the `WorkerService.csproj` file. You'll see the project references. Th
 </ItemGroup>
 ```
 
-Add this `PackageReference` node to that `ItemGroup`.
+Add this `PackageReference` node to that `ItemGroup`:
 
 ```xml
 <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.4" />
 ```
 
-Your resulting `ItemGroup` should look like this.
+Your resulting `ItemGroup` should look like this:
 
 ```xml
 <ItemGroup>
@@ -37,7 +37,7 @@ Your resulting `ItemGroup` should look like this.
 </ItemGroup>
 ```
 
-The .NET `HttpClient` class is relatively verbose in how it logs by default. You can "turn down the volume" on the `HttpClient`'s log verbosity by adding a line of code to the `appsettings.json` file that sets the log level of the `HttpClient`, specifically. The `WorkerService` project's `appsettings.config` probably looks something like this.
+The .NET `HttpClient` class is relatively verbose in how it logs by default. You can "turn down the volume" on the `HttpClient`'s log verbosity by adding a line of code to the *appsettings.json* file that sets the log level of the `HttpClient`, specifically. The `WorkerService` project's *appsettings.config* file probably looks something like this:
 
 ```json
 {
@@ -51,13 +51,13 @@ The .NET `HttpClient` class is relatively verbose in how it logs by default. You
 }
 ```
 
-You'll want to add a line of code to it to turn down the log level on the `HttpClient`. To do this, add one line of code to the `appsettings.json`:
+You'll want to add a line of code to it to turn down the log level on the `HttpClient`. To do this, add one line of code to the *appsettings.json*:
 
 ```json
 "System.Net.Http.HttpClient": "Warning"
 ```
 
-Thus resulting in an `appsettings.json` file containing the following log configuration.
+Thus resulting in an *appsettings.json* file containing the following log configuration:
 
 ```json
 {
@@ -72,7 +72,7 @@ Thus resulting in an `appsettings.json` file containing the following log config
 }
 ```
 
-Your `Program.cs` file's `CreateHostBuilder` method looks something like this, currently.
+Your *Program.cs* file's `CreateHostBuilder` method looks something like this, currently:
 
 ```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -106,7 +106,7 @@ The resulting `ConfigureServices` method should look like this:
 });
 ```
 
-Open up `Worker.cs`. Add two fields to the file.
+Open *Worker.cs* and add two fields to the file:
 
 ```csharp
 private readonly IHttpClientFactory _httpClientFactory;
@@ -124,9 +124,9 @@ public Worker(ILogger<Worker> logger,
 }
 ```
 
-The `Worker` class inherits from `BackgroundService`, which supplies the implementation to `IHostedService`. However, we'll override the two methods of `IHostedService` that are already implemented as abstract methods - `StartAsync` and `StopAsync`. In these methods we'll add code that handles construction and destruction of the `HttpClient` field, `_httpClient`, the `Worker` class will be using as the `ExecuteAsync` method fires.
+The `Worker` class inherits from `BackgroundService`, which supplies the implementation to `IHostedService`. However, we'll override the two methods of `IHostedService` that are already implemented as abstract methods&mdash;`StartAsync` and `StopAsync`. In these methods we'll add code that handles construction and destruction of the `HttpClient` field, `_httpClient`, the `Worker` class will be using as the `ExecuteAsync` method fires.
 
-Our last update to `Worker` will be to add code to the `ExecuteAsync` method so that the `Worker` begins calling the heartbeat API. Since Kubernetes' internal DNS routing will know how to find all of the instances of the heartbeat API via the simple `http://heartbeat/` URL, that's all we need in the `ExecuteAsync` method to be able to locate the API.
+Our last update to `Worker` is to add code to the `ExecuteAsync` method so that the `Worker` begins calling the heartbeat API. Since Kubernetes' internal DNS routing will know how to find all of the instances of the heartbeat API via the simple `http://heartbeat/` URL. That's all we need in the `ExecuteAsync` method to be able to locate the API.
 
 ```csharp
 protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -159,7 +159,7 @@ Notice that the `workerservice` is probably repetitively calling the same instan
 
 Find the instance that continually responds in the **Deployments** node in the Kubernetes cluster explorer in Visual Studio Code.
 
-> Note: Don't delete the node from the **Services** node, delete it from the **Deployments** node.
+> **Note**: Don't delete the node from the **Services** node, delete it from the **Deployments** node.
 
 ![Delete the heartbeat instance](media/delete-the-instance.png)
 
@@ -167,4 +167,4 @@ Notice how the `workerservice` instance finds a new `heartbeat` service to start
 
 ![Found the new instance](media/found-new-instance.png)
 
-Let's change the code in the `workerservice` so that we simuate more heavy load on the `heartbeat` service, and add a delay to the heartbeat API to simulate a longer response time.
+Let's change the code in the `workerservice` so that we simulate heavier load on the `heartbeat` service, and add a delay to the heartbeat API to simulate a longer response time.
