@@ -5,12 +5,12 @@ author: Brady
 lastModified: 2020-05-31 10:16:10
 pubDate: 2020-05-31 10:16:10
 categories: Create a Public UI
-description: The AKS cluster will need to support certificates if we want to route HTTPS traffic to the ingress. It is also a requirement if we want to use gRPC within the cluster.
+description: The AKS cluster needs to support certificates to route HTTPS traffic to the ingress. It's also a requirement to use gRPC within the cluster.
 phase: 4
 step: 4
 ---
 
-The NGINX ingress controller supports TLS termination. There are several ways to retrieve and configure certificates for HTTPS. We'll be using cert-manager, which provides automatic Lets Encrypt certificate generation and management functionality. Run the script below to create the certificate manager.
+The NGINX ingress controller supports TLS termination. There are several ways to retrieve and configure certificates for HTTPS. We'll be using cert-manager, which provides automatic Let's Encrypt certificate generation and management functionality. Run the script below to create the certificate manager.
 
 ```bash
 # Install the CustomResourceDefinition resources separately
@@ -37,9 +37,9 @@ You should see a message in the terminal window confirming the installation succ
 
 ![Cert manager ready](media/certs-enabled.png)
 
-Create a file named `cluster-issuer.yml` with the following code in it:
+Create a file named *cluster-issuer.yml* with the following code in it:
 
-```yaml
+```yml
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
@@ -73,16 +73,16 @@ Create the first demo application from a Helm chart with the following command:
 ```bash
 helm install aks-helloworld azure-samples/aks-helloworld --namespace ingress
 ```
-aks-helloworld
+
 Your terminal should provide confirmation after each step completes.
 
 ![Success](media/success.png)
 
-Create a new file named `hello-world-ingress.yml` and paste the following code into it.
+Create a new file named *hello-world-ingress.yml* and paste the following code into it.
 
-> Note: you will need to change the host and hosts property to match your own ingress URL.
+> **Note**: You'll need to change the `host` and `hosts` properties to match your own ingress URL.
 
-```yaml
+```yml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -122,4 +122,4 @@ You should see that TLS is now working.
 
 ![TLS working](media/tls-working.png)
 
-You can also now browse to the `https` version of your cluster's FQDN. Now you'll deploy the Blazor WebAssembly UI and change the ingress to route to it instead of the Hello World sample.
+You can also now browse to the `https` version of your cluster's FQDN. Next, you'll deploy the Blazor WebAssembly UI and change the ingress to route to it instead of the Hello World sample.

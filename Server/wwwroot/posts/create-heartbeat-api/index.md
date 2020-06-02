@@ -10,15 +10,15 @@ phase: 3
 step: 1
 ---
 
-In this step you'll not only develop for the cloud, you'll develop *in the cloud* using Visual Studio Codespaces. Codespaces enables you to develop using the familiar Visual Studio Code interface, with all the extensions you installed earlier, right within your browser. You could code on your iPad when you're on the road, on a friend or family member's low-power machine using their browser when you don't have access to your development workstation - anywhere you can open a browser can become your development environment.
+In this step, you'll not only develop for the cloud, but you'll develop *in the cloud* using Visual Studio Codespaces. Codespaces enables you to develop using a familiar Visual Studio Code interface in the browser, with all the extensions you installed earlier. You could code on your iPad when you're on the road or on a friend's low-power machine using their browser when you don't have access to your development workstation. Anywhere you can open a browser can become your development environment.
 
-> Note: During this step you should log into Visual Studio Codespaces using a new tab in the same browser instance where you're logging into Azure. This way your login will flow through both experiences.
+> **Note**: During this step you should log into Visual Studio Codespaces using a new tab in the same browser instance where you're logging into Azure. This way your login will flow through both experiences.
 
 Open up the Heartbeat API repository in a new browser tab by control-clicking [here](https://github.com/bradygaster/HeartbeatApi). Fork the repository into your own organization or GitHub account.
 
-> Note: You'll want to fork the repository and **not** work from the original one, as you'll later push code into the repository to change how the API works, so you should be using your **own** fork of the repo, not the original repo.
+> **Note**: You'll want to fork the repository and **not** work from the original one, as you'll later push code into the repository to change how the API works, so you should be using your **own** fork of the repo, not the original repo.
 
-In the `readme.me` you'll see a link to open the repository up in Visual Studio Codespaces.
+In the *readme.md* file you'll see a link to open the repository up in Visual Studio Codespaces.
 
 ![Open in Codespaces](media/open-in-codespaces.png)
 
@@ -30,7 +30,7 @@ The Codespace will initialize, and you'll be shown a waiting dialog.
 
 ![Codespace initializing](media/initializing-codespace.png)
 
-Then, the codespace will open, appearing to load the project in a Visual Studio Code interface.
+Then, the Codespace will open, appearing to load the project in a Visual Studio Code interface.
 
 ![Codespace readying](media/codespace-readying.png)
 

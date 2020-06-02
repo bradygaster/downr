@@ -12,15 +12,15 @@ step: 6
 
 There are a multitude of ways you can deploy a microservice to AKS. In this phase of the workshop you'll be hand-authoring a Kubernetes YAML file. This is a *very specific* (and very primitive) way of deploying microservices, but it helps to understand the actual Kubernetes structure of `pods`, `deployments`, `services`, and `ingresses` when you look at the YAML representing their construction.
 
- In most cases developers use [Helm Charts](https://helm.sh/) or CI/CD tools like [GitHub Actions](https://github.com/features/actions) to facilitate deployment. We'll cover more of that later, but a basic understanding of the Kubernetes YAML format is fundamental to understanding the various concepts of a microservice running in Kubernetes.
+In most cases, developers use [Helm Charts](https://helm.sh/) or CI/CD tools like [GitHub Actions](https://github.com/features/actions) to facilitate deployment. We'll cover more of that later, but a basic understanding of the Kubernetes YAML format is fundamental to understanding the various concepts of a microservice running in Kubernetes.
 
-Add a new file to the project named `deployment.yml`. Then open the file, and start typing the word `deployment`. Note how the intellisense suggests a few Kubernetes-related snippets.
+Add a new file named *deployment.yaml* to the project. Then open the file, and start typing the word `deployment`. Note how the intellisense suggests a few Kubernetes-related snippets.
 
 ![Simple deployment](media/simple-deployment.png)
 
-Find the snippet named `Simple deployment template` and select it. Visual Studio Code will auto-fill the `deployment.yml` file for you from the template.
+Find the snippet named `Simple deployment template` and select it. Visual Studio Code will auto-fill the *deployment.yml* file for you from the template.
 
-```yaml
+```yml
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -37,11 +37,11 @@ spec:
         image: Enter containers image
 ```
 
-Replace the `name` properties with the value `workerservice` and the `image` property with the path to your image in ACR. Also, set the `replicas` property to be 1 - this way we only create one instance of the worker.
+Replace the `name` properties with the value `workerservice` and the `image` property with the path to your image in ACR. Also, set the `replicas` property to `1`&mdash;so only one instance of the worker is created.
 
-> Note: We'll cover multiple-replica scenarios in the next phase of the workshop.
+> **Note**: We'll cover multiple replica scenarios in the next phase of the workshop.
 
-```yaml
+```yml
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -58,7 +58,7 @@ spec:
         image: dotnetcoreascloudnative.azurecr.io/dotnetcoreascloudnative:latest
 ```
 
-Open the Visual Studio Command palette and type `apply` once again to apply the `deployment.yml` file you have opened. Visual Studio Code will validate that you want to create a new resource.
+Open the command palette and type `apply` once again to apply the *deployment.yml* file you have opened. Visual Studio Code will validate that you want to create a new resource.
 
 ![Confirm](media/confirm.png)
 
@@ -78,6 +78,6 @@ You'll see the `workerservice` deployment. When you expand the actual instance o
 
 ![Microservice logs in Visual Studio Code](media/logs.png)
 
-Feel free to chsnge the `replicas` value to see what happens when you scale out (or back in) the number of instances of an individual service you want to have active.
+Feel free to change the `replicas` value to see what happens when you scale out (or back in) the number of instances of an individual service you want to have active.
 
 Also, note how, when you right-click-delete an individual instance of a deployment, within a few seconds the deployment is re-created. This is how Kubernetes manages your individual microservices to make sure they're always running and always as up-to-date as what you have in the registry.

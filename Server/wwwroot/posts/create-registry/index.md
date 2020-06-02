@@ -10,9 +10,9 @@ phase: 1
 step: 5
 ---
 
-On this step you'll create the Azure Container Registry (ACR) instance in which your container images will be stored. Once we start integrating the Visual Studio and Visual Studio Code tools with ACR, you'll begin to see how it's the "first step" on the way for your code during the deployment phase.
+In this step, you'll create the Azure Container Registry (ACR) instance in which your container images will be stored. Once we start integrating Visual Studio Code tools with ACR, you'll begin to see how it's the "first step" on the way for your code during the deployment phase.
 
-Check to see if you have any existing registries in your subscription by running the `az acr list` AZ CLI command. Using the `-o table` switch makes the list a bit easier to digest visually. You'll see a list of the registries in your subscription in the terminal output if you have any registries in your subscription.
+Check to see if you have any existing registries in your subscription by running the `az acr list` Azure CLI command. Using the `-o table` switch makes the list a bit easier to digest visually. You'll see a list of the registries in your subscription in the terminal output if you have any registries in your subscription.
 
 ```bash
 az acr list -o table
@@ -20,13 +20,13 @@ az acr list -o table
 
 Next, use the `az acr create` command to create a new Azure Container Registry instance in your subscription. You'll want to replace the `--name` and `--resource-group` parameter values with values matching your own environment.
 
-> Note: You'll want to make sure you use the same resource group as the one you used when you created the AKS cluster.
+> **Note**: You'll want to make sure you use the same resource group as the one you used when you created the AKS cluster.
 
 ```bash
 az acr create --name cloudnativedotnetregistry --resource-group dotnetworkshops --sku Standard
 ```
 
-The Azure CLI will dump the JSON response of the creation call to the terminal window. It will look something like the following example JSON:
+The Azure CLI will print the JSON response of the creation call to the terminal window. It will look something like the following example JSON:
 
 ```json
 {
@@ -87,4 +87,4 @@ What you want to see is the `provisioningState` value as "Succeeded":
 ...
 ```
 
-Once you see this, go on to the next step to set up a trust relationship between the cluster and the registry so deployments will be automatic.
+Once you see this, proceed to the next step to set up a trust relationship between the cluster and the registry so deployments will be automatic.

@@ -12,11 +12,11 @@ step: 5
 
 Now that the Blazor WebAssembly UI is in ACR and the ingress is ready, you can deploy the Blazor UI to the AKS cluster and make it the public-facing front door of the cluster in a few easy steps.
 
-Add a new `deployment.yml` file to the root of the `PublicUi` project. This file will essentially be the same content as the `heartbeat` service's `deployment.yml` file, but you'll change the name of the service to be `publicui` instead of `heartbeat`.
+Add a new *deployment.yml* file to the root of the `PublicUi` project. This file will essentially be the same content as the `heartbeat` service's *deployment.yml* file, but you'll change the name of the service to be `publicui` instead of `heartbeat`.
 
-> Note: make sure to replace the `{your-registry}` prefix for the ACR registry before you apply the file.
+> **Note**: make sure to replace the `{your-registry}` prefix for the ACR registry before you apply the file.
 
-```yaml
+```yml
 apiVersion: v1
 kind: Service
 metadata:
@@ -53,17 +53,17 @@ spec:
         - containerPort: 80
 ```
 
-Now, apply the changes using the **Kubernetes: Apply** command in the Visual Studio command palette.
+Now, apply the changes using the **Kubernetes: Apply** command in the command palette.
 
-Once you've applied the change to push the `publicui` service into the cluster, you'll want to use the `hello-world-ingress.yml` file with a `kubectl delete` command to delete the old ingress. The ingress is currently in the `ingress` namespace, and you want to move it to the `workshop` namespace, where your other microservices are running.
+Once you've applied the change to push the `publicui` service into the cluster, you'll want to use the *hello-world-ingress.yml* file with a `kubectl delete` command to delete the old ingress. The ingress is currently in the `ingress` namespace, and you want to move it to the `workshop` namespace, where your other microservices are running.
 
 ```bash
 kubectl delete -f hello-world-ingress.yml --namespace ingress
 ```
 
-Now open the `hello-world-ingress.yml` file in Visual Studio Code. Change the `serviceName` property so that it points to the `publicui` service you just deployed.
+Now open the *hello-world-ingress.yml* file in Visual Studio Code. Change the `serviceName` property so that it points to the `publicui` service you just deployed.
 
-```yaml
+```yml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -87,7 +87,7 @@ spec:
         path: /(.*)
 ```
 
-Apply the changes using the Kubernetes CLI once more. Use either the Kubernetes CLI or the Visual Studio command palette, as either will work.
+Apply the changes using the Kubernetes CLI once more. Use either the Kubernetes CLI or the command palette, as either will work.
 
 ```bash
 kubectl apply -f hello-world-ingress.yml --namespace workshop

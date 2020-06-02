@@ -5,14 +5,14 @@ author: Brady
 lastModified: 2020-05-31 07:30:45
 pubDate: 2020-05-31 07:30:45
 categories: Create a Public UI
-description: Before we create the nginix controller in the AKS cluster, we'll need to set up a fully qualified domain name (FQDN) that will resolve to the cluster's public IP address.
+description: Before we create the NGINX controller in the AKS cluster, we'll need to set up a fully qualified domain name (FQDN) that will resolve to the cluster's public IP address.
 phase: 4
 step: 2
 ---
 
-In this step you'll use the Azure CLI in some advanced scenarios to manipulate the public IP address of the AKS cluster. The goal of this step is to associate a fully-qualified domain name with a new public IP address.
+In this step, you'll use the Azure CLI in some advanced scenarios to manipulate the public IP address of the AKS cluster. The goal of this step is to associate a fully-qualified domain name (FQDN) with a new public IP address.
 
-Get the resource group where the network resources are located that support your AKS cluster.
+Get the resource group where the network resources are located that support your AKS cluster:
 
 ```bash
 az aks show --resource-group dotnetworkshops --name dotnetworkshop --query nodeResourceGroup -o tsv
@@ -44,25 +44,25 @@ Note how the DNS name for the IP address is blank.
 
 ![No DNS name](media/no-dns-name.png)
 
-Use the name of the Public IP address resource and the name of the resource group in which it is housed (the resource group name you copied earlier) to execute an Azure CLI script that will provide the resource ID of the Public IP address resource.
+Use the name of the public IP address resource and the name of the resource group in which it's housed (the resource group name you copied earlier) to execute an Azure CLI script that will provide the resource ID of the public IP address resource.
 
 ```bash
 az resource show --query id --resource-type Microsoft.Network/publicIPAddresses -n akspublicip -g MC_DotNetWorkshops_dotnetworkshop_eastus
 ```
 
-When the CLI command executes, copy the resource id string it pumps into the terminal window.
+When the CLI command executes, copy the resource ID string it prints to the terminal window.
 
 ![Copy the resource id](media/copy-resource-id.png)
 
-For the HTTPS certificates to work correctly, configure an FQDN for the ingress controller IP address. Update the following script with the IP address of your ingress controller and a unique name that you would like to use for the FQDN. Use the ID of the public ip address resource you copied earlier.
+For the HTTPS certificates to work correctly, configure a FQDN for the ingress controller IP address. Update the following script with the IP address of your ingress controller and a unique name that you would like to use for the FQDN. Use the ID of the public ip address resource you copied earlier.
 
-> Note: You should probably **not** use the string *workshop*, but rather use your alias or something you know will be unique. The DNS will be used as the prefix in a string such as `workshop.eastus.cloudapp.azure.com`, so if the prefix you've chosen has already been used, it might not work. So, use something unique.
+> **Note**: You should probably **not** use the string *workshop*, but rather use your alias or something you know will be unique. The DNS will be used as the prefix in a string such as `workshop.eastus.cloudapp.azure.com`, so if the prefix you've chosen has already been used, it might not work. So, use something unique.
 
 ```bash
 az network public-ip update --ids {resource-id-string-you-copied} --dns-name bradyg-cloudnative
 ```
 
-After a few moments you should see the public ip address resource updated with the FQDNS of the AKS cluster's ingress.
+After a few moments, you should see the public IP address resource updated with the FQDN of the AKS cluster's ingress.
 
 ![Updated DNS](media/updated-dns-name.png)
 
@@ -70,4 +70,4 @@ Copy the public IP address from the portal.
 
 ![Copy to clipboard](media/copy-to-clipboard.png)
 
-In the next step you'll use Helm and the Kubernetes command line (`kubectl`), along with Helm, to create a public nginx ingress and enable external access to the AKS cluster.
+In the next step, you'll use Helm and the Kubernetes command line (`kubectl`) to create a public NGINX ingress and enable external access to the AKS cluster.

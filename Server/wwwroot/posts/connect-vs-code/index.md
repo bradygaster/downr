@@ -10,7 +10,7 @@ phase: 1
 step: 7
 ---
 
-The final step in the setup process is to get Visual Studio Code connected directly to the AKS cluster. The Visual Studio Code tools for Kubernetes support **any** Kubernetes cluster on **most** clouds, so the step of connecting a Visual Studio Code to a Kubernetes cluster is specific and not associated with your Azure login.
+The final step in the setup process is to get Visual Studio Code connected directly to the AKS cluster. The Visual Studio Code tools for Kubernetes support **any** Kubernetes cluster on **most** clouds. The step of connecting Visual Studio Code to a Kubernetes cluster is specific to the Kubernetes cluster, and not directly associated with your Azure login.
 
 Click the Kubernetes logo in the Visual Studio Code command bar.
 
@@ -20,7 +20,7 @@ We won't be using the Helm tools for this exercise, so you can click the panel t
 
 ![Hide the Helm repos window](media/click-helm-repos.png)
 
-Expand the Azure node, then right-click the AKS cluster you created earlier and select the **Merge into Kubeconfig** menu option.
+Expand the Azure node, then right-click the AKS cluster you created earlier. Select the **Merge into Kubeconfig** menu option.
 
 ![Merge into Kubernetes config](media/right-click-cluster.png)
 

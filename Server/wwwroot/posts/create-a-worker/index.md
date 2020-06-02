@@ -10,9 +10,9 @@ phase: 2
 step: 1
 ---
 
-In .NET Core 3.0 we introduced the idea of the Worker template. The Worker template, or "Worker Service," bootstraps your project with a pre-wired [BackgroundService](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-3.1&tabs=visual-studio#backgroundservice-base-class) class. `BackgroundService` classes provide an implementation for the `IHostedService` interface, and are great for scenarios like `web-queue-worker` or when you need background processing that "runs forever."
+.NET Core 3.0 introduced the idea of the Worker template. The Worker template, or "Worker Service," bootstraps your project with a pre-wired [BackgroundService](https://docs.microsoft.com/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-3.1&tabs=visual-studio#backgroundservice-base-class) class. `BackgroundService` classes provide an implementation for the `IHostedService` interface, and are great for scenarios like `web-queue-worker` or when you need background processing that "runs forever."
 
-Create a Worker project by using the `dotnet new` command.
+Create a Worker project with the following `dotnet new` command:
 
 ```bash
 dotnet new worker -o WorkerService
@@ -24,7 +24,7 @@ Visual Studio Code should open to the folder in which the new `WorkerService` pr
 
 ![New Worker project](media/new-worker-project.png)
 
-Open up the `Worker.cs` file. Inside it, you'll see the `ExecuteAsync` method. This method will run continuously until the Worker process exits or the `StopAsync` method is called.
+Open up the *Worker.cs* file. Inside it, you'll see the `ExecuteAsync` method. This method will run continuously until the Worker process exits or the `StopAsync` method is called.
 
 ```csharp
 protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,6 +50,6 @@ protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 }
 ```
 
-Once you're satisfied with the change you've made, hit F5 or debug the Worker. It will run in the console or terminal window and simply write to the standard output as the `ExecuteAsync` method fires.
+Once you're satisfied with the change you've made, press <kbd>F5</kbd> or debug the Worker. It will run in the console or terminal window and simply write to the standard output as the `ExecuteAsync` method fires.
 
 ![The WorkerService running](media/worker-executing.png)

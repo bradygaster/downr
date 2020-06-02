@@ -22,7 +22,7 @@ This sort of dirtied output is also visible when you look at your containers in 
 
 ![Log output](media/azure-logs.png)
 
-To remove the colors from the logs, open up the `WorkerService` project's `Program.cs` file. The `CreateHostBuilder` method does the bare minimum - it bootstraps the `Worker` classs as a hosted service and assumes the default hosting configuration.
+To remove the colors from the logs, open up the `WorkerService` project's *Program.cs* file. The `CreateHostBuilder` method does the bare minimum&mdash;it bootstraps the `Worker` class as a hosted service and assumes the default hosting configuration.
 
 ```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -32,13 +32,14 @@ public static IHostBuilder CreateHostBuilder(string[] args) =>
             services.AddHostedService<Worker>();
         });
 ```
+
 Add the logging extensions namespace to your `using` declarations.
 
 ```csharp
 using Microsoft.Extensions.Logging;
 ```
 
-Add a call to the extension method `ConfigureLogging` before the `ConfigureServices` method is called. The resulting `CreateHostBuilder` should look like this.
+Add a call to the extension method `ConfigureLogging` before the `ConfigureServices` method is called. The resulting `CreateHostBuilder` should look like this:
 
 ```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -68,7 +69,7 @@ In a moment (or if you refresh the cluster view), you'll see the new `workerserv
 
 ![One new green pod](media/one-green-pod.png)
 
-Now, when you you follow the logs for the newly-created microservice, you'll see the improvements in the log output. Now it's much easier to read.
+Now, when you you follow the logs for the newly created microservice, you'll see the improvements in the log output. Now it's much easier to read.
 
 ![Cleaner logs](media/cleaner-logs.png)
 

@@ -10,7 +10,7 @@ phase: 2
 step: 3
 ---
 
-In addition to being able to see the Docker images and containers on your local development workstation, you can also see the Docker Hub and Azure Container Registry (ACR) instances and the containers in them, too. In the **Registries** panel, expand the Azure node and you'll see the ACR instance you created earlier.
+In addition to being able to see the Docker images and containers on your local development workstation, you can also see the Docker Hub and Azure Container Registry (ACR) instances and their container images. In the **Registries** panel, expand the Azure node and you'll see the ACR instance you created earlier.
 
 ![Registries in VS Code](media/registries-in-vscode.png)
 
@@ -26,14 +26,14 @@ Select the ACR instance you created earlier when asked which ACR instance you wa
 
 ![Image name](media/image-name.png)
 
-> Note, there is no need for `http` or `https` in the ACR publish target name.
+> **Note**: There is no need for `http` or `https` in the ACR publish target name.
 
-Once the publish process completes, you will see the `workerservice` repository in your ACR instance in Visual Studio Code.
+Once the publish process completes, you'll see the `workerservice` repository in your ACR instance in Visual Studio Code.
 
 ![Published image](media/published-image.png)
 
-If you right-click the ACR instance in Visual Studio Code and select **Open in portal**, you'll be taken into the Azure portal page for your ACR instance. When you go to the **Repositories** tab for your ACR instance in the Azure portal, you'll see the Docker images that have been published into the registry.
+Right-click the ACR instance in Visual Studio Code and select **Open in portal**. You'll be taken into the Azure portal page for your ACR instance. Go to the **Repositories** tab for your ACR instance in the Azure portal. You'll see the Docker images that have been published into the registry.
 
 ![Registry in Azure portal](media/published-image-in-portal.png)
 
-Now that the `WorkerService` project is in your registry, you can deploy it in a variety of ways - not just Azure Kubernetes Service.
+Now that the `WorkerService` project is in your registry, you can deploy it in a variety of ways&mdash;not just Azure Kubernetes Service.

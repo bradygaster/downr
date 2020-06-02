@@ -14,7 +14,7 @@ If you have a need for a short-lived instance, like a background Worker that spi
 
 In the last step, you navigated to the Azure Portal to look at your ACR instance's container images (or "repositories"). The portal provides a few options for spinning up Docker container images right away.
 
-Click the elipse button (...) next to the `latest` tag for the `workerservice` image. Then, select **Run instance**.
+Click the ellipse button (...) next to the `latest` tag for the `workerservice` image. Then, select **Run instance**.
 
 ![Starting the image](media/start-the-instance.png)
 
@@ -32,4 +32,4 @@ The instance will start up and you'll be able to click **Logs** in the ACI porta
 
 Once you see the logs running, go back to the overview page for the ACI instance you created. Click the **Delete** button in the portal to delete the resource.
 
-Now that you've used Azure Container Instances to create a single instance of a container, let's start using the power of Kubernetes to orchestrate a multi-container microservice topology.
+Now that you've used ACI to create a single instance of a container, let's start using the power of Kubernetes to orchestrate a multi-container microservice topology.

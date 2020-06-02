@@ -13,8 +13,8 @@ Content authors can use downr to write content in two modes:
 
 You write Markdown and downr renders it using [Markdig](https://github.com/lunet-io/markdig), the fantastically awesome Markdown engine. The basic rules you follow are:
 
-1. Each post is an `index.md` file in a sub-folder named for the post's slug.
-2. Media for each post is in a `media` folder sitting in the same folder as the `index.md` file.
+1. Each post is an *index.md* file in a sub-folder named for the post's slug.
+2. Media for each post is in a `media` folder sitting in the same folder as the *index.md* file.
 
 Consider the introduction post to downr. This post's slug is `introducing-downr-3`. This post's folder structure on disk looks like this. You place the Markdown files into the `Server\wwwroot\posts` folder.
 
@@ -24,9 +24,9 @@ Consider the introduction post to downr. This post's slug is `introducing-downr-
             |-- img1.png
             |-- img2.png
 
-3. Each `index.md` starts with YAML metadata that looks like this:
+3. Each *index.md* file starts with YAML metadata that looks like this:
 
-```yaml
+```yml
 ---
 title: downr 3.0
 slug: introducing-downr-3
@@ -38,9 +38,9 @@ description: downr, the simple-blogging-engine written for people who like using
 ---
 ```
 
-4. If the downr site is running in `Workshop` mode, each `index.md` file will **also** need the `phase` and `step` metadata elements to define each post's position.
+4. If the downr site is running in `Workshop` mode, each *index.md* file will **also** need the `phase` and `step` metadata elements to define each post's position.
 
-```yaml
+```yml
 ---
 title: installing downr
 slug: installing-downr
@@ -48,7 +48,7 @@ author: bradygaster
 lastModified: 2020-05-21 00:00:00
 pubDate: 2020-05-21 00:00:00
 categories: downr
-description: In this step you'll get downr running locally.
+description: In this step, you'll get downr running locally.
 phase: 1
 step: 1
 ---
@@ -56,7 +56,7 @@ step: 1
 
 ## downr configuration
 
-downr is deliberately simple, deliberately configurable, and deliberately opinionated in how it expects to be used. If you're writing a chronologically, like a blog, the `appsettings.json` will look something like this:
+downr is deliberately simple, deliberately configurable, and deliberately opinionated in how it expects to be used. If you're writing a chronologically, like a blog, the *appsettings.json* file will look something like this:
 
 ```json
 {
