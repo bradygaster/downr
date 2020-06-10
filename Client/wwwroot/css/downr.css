@@ -1,6 +1,3 @@
-/* stylelint-disable selector-list-comma-newline-after */
-@import url("https://fonts.googleapis.com/css2?family=Fjalla+One&family=Source+Sans+Pro");
-
 /*
 --------------
 color palette
@@ -12,6 +9,9 @@ aqua highlight:   DCF4E2
 gunmetal blue:    8AB1C6
 --------------
 */
+
+/* stylelint-disable selector-list-comma-newline-after */
+@import url("https://fonts.googleapis.com/css2?family=Fjalla+One&family=Source+Sans+Pro");
 
 body {
   font-family: "Segoe UI", "Source Sans Pro";
