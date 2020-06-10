@@ -45,18 +45,18 @@ var index = 1;
 
 @if(Post == null)
 {
+    var jumboColSize = !string.IsNullOrEmpty(options.HeaderImage) ? "col-md" : "col-md-8";
 <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
     <div class="container">
         <div class="row">
-            <div class="col-md-9">
+            <div class="@jumboColSize">
                 <h1 class="display-4">@options.Title</h1>
                 <p class="lead my-3">@options.IndexPageText</p>
             </div>
-            <div class="col-md-2">
             @if(!string.IsNullOrEmpty(options.HeaderImage)) {
-                <img src="@options.HeaderImage" class="img-fluid" alt="@options.Title">
-            }
+            <div class="col-md-3" id="jumbotron-image">
             </div>
+            }
         </div>
     </div>
 </div>

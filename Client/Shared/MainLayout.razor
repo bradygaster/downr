@@ -11,20 +11,29 @@
 
 <footer class="footer" id="footer">
     <div class="container">
+        @if(!string.IsNullOrEmpty(options.FooterHeadingText))
+        {
         <div class="row justify-content-md-center">
             <h2 class="col text-center title">@options.FooterHeadingText</h2>
         </div>
-        <hr/>
+        }
+        @if(options.ShowCopyright)
+        {
+        <div class="row justify-content-md-center">
+            <h4 class="col text-center title">copyright &copy; @options.Author </h4>
+        </div>
+        }
         <div class="row mb-2">
             <div class="col-md-6">
                 <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static post">
-                        <h4 class="mb-0">.NET Resources</h4>
+                        <h4 class="mb-0">Left Side</h4>
                         <p class="card-text mb-auto">
                             <ul>
-                                <li><a href="https://docs.microsoft.com/en-us/aspnet/core">ASP.NET Core docs</a></li>
-                                <li><a href="https://dotnet.microsoft.com/learn/dotnet/architecture-guides">.NET Architecture Guides</a></li>
-                                <li><a href="https://dotnet.microsoft.com/learn/aspnet/microservice-tutorial/intro">Build microservices with .NET</a></li>
+                                <li><a href="#">Link</a></li>
+                                <li><a href="#">Link</a></li>
+                                <li><a href="#">Link</a></li>
+                                <li><a href="#">Link</a></li>
                             </ul>
                         </p>
                     </div>
@@ -33,22 +42,18 @@
             <div class="col-md-6">
                 <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static post">
-                        <h4 class="mb-0">Azure Resources</h4>
+                        <h4 class="mb-0">Right Side</h4>
                         <p class="card-text mb-auto">
                             <ul>
-                                <li><a href="https://docs.microsoft.com/en-us/dotnet/azure/">Azure for .NET developers</a></li>
+                                <li><a href="#">Link</a></li>
+                                <li><a href="#">Link</a></li>
+                                <li><a href="#">Link</a></li>
+                                <li><a href="#">Link</a></li>
                             </ul>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-        @if(options.ShowCopyright)
-        {
-        <hr/>
-        <div class="row justify-content-md-center">
-            <h2 class="col text-center title">copyright &copy; @options.Author </h2>
-        </div>
-        }
     </div>
 </footer>
