@@ -16,7 +16,7 @@ namespace downr.Services
     public class WebServerFileSystemContentIndexer : IYamlIndexer
     {
         private readonly ILogger logger;
-        public List<Post> Posts { get; set; }
+        public List<Post> Posts { get; set; } = new List<Post>();
         private readonly PostFileParser postFileParser;
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly PostFileSorter postFileSorter;
@@ -43,6 +43,11 @@ namespace downr.Services
             }
             
             var contentPath = Path.Combine(webHostEnvironment.WebRootPath, "posts");
+
+            if (!Directory.Exists(contentPath))
+            {
+                Directory.CreateDirectory(contentPath);
+            }
 
             Posts = Directory.GetDirectories(contentPath)
                                 .Select(dir => Path.Combine(dir, "index.md"))
