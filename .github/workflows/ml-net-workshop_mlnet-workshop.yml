@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu
 
     steps:
     - uses: actions/checkout@master
@@ -24,12 +24,13 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/mlnet-workshop
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v1
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v1.1.0
       with:
-        app-name: 'mlnet-workshop'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c38b0d9ceb4c4f1d9f6468bb814538cf }}
-        package: ${{env.DOTNET_ROOT}}/myapp 
+        username: ${{ secrets.WORKSHOP_ACR_USERNAME }}
+        password: ${{ secrets.WORKSHOP_ACR_PASSWORD }}
+        registry: ${{ secrets.WORKSHOP_ACR_DNS }}
+        repository: mlnet-workshop
+        tags: latest
