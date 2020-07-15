@@ -18,7 +18,7 @@
           <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
             <div class="col p-4 d-flex flex-column position-static post">
               <h4 class="mb-0">@post.Title</h4>
-              @if(options.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
+              @if(options.SiteMode == SiteMode.Workshop) { // workshops are effectively backwards so we change the text here
                     <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
                 } else {
                     <div class="mb-1 text-muted">Phase @post.Phase, Step @post.Step</div>
