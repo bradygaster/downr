@@ -4,7 +4,7 @@ slug: get-the-code
 author: bradyg
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
-categories: blog,post,article
+categories: Setup
 description: The first step in setting up a downr workshop is to clone the source code
 phase: 1
 step: 1
