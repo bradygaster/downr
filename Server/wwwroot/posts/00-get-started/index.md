@@ -4,9 +4,9 @@ slug: 00-get-started
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
-categories: blog,post,article
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
-phase: 0
+categories: Setup
+description: The first step in setting up a downr workshop is to clone the source code
+phase: 1
 step: 1
 ---
 
