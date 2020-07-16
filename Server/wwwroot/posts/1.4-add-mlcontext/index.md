@@ -1,16 +1,16 @@
 ---
 title: Add ML Context
-slug: 01-mlcontext
+slug: 1.4-add-mlcontext
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
-categories: blog,post,article
+categories: Get started
 description: The first step is to make sure you have all the requirements and to clone the workshop source code.
-phase: 2
-step: 1
+phase: 1
+step: 4
 ---
 
-In this session, you'll add an `MLContext` to the `TrainConsole` project. `MLContext` is the starting point for all ML.NET operations. It provides a way to create components for:
+In this section, you'll add an `MLContext` to the `TrainConsole` project. `MLContext` is the starting point for all ML.NET operations. It provides a way to create components for:
 
 - Data preparation
 - Feature engineering
@@ -20,18 +20,6 @@ In this session, you'll add an `MLContext` to the `TrainConsole` project. `MLCon
 - Logging
 - Execution control
 - Seeding
-
-## Install the ML.NET Nuget Package
-
-First, we need to add the ML.NET NuGet package to the `Shared` project. If you're using Visual Studio, right click on the project name and select **Manage NuGet Dependencies**. Then click the "Browse" tab and search for `Microsoft.ML`. Make sure to install version **1.5.0**.
-
-![Install Microsoft.ML NuGet package](./media/install-microsoft-ml-nuget.png)
-
-Alternately if you prefer working from the command line, you can run this command from the *src/TrainConsole* folder:
-
-```powershell
-dotnet add package Microsoft.ML -v 1.5.0
-```
 
 ## Initialize MLContext
 

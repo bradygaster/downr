@@ -1,13 +1,13 @@
 ---
-title: Saving the model
-slug: 05-save
+title: Save the model
+slug: 5.1-save-model
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
-categories: blog,post,article
+categories: save
 description: The first step is to make sure you have all the requirements and to clone the workshop source code.
-phase: 2
-step: 4
+phase: 5
+step: 1
 ---
 
 In this section you'll learn how to serialize and save the trained model for deployment and later use in other applications.
