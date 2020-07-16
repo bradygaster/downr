@@ -4,7 +4,7 @@ slug: 5.1-save-model
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
-categories: save
+categories: Save model
 description: The first step is to make sure you have all the requirements and to clone the workshop source code.
 phase: 5
 step: 1
