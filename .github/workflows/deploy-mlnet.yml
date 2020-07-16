@@ -1,23 +1,36 @@
-name: .NET Core
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - mlnet-workshop
 
 on:
   push:
-    branches: [ ml-net-workshop ]
-  pull_request:
-    branches: [ ml-net-workshop ]
+    branches:
+      - ml-net-workshop
 
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
+    - uses: actions/checkout@master
+
+    - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+        dotnet-version: '3.1.102'
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/mlnet-workshop
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v1.1.0
+      with:
+        username: ${{ secrets.WORKSHOP_ACR_USERNAME }}
+        password: ${{ secrets.WORKSHOP_ACR_PASSWORD }}
+        registry: ${{ secrets.WORKSHOP_ACR_DNS }}
+        repository: mlnet-workshop
+        tags: latest
