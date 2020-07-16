@@ -10,13 +10,11 @@ phase: 1
 step: 1
 ---
 
-# Get started
-
 In this section you'll set up your environment to build machine learning applications with ML .NET. [ML.NET](https://dot.net/ml) is a cross-platform, machine learning framework for .NET developers.
 
 ## Requirements
 
-- [Git(Optional)](https://git-scm.com/)
+- [Git (Optional)](https://git-scm.com/)
 
 ### Windows
 
@@ -30,7 +28,7 @@ In this section you'll set up your environment to build machine learning applica
 - [Visual Studio Code (Optional)](https://code.visualstudio.com/Download)
 - [.NET Core 2.1 SDK](https://aka.ms/download-netcore-21)
 
-### Clone or download the starter application
+## Clone or download the starter application
 
 We've set up an initial project for you to start from. You just need to clone this repo to your machine and then open it up in Visual Studio or your editor of choice. A simple way to clone the application is to run this command from a command line terminal:
 
@@ -43,8 +41,6 @@ Alternatively, you can download a [zipped version of the project](https://github
 Once you've done this, change directories to the *mlnet-workshop/src* folder where you'll find the *MLNETWorkshop.sln* file. Open the solution. You should see three projects, similar to what's shown here:
 
 ![](./media/project-structure.png)
-
-<!-- ![solution explorer](https://user-images.githubusercontent.com/782127/82521002-7e01d080-9af3-11ea-85bf-a2c5c7da7b4d.png) -->
 
 ## Build the application
 
