@@ -8,6 +8,7 @@ categories: Data
 description: The first step is to make sure you have all the requirements and to clone the workshop source code.
 phase: 2
 step: 2
+---
 
 Normally, you would need to download the data and, if necessary, extract or unzip it to a directory on your computer. For this lab, you already have the data in the `data` directory in this repository in a file called `true_car_listings.csv`.
 
