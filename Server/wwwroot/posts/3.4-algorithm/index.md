@@ -1,6 +1,6 @@
 ---
 title: Add an algorithm to the pipeline
-slug: 3.3-algorithm
+slug: 3.4-algorithm
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10

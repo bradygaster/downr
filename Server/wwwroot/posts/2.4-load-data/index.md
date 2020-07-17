@@ -7,7 +7,7 @@ pubDate: 2020-07-14 02:40:10
 categories: Data
 description: The first step is to make sure you have all the requirements and to clone the workshop source code.
 phase: 2
-step: 2
+step: 4
 ---
 
 Now open up *Program.cs* file in the `TrainConsole` project (**not** the web project!) and add the following `using` statement:
