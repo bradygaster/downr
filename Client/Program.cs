@@ -27,7 +27,12 @@ namespace downr.Client
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
             });
 
-            string fileName = "downr.Client.appsettings.json";  
+#if DEBUG
+            string fileName = "downr.Client.appsettings.Development.json";
+#else
+            string fileName = "downr.Client.appsettings.json";
+#endif
+            
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fileName);
             var config = new ConfigurationBuilder().AddJsonStream(stream).Build();
 
