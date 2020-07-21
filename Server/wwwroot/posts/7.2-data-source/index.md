@@ -79,6 +79,6 @@ jobs:
 To mount the fileshare, we will also need to add the access key to the Azure Storage Container as a GitHub secret.
 To add a secret, navigate to the `Settings` tab and select `Secrets` in the left menu:
 
-![secrets](./media/secrets.PNG)
+![secrets](./media/secrets.png)
 
 Click on `New Secret` and add a new secret with the name of `STORAGEKEY`. The value will be provided to you by the facilitators of the workshop.
