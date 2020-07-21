@@ -74,4 +74,4 @@ jobs:
 ```
 Commit and push these changes to your repository. Once the workflow build completes, you should now see an artifact named `model.zip` which contains your trained model.
 
-![7-5-artifact](./media/7-5-artifact.PNG)
+![7-5-artifact](./media/7-5-artifact.png)

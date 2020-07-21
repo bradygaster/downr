@@ -19,7 +19,7 @@ The first thing we want to do is to create a simple GitHub Actions workflow whic
 
 To do so, navigate to your forked repo and click on the `Actions` tab
 On the page that appears, go ahead and select to set up a new .NET Core workflow
-![action](./media/action-dotnet-core-workflow.PNG)
+![action](./media/action-dotnet-core-workflow.png)
 
 GitHub will provide you with a template workflow that is intended to restore, build, and test a .NET Core app. 
 
@@ -53,4 +53,4 @@ jobs:
 
 If all goes well, a successful build should complete in less than a minute.
 
-![7-1-build](./media/7-1-build.PNG)
+![7-1-build](./media/7-1-build.png)

@@ -55,8 +55,8 @@ jobs:
 
 The workflow should take about 10-15 minutes to complete, and if all is set up correctly should yield a green build.
 
-![7-4-build](./media/7-4-build.PNG)
+![7-4-build](./media/7-4-build.png)
 
 If you click on the workflow that has been run, we can see the progress of each step
 
-![7-4-build-details](./media/7-4-build-details.PNG)
+![7-4-build-details](./media/7-4-build-details.png)

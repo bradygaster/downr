@@ -143,7 +143,7 @@ Commit your changes and push them to GitHub. This should kick of the workflow un
 
 If you click on the succcessful workflow, you can inspect to see each build step and expand to see that our four data validation tests ran successfully.
 
-![7-4-data-tests](./media/7-4-data-tests.PNG)
+![7-4-data-tests](./media/7-4-data-tests.png)
 
 ### Model tests
 Brilliant, we are now able to run data validation tests as part of our workflow, but what our model tests? Let us have a look.
@@ -287,4 +287,4 @@ Again, push and commit these changes to your repo. A successful build should com
 
 If you click on the succcessful workflow, you can inspect to see each build step and expand to see that our three model tests ran successfully.
 
-![7-4-model-tests](./media/7-4-model-tests.PNG)
+![7-4-model-tests](./media/7-4-model-tests.png)
