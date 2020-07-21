@@ -15,11 +15,12 @@ In this section you'll set up your environment to build machine learning applica
 ## Requirements
 
 - [Git (Optional)](https://git-scm.com/)
+- [GitHub Account](https://github.com/join)
 
 ### Windows
 
-- [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) with .NET Core workload installed.
-- [Model Builder enabled](https://github.com/dotnet/machinelearning-modelbuilder/issues/757#issuecomment-631665947).
+- [Visual Studio 2019 16.6.1 or later](https://visualstudio.microsoft.com/vs/) with .NET Core workload installed.
+- ML.NET Model Builder enabled as a Preview Feature
 
 ### Mac / Linux
 
