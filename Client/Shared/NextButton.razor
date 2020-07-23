@@ -19,7 +19,7 @@
             } else {
                 <div class="mb-1 text-muted">Phase @PostPageModel.NextPost.Phase, Step @PostPageModel.NextPost.Step</div>
             }
-            <p class="mb-auto">@PostPageModel.NextPost.Title</p>
+            <p class="mb-auto">@PostPageModel.NextPost.Description</p>
             @if(downrOptions.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
                 <NavLink class="stretched-link" href="@($"/posts/{PostPageModel.NextPost.Slug}")">Next</NavLink>
             } else {
