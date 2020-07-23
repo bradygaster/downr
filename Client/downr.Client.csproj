@@ -22,6 +22,9 @@
     <EmbeddedResource Include="..\Server\appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\Server\appsettings.Development.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

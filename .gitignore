@@ -76,9 +76,4 @@ artifacts/
 node_modules/
 bower_components/
 wwwroot/.DS_Store
-Server/wwwroot/posts/step1/index.md
-Server/wwwroot/posts/step2/index.md
-Server/wwwroot/posts/step3/index.md
-Server/wwwroot/posts/step4/index.md
-Server/appsettings.json
 Server/appsettings.json
