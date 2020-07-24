@@ -6,7 +6,7 @@
 @using downr.Models
 @using Humanizer
 
-<Header />
+<Header PhaseName="@Name" PhaseDescription="@FirstPostInCategoryDescription" />
 
 <div class="container-fluid">
   <div class="row mb-2">
@@ -39,6 +39,8 @@
     [Parameter]
     public string Name { get; set; }
 
+    public string FirstPostInCategoryDescription { get; set; } = string.Empty;
+
     List<Post[]> MostRecentPosts = new List<Post[]>();
 
     protected override async Task OnParametersSetAsync()
@@ -46,5 +48,6 @@
       MostRecentPosts.Clear();
       var postListModel = await Http.GetFromJsonAsync<PostListModel>($"api/categories/{Name}/posts");
       MostRecentPosts.Add(postListModel.Posts);
+      FirstPostInCategoryDescription = MostRecentPosts.First().First().Description;
     }
 }
