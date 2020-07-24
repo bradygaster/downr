@@ -43,23 +43,35 @@ var index = 1;
 </div>
 }
 
-@if(Post == null)
+@if(Post == null) // this is NOT a post-page load
 {
-<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-                <h1 class="display-4">@options.Title</h1>
-                <p class="lead my-3">@options.IndexPageText</p>
-            </div>
-            <div class="col-md-2">
-            @if(!string.IsNullOrEmpty(options.HeaderImage)) {
-                <img src="@options.HeaderImage" class="img-fluid" alt="@options.Title">
-            }
+    @if(!string.IsNullOrEmpty(PhaseName)) // this is a category page load
+    {
+        <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+            <div class="col-md-12 px-0">
+                <h1 class="display-4">@PhaseName</h1>
+                <p class="lead my-3">@PhaseDescription</p>
             </div>
         </div>
-    </div>
-</div>
+    }
+    else // this is a home page load
+    {
+        <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h1 class="display-4">@options.Title</h1>
+                        <p class="lead my-3">@options.IndexPageText</p>
+                    </div>
+                    <div class="col-md-2">
+                    @if(!string.IsNullOrEmpty(options.HeaderImage)) {
+                        <img src="@options.HeaderImage" class="img-fluid" alt="@options.Title">
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 }
 else
 {
@@ -72,6 +84,12 @@ else
 }
 
 @code {
+    [Parameter]
+    public string PhaseName { get; set; } = string.Empty;
+
+    [Parameter]
+    public string PhaseDescription { get; set; } = string.Empty;
+
     [Parameter]
     public Models.Post Post { get; set; }
 
