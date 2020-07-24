@@ -9,81 +9,101 @@
 <Header />
 
 <div class="container-fluid">
-  <div class="row mb-2">
-    @foreach (var page in MostRecentPosts)
-    {
-      @foreach (var post in page)
-      {
-        <div class="col-md-6">
-          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-4 d-flex flex-column position-static post">
-              <h4 class="mb-0">@post.Title</h4>
-              @if(options.SiteMode == SiteMode.Blog) { // workshops are effectively backwards so we change the text here
-                    <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
-                } else {
-                    <div class="mb-1 text-muted">Phase @post.Phase, Step @post.Step</div>
+    <div class="row mb-2">
+        @if (options.SiteMode == SiteMode.Blog)
+        {
+            @foreach (var page in MostRecentPosts)
+            {
+                @foreach (var post in page)
+                {
+                    <div class="col-md-6">
+                        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 d-flex flex-column position-static post">
+                                <h4 class="mb-0">@post.Title</h4>
+                                <div class="mb-1 text-muted">@post.PublicationDate.ToString("MMMM dd, yyyy")</div>
+                                <p class="card-text mb-auto">@post.Description</p>
+                                <NavLink class="stretched-link" href="@($"/posts/{post.Slug}")">Continue reading</NavLink>
+                            </div>
+                        </div>
+                    </div>
                 }
-              <p class="card-text mb-auto">@post.Description</p>
-              <NavLink class="stretched-link" href="@($"/posts/{post.Slug}")">Continue reading</NavLink>
-            </div>
-          </div>
-        </div>
-      }
-    }
-  </div>
-  @if(options.SiteMode == SiteMode.Blog)
-  {
-  <nav class="blog-pagination">
-    <a class="btn btn-outline-primary" @onclick="OnLessButtonClicked">less</a>
-    <a class="btn btn-outline-primary" @onclick="OnLoadMoreButtonClicked">more</a>
-  </nav>
-  }
+            }
+        }
+        else
+        {
+            var index = 1;
+            @foreach (var category in Categories)
+            {
+                var categoryLinkLabel = $"Phase {index}: {category}";
+                index += 1;
+                 <div class="col-md-6">
+                     <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                         <div class="col p-4 d-flex flex-column position-static post">
+                             <h4 class="mb-0">@categoryLinkLabel</h4>
+                             <p class="card-text mb-auto">Description</p>
+                             <NavLink class="stretched-link" href="@($"/category/{category}")">Continue</NavLink>
+                         </div>
+                     </div>
+                 </div>
+            }
+        }
+    </div>
+
+@if (options.SiteMode == SiteMode.Blog)
+{
+    <nav class="blog-pagination">
+        <a class="btn btn-outline-primary" @onclick="OnLessButtonClicked">less</a>
+        <a class="btn btn-outline-primary" @onclick="OnLoadMoreButtonClicked">more</a>
+    </nav>
+}
 </div>
 
-<Tracker/>
+<Tracker />
 
 @code {
     List<Post[]> MostRecentPosts = new List<Post[]>();
+    public List<string> Categories { get; set; } = new List<string>();
     const string currentPageKey = "currentPage";
 
     protected override async Task OnInitializedAsync()
     {
-      await LoadPosts();
+        await LoadPosts();
+        Categories = await Http.GetFromJsonAsync<List<string>>($"{options.RootUrl}/api/categories");
     }
 
     protected async Task OnLoadMoreButtonClicked()
     {
-      var currentPage = await localStorage.GetItemAsync<int>(currentPageKey) + 1;
-      await localStorage.SetItemAsync(currentPageKey, currentPage);
-      await LoadPageOfPosts(currentPage);
-      await JSRuntime.InvokeVoidAsync("scrollIntoView");
+        var currentPage = await localStorage.GetItemAsync<int>(currentPageKey) + 1;
+        await localStorage.SetItemAsync(currentPageKey, currentPage);
+        await LoadPageOfPosts(currentPage);
+        await JSRuntime.InvokeVoidAsync("scrollIntoView");
     }
 
     protected async Task OnLessButtonClicked()
     {
-      var currentPage = await localStorage.GetItemAsync<int>(currentPageKey) - 1;
-      Console.WriteLine(currentPage);
-      if(currentPage <= 0) currentPage = 0;
-      await localStorage.SetItemAsync(currentPageKey, currentPage);
-      MostRecentPosts.Clear();
-      await LoadPosts();
+        var currentPage = await localStorage.GetItemAsync<int>(currentPageKey) - 1;
+        Console.WriteLine(currentPage);
+        if (currentPage <= 0) currentPage = 0;
+        await localStorage.SetItemAsync(currentPageKey, currentPage);
+        MostRecentPosts.Clear();
+        await LoadPosts();
     }
 
     protected async Task LoadPosts()
     {
-      var currentPage = await localStorage.GetItemAsync<int>(currentPageKey);
-        
-      if(currentPage == 0) currentPage = 1;
+        var currentPage = await localStorage.GetItemAsync<int>(currentPageKey);
 
-      for (int i = 0; i < currentPage; i++)
-      {
-        await LoadPageOfPosts(i);
-      }
+        if (currentPage == 0) currentPage = 1;
+
+        for (int i = 0; i < currentPage; i++)
+        {
+            await LoadPageOfPosts(i);
+        }
     }
 
     protected async Task LoadPageOfPosts(int page)
     {
-      var postListModel = await Http.GetFromJsonAsync<PostListModel>($"{options.RootUrl}/api/posts/{page}");
-      MostRecentPosts.Add(postListModel.Posts);
+        var postListModel = await Http.GetFromJsonAsync<PostListModel>($"{options.RootUrl}/api/posts/{page}");
+        MostRecentPosts.Add(postListModel.Posts);
     }
 }
