@@ -23,5 +23,10 @@
     <ProjectReference Include="..\Shared\downr.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\posts\11.1-onnx\media\" />
+    <Folder Include="wwwroot\posts\10.1-train-dl\media\" />
+  </ItemGroup>
+
 
 </Project>

@@ -98,7 +98,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         Categories = await Http.GetFromJsonAsync<List<string>>($"{options.RootUrl}/api/categories");
-        Categories = Categories.Take(10).ToList(); // take top 10 categories
+        Categories = Categories.Take(15).ToList(); // take top 15 categories
         string title = options.Title;
 
         if(Post != null)
