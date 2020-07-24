@@ -1,18 +1,14 @@
 ---
-title: Evaluate the model
+title: Evaluate your model
 slug: 4.1-evaluate
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Evaluation
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Evaluate the performance of your model with various evaluation metrics.
 phase: 4
-step: 1
+step: 2
 ---
-
-In this section, you will determine how well your model performs.
-
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-2.zip).
 
 ## Evaluation metrics
 

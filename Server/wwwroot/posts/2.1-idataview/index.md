@@ -5,14 +5,10 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Data
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Learn about the IDataView and different data loading sources in ML.NET.
 phase: 2
-step: 1
+step: 2
 ---
-
-In this section, you'll download the data needed to train the model and load it into an `IDataView`.
-
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-0.zip).
 
 Data in ML.NET is represented as an `IDataView`. An IDataView is a flexible and efficient way of describing tabular data (columns and rows). The `IDataView` component provides a very efficient, compositional processing of tabular data especially made for machine learning and advanced analytics applications. It is designed to efficiently handle high dimensional data and large data sets. It is also suitable for single node processing of data partitions belonging to larger distributed data sets. Some key distinctions of the IDataView include:
 

@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Get started
-description: The first step in setting up a downr workshop is to fork and clone the repo
+description: Fork and clone the repo from GitHub to get started.
 phase: 1
-step: 2
+step: 3
 ---
 
 We've set up an initial project for you to start from: [ML.NET Workshop Repo](https://github.com/luisquintanilla/mlnet-workshop)

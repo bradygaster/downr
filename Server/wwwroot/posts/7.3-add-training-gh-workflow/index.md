@@ -5,12 +5,13 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: MLOps
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Add model training step to your GitHub workflow.
 phase: 7
-step: 3
+step: 4
 ---
 
 To automatically train our model, we will need to use the `dotnet run` command to run our console application.
+
 To do so, go ahead and add the following to your GitHub Action's workflow file. Commit and push the changes to your master branch
 ```
     - name: Train

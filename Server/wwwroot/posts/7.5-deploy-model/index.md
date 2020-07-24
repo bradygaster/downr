@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: MLOps
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Register and deploy your model.
 phase: 7
-step: 5
+step: 6
 ---
 
 Congratulations! Your CI workflow is looking fantastic. In a real-world example, we would now do two things:

@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Training
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Choose an algorithm to train your model.
 phase: 3
-step: 4
+step: 5
 ---
 
 Next, we need to choose an algorithm and add it to the pipeline. Add the following code after the code we just added to set up the transformation pipeline.

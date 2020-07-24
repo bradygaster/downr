@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Get started
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Create a new ML.NET environment with MLContext.
 phase: 1
-step: 4
+step: 5
 ---
 
 In this section, you'll add an `MLContext` to the `TrainConsole` project. `MLContext` is the starting point for all ML.NET operations. It provides a way to create components for:

@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Data
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Load your dataset from a file to an IDataView.
 phase: 2
-step: 4
+step: 5
 ---
 
 Now open up *Program.cs* file in the `TrainConsole` project (**not** the web project!) and add the following `using` statement:

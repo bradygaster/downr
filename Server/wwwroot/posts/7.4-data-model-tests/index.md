@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: MLOps
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Create some automated tests.
 phase: 7
-step: 4
+step: 5
 ---
 
 Well done! If you have made it this far, you've successfully set up a workflow that automatically trains your model on new commits. However, as with any well architected software application, we also require automated tests to be run to ensure that the application works as expected. Similarly, we can add tests to our model training workflow. 

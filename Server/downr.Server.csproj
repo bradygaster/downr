@@ -24,8 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\posts\11.1-onnx\media\" />
-    <Folder Include="wwwroot\posts\10.1-train-dl\media\" />
+    <Folder Include="wwwroot\posts\10.0-intro\media\" />
+    <Folder Include="wwwroot\posts\11.0-intro\media\" />
+    <Folder Include="wwwroot\posts\3.0-intro\media\" />
+    <Folder Include="wwwroot\posts\3.1-model-training\media\" />
+    <Folder Include="wwwroot\posts\3.2-split-dataset\media\" />
+    <Folder Include="wwwroot\posts\3.3-data-transforms\media\" />
+    <Folder Include="wwwroot\posts\3.4-algorithm\media\" />
+    <Folder Include="wwwroot\posts\4.0-intro\media\" />
   </ItemGroup>
 
 

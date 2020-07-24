@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Training
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Split your dataset into a dataset for model training and a dataset for model evaluation.
 phase: 3
-step: 2
+step: 3
 ---
 
 The goal of a machine learning model is to identify patterns within training data. These patterns are used to make predictions using new data.
