@@ -1,0 +1,38 @@
+@inherits ComponentBase
+@inject DownrOptions downrOptions
+@inject HttpClient Http
+@using downr.Models
+
+<div class="col-md-12">
+    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-80 position-relative">
+        <div class="col p-4 d-flex flex-column position-static post">
+            <label for="postMenu">@_label</label>
+            <select @onchange="PostMenuChanged" id="postMenu">
+                @foreach (var menuItem in _postMenuItems)
+                {
+                    <option value="@menuItem.Slug">@menuItem.Title</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+@code {
+    string _label;
+    List<PostMenuItem> _postMenuItems = new List<PostMenuItem>();
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnPostChangedCallback { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _label = (downrOptions.SiteMode == SiteMode.Workshop) ? "Jump to step: " : "Jump to post: ";
+
+        _postMenuItems = await Http.GetFromJsonAsync<List<PostMenuItem>>($"api/posts/menu");
+    }
+
+    private async Task PostMenuChanged(ChangeEventArgs e)
+    {
+        await OnPostChangedCallback.InvokeAsync(e);
+    }
+}

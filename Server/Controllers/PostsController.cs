@@ -56,6 +56,19 @@ namespace downr.Controllers
         }
 
         [HttpGet]
+        [Route("api/posts/menu")]
+        public ActionResult<PostMenuItem[]> GetPostMenuItems()
+        {
+            var posts = _postService.GetPosts().Select(x => new PostMenuItem
+            {
+                Slug = x.Slug,
+                Title = x.Title
+            });
+            
+            return new JsonResult(posts);
+        }
+
+        [HttpGet]
         [Route("api/index")]
         public ActionResult ReIndex()
         {
