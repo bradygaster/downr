@@ -35,6 +35,7 @@
     <Folder Include="wwwroot\posts\8.3-install-dataframe-api\media\" />
     <Folder Include="wwwroot\posts\8.1-what-is-dataframe-jupyter\media\" />
     <Folder Include="wwwroot\posts\8.0-intro\media\" />
+    <Folder Include="wwwroot\posts\9.0-intro\media\" />
   </ItemGroup>
 
 
