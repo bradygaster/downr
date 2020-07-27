@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: MLOps
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Consume your model from Azure.
 phase: 7
-step: 6
+step: 7
 ---
 
 If we imagine for a second that our CI/CD workflow also publishes our trained model to let's say a test container in an Azure Storage Account. We would then be able to consume that model when doing contract or exploratory testing in a test environment prior to a production deployment. For your convenience, we have published a model to an Azure Storage Account that you can consume as part of the `Web` application in this workshop.

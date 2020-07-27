@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Training
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Choose data transformations to convert your data to an acceptible format for algorithms.
 phase: 3
-step: 3
+step: 4
 ---
 
 Most data can't be used as-is - we need to transform it before we can work with it. This is done by performing a series of transforms in succession as a pipeline.

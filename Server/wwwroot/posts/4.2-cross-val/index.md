@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Evaluation
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: You can use cross validation as another model training / evaluation method.
 phase: 4
-step: 2
+step: 3
 ---
 
 Cross validation is a training and evaluation technique. It folds or splits the data into n-partitions and trains multiple models on these partitions. This helps improve the robustness by holding out data from the training process. Cross-validation may help with overfitting.

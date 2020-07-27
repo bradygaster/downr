@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Data
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Create a new class for the model input.
 phase: 2
-step: 3
+step: 4
 ---
 
 In the `Shared` project, add a new class called `ModelInput` to the root directory. This class will consist solely of properties and will be mapped from the data file. Each property will reference a column using a 0-based index.

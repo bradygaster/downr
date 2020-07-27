@@ -1,13 +1,13 @@
 ---
-title: Train the mode
+title: Train your model
 slug: 3.5-train
 author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Training
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Call the Fit method to execute the data transforms and algorithm to train your model.
 phase: 3
-step: 5
+step: 6
 ---
 
 We train the model by calling the `Fit` method on the pipeline we've set up, passing in the data as an `IDataView` instance.

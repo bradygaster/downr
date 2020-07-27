@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Consume model
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Add the PredictionEnginePool to your project.
 phase: 6
-step: 4
+step: 5
 ---
 
 Open the *Pages/Index.cshtml.cs* file and add the following `using` statements at the top to reference the *Shared* project and `Microsoft.Extensions.ML` NuGet package:

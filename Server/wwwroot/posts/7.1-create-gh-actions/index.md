@@ -5,16 +5,12 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: MLOps
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Create a GitHub Actions workflow to train a model with new commits.
 phase: 7
-step: 1
+step: 2
 ---
 
-In this section you will learn how to automate the model lifecycle from training to model deployment. 
-We will in addition look at some additional considerations such as data and model tests.
 
-
-## Phase 7.1: Create our first GitHub Actions workflow
 The first thing we want to do is to create a simple GitHub Actions workflow which will be triggered to train a new model when a commit is pushed to our repository.
 
 To do so, navigate to your forked repo and click on the `Actions` tab

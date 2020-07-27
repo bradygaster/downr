@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Consume model
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Get your PredictionEnginePool service set up for model consumption.
 phase: 6
-step: 3
+step: 4
 ---
 
 The `PredictionEnginePool` is designed for use with dependency injection which is built into ASP.NET Core. As such, you configure it just like you would any other service you want to use throughout your application.

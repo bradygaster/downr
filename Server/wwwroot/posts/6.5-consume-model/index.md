@@ -5,9 +5,9 @@ author: brachtma
 lastModified: 2020-07-14 02:40:10
 pubDate: 2020-07-14 02:40:10
 categories: Consume model
-description: The first step is to make sure you have all the requirements and to clone the workshop source code.
+description: Use the model to make predictions in your app.
 phase: 6
-step: 5
+step: 6
 ---
 
 Set the startup project to `Web` and run the application. Fill in the form fields and select **Predict Price**.
