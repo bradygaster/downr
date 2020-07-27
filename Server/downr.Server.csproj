@@ -32,6 +32,9 @@
     <Folder Include="wwwroot\posts\3.3-data-transforms\media\" />
     <Folder Include="wwwroot\posts\3.4-algorithm\media\" />
     <Folder Include="wwwroot\posts\4.0-intro\media\" />
+    <Folder Include="wwwroot\posts\8.3-install-dataframe-api\media\" />
+    <Folder Include="wwwroot\posts\8.1-what-is-dataframe-jupyter\media\" />
+    <Folder Include="wwwroot\posts\8.0-intro\media\" />
   </ItemGroup>
 
 
