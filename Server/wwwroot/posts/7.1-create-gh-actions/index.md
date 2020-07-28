@@ -11,11 +11,15 @@ step: 2
 ---
 
 
-The first thing we want to do is to create a simple GitHub Actions workflow which will be triggered to train a new model when a commit is pushed to our repository.
+The first thing you will do is create a simple GitHub Actions workflow which will be triggered to train a new model when a commit is pushed to your repository.
 
-To do so, navigate to your forked repo and click on the `Actions` tab
-On the page that appears, go ahead and select to set up a new .NET Core workflow
+To do so, navigate to your forked repo and click on the `Actions` tab. On the page that appears, go ahead and select to set up a new .NET Core workflow. 
+
 ![action](./media/action-dotnet-core-workflow.png)
+
+You may need to scroll down to the "Continuous integration workflows" section and select "More continuous integration workflows..." to find the .NET Core workflow.
+
+![More CI Workflows](./media/more-workflows.png)
 
 GitHub will provide you with a template workflow that is intended to restore, build, and test a .NET Core app. 
 

@@ -10,7 +10,9 @@ phase: 7
 step: 7
 ---
 
-If we imagine for a second that our CI/CD workflow also publishes our trained model to let's say a test container in an Azure Storage Account. We would then be able to consume that model when doing contract or exploratory testing in a test environment prior to a production deployment. For your convenience, we have published a model to an Azure Storage Account that you can consume as part of the `Web` application in this workshop.
+If your CI/CD workflow also published your trained model to a test container in an Azure Storage Account, you could then consume that model when doing contract or exploratory testing in a test environment prior to a production deployment.
+
+For your convenience, we have published a model to an Azure Storage Account that you can consume as part of the `Web` application in this workshop.
 
 To be able to consume your model from a URI, locate the `Startup.cs` class within the `Web` project and replace the following line:
 
@@ -24,7 +26,7 @@ with
   services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromUri(@"https://ndcmelbourne.blob.core.windows.net/model/MLModel.zip");
 ```
 
-To ensure that we are able to use the model now stored in the Azure Storage Account, set the startup project to Web and run the application. Fill in the form fields and select Predict Price.
+To ensure that you are able to use the model now stored in the Azure Storage Account, set the startup project to Web and run the application. Fill in the form fields and select Predict Price.
 
 ![Consume the model in web app](./media/7-6-consume-model.png)
 

@@ -10,27 +10,33 @@ phase: 7
 step: 5
 ---
 
-Well done! If you have made it this far, you've successfully set up a workflow that automatically trains your model on new commits. However, as with any well architected software application, we also require automated tests to be run to ensure that the application works as expected. Similarly, we can add tests to our model training workflow. 
+If you've made it this far, you've successfully set up a workflow that automatically trains your model on new commits.
 
-There are two types of tests that we will be looking into today:
+However, as with any well-architected software application, automated tests are also required to ensure that the application works as expected. Thus, you can add tests to your model training workflow. 
 
-1. **Data validation tests** to ensure the integrity of our training data 
-2. **Model tests** to validate the quality of our trained model
+There are two types of tests that you will learn about in this workshop:
+
+1. **Data validation tests** to ensure the integrity of your training data 
+2. **Model tests** to validate the quality of your trained model
 
 ### Data validation tests
-To train our model, we use a dataset that consists of several features, such as price, the year the car was made, milage and so forth. To ensure the quality of our model, it is important to validate that the data is sound. We may for example want to verify that the dataset does not contain any negative numbers or other invalid data points. 
+To train a model, you use a dataset that consists of several features, such as price, the year the car was made, milage and so forth.
 
-At our disposal, we have a `DataValidationsTests.cs` test class in the `DataTests` project (located under the `Tests` folder in the solutions explorer). 
-This test class contains several tests that will ultimately verify our dataset.
+To ensure the quality of our model, it's important to validate that the data is sound. You may, for example, want to verify that the dataset does not contain any negative numbers or other invalid data points. 
 
-The first thing we would like to do is to set the correct path to our data (which will be located on the Azure FileShare as mentioned in previous steps).
-Replace the `TRAIN_DATA_FILEPATH` variable located in `DataValidationTests` with
+There is a `DataValidationsTests.cs` test class in the `DataTests` project (located under the `Tests` folder in the solutions explorer). This test class contains several tests that will ultimately verify your dataset.
+
+The first thing you need to do is set the correct path to your data (which will be located on the Azure FileShare as mentioned in previous steps).
+
+Replace the `TRAIN_DATA_FILEPATH` variable located in `DataValidationTests` with:
 
 ```
   private static string TRAIN_DATA_FILEPATH = @"/media/data/true_car_listings.csv";
 ```
 
-The next thing we would like to do is to implement the `Initialize` method. This method will be used to load the dataset using and convert all rows into an enumerable of `ModelInput`. Change the `Initialize` method to the following noted below. Please note the `Rows` private member variable that will be used in the tests.
+The next thing you need to do is implement the `Initialize` method. This method will be used to load the dataset and convert all rows into an enumerable of `ModelInput`.
+
+Change the `Initialize` method to the following code (note the `Rows` private member variable that will be used in the tests):
 
 ```
         private static IEnumerable<ModelInput> Rows;
@@ -45,10 +51,9 @@ The next thing we would like to do is to implement the `Initialize` method. This
         }
 ```
 
-With the `Initialize` method set up, we are ready to start implementing our tests. 
-Let us complete two together, and let us then see if you are able to implement the other two yourself.
+With the `Initialize` method set up, you can start implementing your tests. 
 
-To verify a valid year range and that we don't have any negative prices in our dataset we can implement `VerifyValidPrice()` and `VerifyValidYear()` as follows:
+To verify a valid year range and that there are no negative prices in your dataset, you can implement `VerifyValidPrice()` and `VerifyValidYear()` as follows:
 
 ```
         [TestMethod]
@@ -68,7 +73,7 @@ To verify a valid year range and that we don't have any negative prices in our d
         }
 ```
 
-Based on these tests, take a couple of minutes, and see if you can implement `VerifyValidMilage()` and `VerifyMinimumNumberOfRows()` yourself (assume that we need at least 10,000 rows).
+Based on these tests, try to implement `VerifyValidMilage()` and `VerifyMinimumNumberOfRows()` yourself (assume that you need at least 10,000 rows).
 
 The final two tests should look something like this:
 
@@ -90,8 +95,9 @@ The final two tests should look something like this:
         }        
 ```
 
-Excellent work so far. Go ahead and commit your changes and push them to your fork either by using a tool of your choice such as GitHub Desktop, Visual Studio or the Git CLI.
-The next step is to add our data tests to our CI workflow to make sure they are run before the model training.
+Commit your changes and push them to your fork using a tool of your choice, such as GitHub Desktop, Visual Studio, or the Git CLI.
+
+The next step is to add your data tests to your CI workflow to make sure they are run before the model training.
 
 Do do so, open up the `dotnet-core.yml` file under `.github/workflows` and add the following just prior to `Train` step:
 
@@ -139,18 +145,20 @@ jobs:
       run: dotnet run --project TrainConsole.csproj    
 ```
 
-Commit your changes and push them to GitHub. This should kick of the workflow under the `Actions` tab and you should see a successful build within about 10-15 min.
+Commit your changes and push them to GitHub. This should kick of the workflow under the `Actions` tab, and you should see a successful build within 10-15 min.
 
-If you click on the succcessful workflow, you can inspect to see each build step and expand to see that our four data validation tests ran successfully.
+If you click on the succcessful workflow, you can inspect to see each build step and expand to see that the four data validation tests ran successfully.
 
 ![7-4-data-tests](./media/7-4-data-tests.png)
 
 ### Model tests
-Brilliant, we are now able to run data validation tests as part of our workflow, but what our model tests? Let us have a look.
-The model tests will run after we have trained our model in order to do some basic health checks. In more advanced scenarios, one may want to also compare the trained model to an existing model in production at this stage so that we can quickly determine if the model is worth investing additional time in or not.
+The model tests will run after you've trained your model to do some basic health checks.
 
-At our disposal we have the `ModelTests.cs` test class in the `ModelTests` project (located under the `Tests` folder in the solution).
-In this instance, we would like to run three tests on our model to ensure that it's able to correctly predict the price of a low-, mid- and high range car within a given interval.
+In more advanced scenarios, you may also want to compare the trained model to an existing model in production at this stage so that you can quickly determine if the model is worth investing additional time in.
+
+In this project, there is the `ModelTests.cs` test class in the `ModelTests` project (located under the `Tests` folder in the solution).
+
+In this instance, you should run three tests on your model to ensure that it's able to correctly predict the price of a low-, mid- and high-range car within a given interval.
 
 To do so, replace the content of the `ModelTests` class with the following:
 
@@ -230,11 +238,11 @@ To do so, replace the content of the `ModelTests` class with the following:
         }
 ```
 
-If we have a closer look at what we're doing here, we can see that we're using the `MLContext` from ML.NET to load the model from the Azure FileShare, which is where it's saved as part of our training. A `PredictionEngine` is thereafter created based on the `ModelInput` and `ModelOutput` schema created earlier. Using this `PredictionEngine` we are then able to make a prediction based on several different inputs and compare the result with what we would expect, in this case within a given range.
+You can see that you're using the `MLContext` from ML.NET to load the model from the Azure FileShare, which is where it's saved as part of training. A `PredictionEngine` is created based on the `ModelInput` and `ModelOutput` schema created earlier. Using this `PredictionEngine`, you are then able to make a prediction based on several different inputs and compare the result with the expected result, in this case within a given range.
 
 Commit the changes to your fork and push the changes to GitHub.
 
-To ensure that these model tests are run as part of our workflow, add the following to your `dotnet-core.yml` file just after the `Train` step:
+To ensure that these model tests are run as part of your workflow, add the following to your `dotnet-core.yml` file just after the `Train` step:
 
 ```
     - name: Model Tests
@@ -285,6 +293,6 @@ jobs:
 
 Again, push and commit these changes to your repo. A successful build should complete within 10-15 min, which you can observe under the `Actions` tab.
 
-If you click on the succcessful workflow, you can inspect to see each build step and expand to see that our three model tests ran successfully.
+If you click on the succcessful workflow, you can inspect to see each build step and expand to see that your three model tests ran successfully.
 
 ![7-4-model-tests](./media/7-4-model-tests.png)
