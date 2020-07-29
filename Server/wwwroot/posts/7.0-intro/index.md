@@ -13,3 +13,7 @@ step: 1
 In this section you will learn how to automate the model lifecycle from training to model deployment, and you will look at some more considerations, such as data and model tests.
 
 You can find the starting point for your app in the [workshop repo](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/6.0.zip).
+
+> NOTE: If you haven't already done so, see the [Getting Started](https://mlnet-workshop.azurewebsites.net/category/Get%20started) section to set up your development environment. 
+Then, download and unzip the complete code from [Phase 6](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/6.0.zip) and copy the *src* and *test* directories to the *mlnet-workshop* repository
+you forked and cloned onto your computer.

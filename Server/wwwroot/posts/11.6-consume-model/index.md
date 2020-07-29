@@ -396,7 +396,7 @@ Then, the price of the car is displayed on screen.
 
 ### Run the app
 
-Set the startup project to `Web` and run the application. Fill in the form fields and select **Predict Price**.
+Download [this image](https://cdn.motor1.com/images/mgl/ZJEBy/s3/car-with-damaged-rear-bumper-fascia-cover.jpg) and save it anywhere on your machine. Then set the startup project to `Web` and run the application. Fill in the form fields, using the image you just downloaded, and select **Predict Price**.
 
 Compared with the original application which did not use object detection, we can see that the original price of $13806 is reduced to $13706 because of the dent.
 
