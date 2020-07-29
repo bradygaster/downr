@@ -11,3 +11,5 @@ step: 1
 ---
 
 In this section, you will learn how to use an object detection ONNX model from Azure Custom Vision inside a .NET application.
+
+If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/10.0.zip).

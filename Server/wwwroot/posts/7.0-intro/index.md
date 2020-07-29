@@ -10,5 +10,6 @@ phase: 7
 step: 1
 ---
 
-In this section you will learn how to automate the model lifecycle from training to model deployment. 
-Additionally, we will look at some more considerations, such as data and model tests.
+In this section you will learn how to automate the model lifecycle from training to model deployment, and you will look at some more considerations, such as data and model tests.
+
+You can find the starting point for your app in the [workshop repo](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/6.0.zip).

@@ -10,12 +10,12 @@ phase: 1
 step: 4
 ---
 
-First, we need to add the ML.NET NuGet package to the `Shared` project. If you're using Visual Studio, right click on the project name and select **Manage NuGet Dependencies**. Then click the "Browse" tab and search for `Microsoft.ML`. Make sure to install version **1.5.0**.
+First, we need to add the ML.NET NuGet package to the `Shared` project. If you're using Visual Studio, right click on the project name and select **Manage NuGet Packages**. Then click the "Browse" tab and search for `Microsoft.ML`. Make sure to install version **1.5.1**.
 
 ![Install Microsoft.ML NuGet package](./media/install-microsoft-ml-nuget.png)
 
 Alternately if you prefer working from the command line, you can run this command from the *src/TrainConsole* folder:
 
 ```powershell
-dotnet add package Microsoft.ML -v 1.5.0
+dotnet add package Microsoft.ML -v 1.5.1
 ```

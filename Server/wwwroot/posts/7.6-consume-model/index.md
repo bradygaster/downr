@@ -17,13 +17,13 @@ For your convenience, we have published a model to an Azure Storage Account that
 To be able to consume your model from a URI, locate the `Startup.cs` class within the `Web` project and replace the following line:
 
 ```
-   services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile(@"C:\Dev\MLModel.zip");
+   services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile(modelName:"PricePrediction",filePath:@"C:\Dev\MLModel.zip");
 ```
 
 with
 
 ```
-  services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromUri(@"https://ndcmelbourne.blob.core.windows.net/model/MLModel.zip");
+  services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile(modelName:"PricePrediction", uri:@"https://ndcmelbourne.blob.core.windows.net/model/MLModel.zip");
 ```
 
 To ensure that you are able to use the model now stored in the Azure Storage Account, set the startup project to Web and run the application. Fill in the form fields and select Predict Price.
@@ -31,3 +31,5 @@ To ensure that you are able to use the model now stored in the Azure Storage Acc
 ![Consume the model in web app](./media/7-6-consume-model.png)
 
 Congratulations! You have now mastered the art of MLOps.
+
+If you missed any parts, you can download the [completed app](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/7.0-ndc.zip).

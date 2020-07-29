@@ -12,4 +12,4 @@ step: 1
 
 In this section, you'll configure a data processing pipeline to use to prepare the data, the algorithm to use, and you'll create a machine learning model to predict used car prices.
 
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-1.zip).
+If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2.0.zip).

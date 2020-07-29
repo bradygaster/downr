@@ -16,7 +16,7 @@ At this point, you have taken an ONNX Model from Azure Custom Vision and used it
 
 First, we need to add a few NuGet packages to the `Web` project.
 
-If you're using Visual Studio, right click on the project name and select **Manage NuGet Dependencies**. Then click the "Browse" tab and search for `Microsoft.ML.OnnxTransformer`. Make sure to install version **1.5.1**.
+If you're using Visual Studio, right click on the project name and select **Manage NuGet Projects**. Then click the "Browse" tab and search for `Microsoft.ML.OnnxTransformer`. Make sure to install version **1.5.1**.
 
 ![Install Microsoft.ML.OnnxTransformer Web](./media/onnx-transformer.png)
 
@@ -149,6 +149,7 @@ Now that you have a definition for the service, create a new class called `Damag
 Add the following `using` statements at the top of the file:
 
 ```csharp
+using System
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -405,5 +406,6 @@ Compared with the original application which did not use object detection, we ca
 **Object detection**
 ![Consume both ONNX and price prediction models in web app](./media/run-app-with-obj-detection.png)
 
-
 Congratulations! You have now used both the price prediction and object detection ONNX models inside your web application.
+
+If you missed any parts, you can download the [completed app](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/11.0.zip).

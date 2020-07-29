@@ -12,4 +12,4 @@ step: 1
 
 In this section, you will determine how well your model performs.
 
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-2.zip).
+If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/3.0.zip).

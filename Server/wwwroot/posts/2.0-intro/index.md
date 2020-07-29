@@ -12,4 +12,4 @@ step: 1
 
 In this section, you'll download the data needed to train the model and load it into an `IDataView`.
 
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-0.zip).
+If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/1.0.zip).
