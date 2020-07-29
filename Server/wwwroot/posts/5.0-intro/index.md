@@ -12,4 +12,4 @@ step: 1
 
 In this section you'll learn how to serialize and save the trained model for deployment and later use in other applications.
 
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-3.zip).
+If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/4.0.zip).

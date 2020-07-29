@@ -15,3 +15,5 @@ Set the startup project to `Web` and run the application. Fill in the form field
 ![Consume the model in web app](./media/consume-model.png)
 
 Congratulations! You have now used the model inside your web application.
+
+If you missed any parts, you can download the [completed app](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/6.0.zip).

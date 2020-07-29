@@ -10,9 +10,9 @@ phase: 7
 step: 4
 ---
 
-To automatically train our model, we will need to use the `dotnet run` command to run our console application.
+To automatically train your model, you will need to use the `dotnet run` command to run the console application.
 
-To do so, go ahead and add the following to your GitHub Action's workflow file. Commit and push the changes to your master branch
+To do so, go ahead and add the following to your GitHub Action's workflow file and commit and push the changes to your master branch:
 ```
     - name: Train
       working-directory: 'src/TrainConsole'
@@ -54,10 +54,10 @@ jobs:
       run: dotnet run --project TrainConsole.csproj 
 ```
 
-The workflow should take about 10-15 minutes to complete, and if all is set up correctly should yield a green build.
+The workflow should take about 10-15 minutes to complete, and if all is set up correctly, it should yield a green build.
 
 ![7-4-build](./media/7-4-build.png)
 
-If you click on the workflow that has been run, we can see the progress of each step
+If you click on the workflow that has been run, you can see the progress of each step:
 
 ![7-4-build-details](./media/7-4-build-details.png)

@@ -10,11 +10,12 @@ phase: 7
 step: 6
 ---
 
-Congratulations! Your CI workflow is looking fantastic. In a real-world example, we would now do two things:
-1) Register our model in a model repository of our choosing
-2) Implement a CD workflow to automatically deploy our model to a test environment
+In the real world, you would do the following next:
 
-There are several ways we can deploy our model, e.g. in a Docker Container, embedded in an ASP.NET Core API or simple uploaded to an Azure Storage Container which can be consumed by an application elsewhere. Since we don't want to require an Azure subscription as part of this workflow, we're going to finalize this phase by uploading the model as a build artifact, such that we can always come back to this build and grab this version of the model if needed.
+1) Register your model in a model repository of your choosing
+2) Implement a CD workflow to automatically deploy your model to a test environment
+
+There are several ways you can deploy your model (e.g. in a Docker Container, embedded in an ASP.NET Core API, or simple uploaded to an Azure Storage Container which can be consumed by an application elsewhere). Since we don't want to require an Azure subscription as part of this workshop, you can simply upload the model as a build artifact, such that you can always come back to this build and grab this version of the model if needed.
 
 To do so, add the following to the `dotnet-core.yml` file, right at the end:
 

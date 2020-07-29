@@ -12,4 +12,4 @@ step: 1
 
 In this section you'll learn how to deploy the application to an ASP.NET Core Razor Pages application
 
-If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/2-4.zip) and use this as the [model file](https://github.com/luisquintanilla/mlnet-workshop-guide/raw/master/MLModel.zip).
+If you were not able to complete the last section, use this version of the code as the [starting point](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/5.0.zip) and use this as the [model file](https://github.com/luisquintanilla/mlnet-workshop-guide/raw/master/MLModel.zip).

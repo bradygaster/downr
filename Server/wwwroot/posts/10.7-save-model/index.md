@@ -22,7 +22,7 @@ Then, inside the `Main` method, add the following code at the bottom:
 
 ```csharp
 //Save the model
-mlContext.Model.Save(model, trainImagesDV.Schema, MODEL_SAVE_PATH);
+mlContext.Model.Save(model, trainImagesDV.Schema, MODEL_FILEPATH);
 Console.WriteLine("Saved image classification model");
 ```
 
@@ -31,6 +31,8 @@ Console.WriteLine("Saved image classification model");
 Set the startup project to `ImageTrainConsole` and run the application.
 
 Congratulations! You have now trained a custom image classification model with ML.NET.
+
+If you missed any parts, you can download the [completed app](https://github.com/luisquintanilla/mlnet-workshop-guide/archive/10.0.zip).
 
 ## Additional resources
 

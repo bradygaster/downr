@@ -19,10 +19,10 @@ using Microsoft.Extensions.ML;
 using Shared;
 ```
 
-Then, in the `ConfigureServices` method, register the `PredictionEnginePool` service and use the path of where you saved your model.
+Then, in the `ConfigureServices` method, register a `PredictionEnginePool` service. Give it a unique and descriptive name so that you are able to differentiate it from other models and provide the path where you saved your model to.
 
 ```csharp
-services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile(@"C:\Dev\MLModel.zip");
+services.AddPredictionEnginePool<ModelInput, ModelOutput>().FromFile(modelName:"PricePrediction",filePath:@"C:\Dev\MLModel.zip");
 ```
 
 In this case, the model was loaded from a file, but you can also load models stored remotely via publicly accessible endpoints using the `FromUri` method.

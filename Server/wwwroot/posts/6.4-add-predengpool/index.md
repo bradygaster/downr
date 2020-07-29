@@ -20,25 +20,26 @@ using Shared;
 Inside the class, define a private readonly variable for the `PredictionEnginePool` service.
 
 ```csharp
-private readonly PredictionEnginePool<ModelInput, ModelOutput> _predictionEnginePool;
+private readonly PredictionEnginePool<ModelInput, ModelOutput> _pricePredictionEnginePool;
 ```
 
 Then, inject the `PredictionEnginePool` service into the `Index` constructor.
 
 ```csharp
-public IndexModel(ILogger<IndexModel> logger, ICarModelService carFileModelService, PredictionEnginePool<ModelInput,ModelOutput> predictionEnginePool)
+public IndexModel(IWebHostEnvironment env, ILogger<IndexModel> logger, ICarModelService carFileModelService, PredictionEnginePool<ModelInput,ModelOutput> pricePredictionEnginePool)
 {
+    _env = env;
     _logger = logger;
     _carModelService = carFileModelService.GetDetails();
     CarMakeSL = new SelectList(_carModelService, "Id", "Model", default, "Make");
-    _predictionEnginePool = predictionEnginePool;
+    _pricePredictionEnginePool = pricePredictionEnginePool;
 }
 ```
 
 Finally, replace the implementation of the `OnPost` method with the following.
 
 ```csharp
-public void OnPost()
+public async Task OnPostAsync()
 {
     var selectedMakeModel = _carModelService.Where(x => CarModelDetailId == x.Id).FirstOrDefault();
 
@@ -53,8 +54,15 @@ public void OnPost()
         Model = CarInfo.Model
     };
 
-    ModelOutput prediction = _predictionEnginePool.Predict(input);
+    ModelOutput prediction = _pricePredictionEnginePool.Predict(modelName: "PricePrediction", example: input);
     CarInfo.Price = prediction.Score;
+
+    if(ImageUpload != null)
+    {
+        await ProcessUploadedImageAsync(ImageUpload);
+        ShowImage = true;
+    }
+
     ShowPrice = true;
 }
 ```

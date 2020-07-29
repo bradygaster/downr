@@ -10,30 +10,33 @@ phase: 7
 step: 3
 ---
 
-Great work, we are now able to compile our training project as part of our CI pipeline to ensure the integrity of our system. The next step is to automatically kick-off the training of our machine learning model. Before we can do that, we do we need to address an issue, which is the location of our training data. So far in this workshop you have had your training data available on disk, as part of the GitHub repository. However, in many cases the training data is of 1-100GB, which makes it non-feasible to store it in GitHub.
+Now you're able to compile your training project as part of your CI pipeline to ensure the integrity of the system. The next step is to automatically kick off the training of your machine learning model.
 
-One way to solve this problem is to upload our data to an Azure FileShare and mount the fileshare on our Ubuntu build agent as part of each build so that the training application can access it. An Azure FileShare can handle concurrent load meaning that multiple build agents can read the data simultaneously. 
+Before you can do that, you need to address an issue, which is the location of the training data. So far in this workshop, you have had your training data available on disk as part of the GitHub repository. However, in many cases the training data is 1-100GB, which makes it non-feasible to store it in GitHub.
 
-In order to achieve this we need to do two things:
-1) Change the path to our data
-2) Mount the fileshare as part of our Github workflow
+One way to solve this problem is to upload your data to an Azure FileShare and mount the fileshare to the Ubuntu build agent as part of each build so that the training application can access it. An Azure FileShare can handle concurrent loads, meaning that multiple build agents can read the data simultaneously. 
 
-### Change the path to our data
+In order to achieve this you need to do two things:
+1) Change the path to your data
+2) Mount the fileshare as part of your Github workflow
+
+### Change the path to your data
 Navigate to the `Program.cs` file and change the `TRAIN_DATA_PATH` variable to:
 ```
   private static string TRAIN_DATA_FILEPATH = @"/media/data/true_car_listings.csv";
 ```
 
-In addition, we'll also need to change the path to where we store our model. To do so, change the `MODEL_FILEPATH` variable to:
+In addition, you'll also need to change the path to where you stored the model. To do so, change the `MODEL_FILEPATH` variable to:
 ```
   private static string MODEL_FILEPATH = MLConfiguration.GetModelPath();
 ```
 
-What this will do is to store the model on the fileshare, with a unique id matching the Git commit SHA.
+This will store the model on the fileshare with a unique ID matching the Git commit SHA.
 Commit the changes to your master branch and push the changes to your repo.
 
-### Mount the fileshare as part of our GitHub workflow
-To mount the fileshare as part of our workflow, open the `dotnet-core.yml' file located under `.github/workflows in your repo. 
+### Mount the fileshare as part of your GitHub workflow
+To mount the fileshare as part of your workflow, open the `dotnet-core.yml` file located under `.github/workflows` in your repo. 
+
 Add the following just before the `Install dependencies` step and commit and push the changes to your master branch.
 
 ```
@@ -76,9 +79,10 @@ jobs:
 
 ```
 
-To mount the fileshare, we will also need to add the access key to the Azure Storage Container as a GitHub secret.
+To mount the fileshare, you will also need to add the access key to the Azure Storage Container as a GitHub secret.
+
 To add a secret, navigate to the `Settings` tab and select `Secrets` in the left menu:
 
 ![secrets](./media/secrets.png)
 
-Click on `New Secret` and add a new secret with the name of `STORAGEKEY`. The value will be provided to you by the facilitators of the workshop.
+Click on `New Secret` and add a new secret with the name `STORAGEKEY`. The value will be provided to you by the workshop facilitators.
