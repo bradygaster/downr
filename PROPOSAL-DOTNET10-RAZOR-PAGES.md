@@ -158,6 +158,13 @@ downr/
 
 ## Admin Section: Online Markdown Editor
 
+> **Note**: The code examples in this section are for illustrative purposes and demonstrate the basic structure and functionality. Production implementation would require additional hardening including:
+> - Proper secrets management (Azure Key Vault, environment variables instead of appsettings.json)
+> - Enhanced CSP policies without 'unsafe-inline' (using nonces or external files)
+> - Custom accessible modal dialogs instead of browser prompt()
+> - User-facing error notifications for failed operations
+> - Additional security audits and penetration testing
+
 ### Overview
 
 A key enhancement for the .NET 10 rewrite is the addition of an optional admin section that provides a web-based interface for managing blog posts. This eliminates the need to manually edit Markdown files in VS Code and commit changes through Git, making downr more accessible to content creators who prefer a browser-based workflow.
@@ -640,24 +647,71 @@ Add admin settings to `appsettings.json`:
 
 ### Security Considerations
 
-1. **Password Hashing**: Use BCrypt or Argon2 for password hashing
-2. **CSRF Protection**: ASP.NET Core's built-in anti-forgery tokens
-3. **Rate Limiting**: Limit login attempts to prevent brute force
-4. **HTTPS Only**: Require HTTPS for admin pages
-5. **Input Validation**: Validate all user input (file uploads, markdown content)
-6. **File Upload Restrictions**: Whitelist allowed file types and sizes
-7. **Content Security Policy**: Implement CSP headers to mitigate XSS risks
+1. **Secrets Management**: **Never store credentials in appsettings.json**
+   - Use Azure Key Vault, AWS Secrets Manager, or HashiCorp Vault
+   - Use environment variables for local development
+   - Example: `builder.Configuration.AddAzureKeyVault()`
+
+2. **Password Hashing**: Use BCrypt or Argon2 for password hashing
+   - Never store plain text passwords
+   - Use strong work factors (BCrypt cost 12+, Argon2 recommended defaults)
+
+3. **CSRF Protection**: ASP.NET Core's built-in anti-forgery tokens
+   - Automatically validated for POST requests
+   - Include `@Html.AntiForgeryToken()` in all forms
+
+4. **Rate Limiting**: Limit login attempts to prevent brute force
+   - Use ASP.NET Core rate limiting middleware (.NET 10)
+   - Lock accounts after N failed attempts
+   - Implement exponential backoff
+
+5. **HTTPS Only**: Require HTTPS for admin pages
+   - Configure HSTS headers
+   - Redirect HTTP to HTTPS
+   - Use `[RequireHttps]` attribute on admin pages
+
+6. **Input Validation**: Validate all user input (file uploads, markdown content)
+   - Server-side validation is mandatory
+   - Whitelist allowed characters in slugs
+   - Sanitize file names
+
+7. **File Upload Restrictions**: Whitelist allowed file types and sizes
+   - Verify file content, not just extension
+   - Limit file sizes (e.g., 5MB max)
+   - Store uploads outside wwwroot if possible
+
+8. **Content Security Policy**: Implement strict CSP headers to mitigate XSS risks
    ```csharp
-   // Program.cs
+   // Program.cs - Production-ready CSP
    app.Use(async (context, next) => {
        if (context.Request.Path.StartsWithSegments("/admin")) {
+           // Use nonces for inline scripts or move all to external files
+           var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+           context.Items["csp-nonce"] = nonce;
            context.Response.Headers.Add("Content-Security-Policy", 
-               "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'");
+               $"default-src 'self'; script-src 'self' 'nonce-{nonce}'; " +
+               $"style-src 'self' 'nonce-{nonce}'; img-src 'self' data:; " +
+               $"font-src 'self'; connect-src 'self'; frame-ancestors 'none'");
        }
        await next();
    });
    ```
-8. **HTML Sanitization**: Server-side HTML sanitization for preview using HtmlAgilityPack
+
+9. **HTML Sanitization**: Multi-layer defense against XSS
+   - Server-side sanitization using HtmlAgilityPack or AngleSharp
+   - Consider using DOMPurify on client-side as second layer
+   - Validate against known-good patterns
+
+10. **Accessibility**: Implement proper UI patterns
+    - Replace `prompt()` with custom modal dialogs
+    - Use ARIA labels and roles
+    - Ensure keyboard navigation works correctly
+    - Test with screen readers
+
+11. **Error Handling**: Provide user-facing feedback
+    - Show clear error messages for failed operations
+    - Log detailed errors server-side only
+    - Never expose stack traces or internal paths to users
 
 ### Benefits of Admin Section
 
