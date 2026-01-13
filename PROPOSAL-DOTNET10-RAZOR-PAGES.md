@@ -368,7 +368,7 @@ public class EditPostModel : PageModel
         </div>
     </div>
     
-    <form method="post" asp-page-handler="Save">
+    <form method="post">
         <!-- YAML Front Matter Section -->
         <div class="card mb-3">
             <div class="card-header">Post Metadata</div>
@@ -515,19 +515,31 @@ class MarkdownEditor {
     }
     
     async updatePreview() {
-        const markdown = this.editor.value;
-        const response = await fetch('/api/preview-markdown', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ markdown })
-        });
-        const html = await response.text();
-        this.preview.innerHTML = html;
-        
-        // Apply syntax highlighting to code blocks
-        this.preview.querySelectorAll('pre code').forEach(block => {
-            hljs.highlightElement(block);
-        });
+        try {
+            const markdown = this.editor.value;
+            const response = await fetch('/api/preview-markdown', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ markdown })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Preview generation failed');
+            }
+            
+            const html = await response.text();
+            // Server sanitizes HTML using HtmlAgilityPack before returning
+            // Additional CSP headers should be configured in Program.cs
+            this.preview.innerHTML = html;
+            
+            // Apply syntax highlighting to code blocks
+            this.preview.querySelectorAll('pre code').forEach(block => {
+                hljs.highlightElement(block);
+            });
+        } catch (error) {
+            console.error('Failed to update preview:', error);
+            this.preview.textContent = 'Preview unavailable. Please check your connection.';
+        }
     }
     
     wrapSelection(before, after) {
@@ -550,7 +562,21 @@ class MarkdownEditor {
         this.updatePreview();
     }
     
+    insertText(text) {
+        const start = this.editor.selectionStart;
+        const value = this.editor.value;
+        this.editor.value = 
+            value.substring(0, start) + 
+            text + 
+            value.substring(start);
+        this.editor.focus();
+        this.editor.setSelectionRange(start + text.length, start + text.length);
+        this.updatePreview();
+    }
+    
     insertLink() {
+        // Note: In production, use custom modal dialogs instead of prompt()
+        // for better UX and accessibility
         const url = prompt('Enter URL:');
         if (url) {
             const text = prompt('Enter link text:', url);
@@ -559,27 +585,34 @@ class MarkdownEditor {
     }
     
     insertImage() {
+        // Note: In production, use custom modal dialogs instead of prompt()
+        // for better UX and accessibility
         const url = prompt('Enter image path (e.g., media/image.png):');
         if (url) {
             const alt = prompt('Enter alt text:', 'image');
-            const start = this.editor.selectionStart;
-            const text = this.editor.value;
-            this.editor.value = 
-                text.substring(0, start) + 
-                `![${alt}](${url})` + 
-                text.substring(start);
-            this.updatePreview();
+            this.insertText(`![${alt}](${url})`);
         }
     }
     
     async autoSave() {
-        const data = new FormData(this.editor.closest('form'));
-        await fetch(window.location.href, {
-            method: 'POST',
-            body: data,
-            headers: { 'X-Auto-Save': 'true' }
-        });
-        console.log('Auto-saved at', new Date().toLocaleTimeString());
+        try {
+            const data = new FormData(this.editor.closest('form'));
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                body: data,
+                headers: { 'X-Auto-Save': 'true' }
+            });
+            
+            if (response.ok) {
+                console.log('Auto-saved at', new Date().toLocaleTimeString());
+            } else {
+                console.error('Auto-save failed:', response.statusText);
+                // In production, show user notification
+            }
+        } catch (error) {
+            console.error('Auto-save error:', error);
+            // In production, show user notification that auto-save failed
+        }
     }
 }
 ```
@@ -613,6 +646,18 @@ Add admin settings to `appsettings.json`:
 4. **HTTPS Only**: Require HTTPS for admin pages
 5. **Input Validation**: Validate all user input (file uploads, markdown content)
 6. **File Upload Restrictions**: Whitelist allowed file types and sizes
+7. **Content Security Policy**: Implement CSP headers to mitigate XSS risks
+   ```csharp
+   // Program.cs
+   app.Use(async (context, next) => {
+       if (context.Request.Path.StartsWithSegments("/admin")) {
+           context.Response.Headers.Add("Content-Security-Policy", 
+               "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'");
+       }
+       await next();
+   });
+   ```
+8. **HTML Sanitization**: Server-side HTML sanitization for preview using HtmlAgilityPack
 
 ### Benefits of Admin Section
 
