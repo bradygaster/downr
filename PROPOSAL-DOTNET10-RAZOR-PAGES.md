@@ -317,26 +317,28 @@ public class StaticAuthService : IStaticAuthService
 
     public StaticAuthService(IConfiguration configuration)
     {
-        // Read from environment variables
+        // Read username from environment variables or configuration
         _username = Environment.GetEnvironmentVariable("DOWNR_ADMIN_USERNAME") 
                    ?? configuration["downr:admin:static:username"];
         
-        var plainPassword = Environment.GetEnvironmentVariable("DOWNR_ADMIN_PASSWORD");
-        if (!string.IsNullOrEmpty(plainPassword))
-        {
-            // Hash the password from environment variable
-            _passwordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 12);
-        }
-        else
-        {
-            _passwordHash = configuration["downr:admin:static:passwordHash"];
-        }
+        // Read password hash from environment variables or configuration
+        // IMPORTANT: Store the BCrypt hash, not plaintext password
+        _passwordHash = Environment.GetEnvironmentVariable("DOWNR_ADMIN_PASSWORD_HASH")
+                       ?? configuration["downr:admin:static:passwordHash"];
         
         if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_passwordHash))
         {
             throw new InvalidOperationException(
-                "Static auth requires DOWNR_ADMIN_USERNAME and DOWNR_ADMIN_PASSWORD environment variables, " +
-                "or downr:admin:static:username and downr:admin:static:passwordHash in configuration");
+                "Static auth requires DOWNR_ADMIN_USERNAME and DOWNR_ADMIN_PASSWORD_HASH " +
+                "environment variables or downr:admin:static configuration");
+        }
+        
+        // Validate that the hash looks like a BCrypt hash
+        if (!_passwordHash.StartsWith("$2a$") && !_passwordHash.StartsWith("$2b$") && !_passwordHash.StartsWith("$2y$"))
+        {
+            throw new InvalidOperationException(
+                "DOWNR_ADMIN_PASSWORD_HASH must be a BCrypt hash (starts with $2a$, $2b$, or $2y$). " +
+                "Generate one using: BCrypt.Net.BCrypt.HashPassword(\"your-password\", 12)");
         }
     }
 
@@ -369,6 +371,9 @@ public class LoginModel : PageModel
     public string Password { get; set; }
 
     public string ReturnUrl { get; set; }
+    
+    // Expose auth provider for view
+    public string AuthProvider => _authProvider;
 
     public LoginModel(IConfiguration configuration, IStaticAuthService staticAuthService = null)
     {
@@ -991,12 +996,39 @@ export DOWNR__ADMIN__GITHUB__CLIENTSECRET="your-github-oauth-app-client-secret"
 
 **Environment Variables for Static Auth:**
 ```bash
-# Set these in your environment - password will be hashed automatically
-export DOWNR_ADMIN_USERNAME="admin"
-export DOWNR_ADMIN_PASSWORD="your-secure-password"
+# IMPORTANT: Store the BCrypt hash, NOT the plaintext password
+# Generate hash using: dotnet run --project HashPassword -- "your-password"
+# Or use an online BCrypt generator with cost factor 12
 
-# Or use pre-hashed password (BCrypt hash)
-# export DOWNR__ADMIN__STATIC__PASSWORDHASH="$2a$12$..."
+export DOWNR_ADMIN_USERNAME="admin"
+export DOWNR_ADMIN_PASSWORD_HASH='$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5sPQ3DjG3vuJm'
+
+# Example C# code to generate hash:
+# var hash = BCrypt.Net.BCrypt.HashPassword("your-password", 12);
+# Console.WriteLine(hash);
+```
+
+**Helper Script for Generating Password Hash:**
+```csharp
+// Create a small console app or use dotnet-script
+// dotnet new console -n HashPassword
+// cd HashPassword
+// dotnet add package BCrypt.Net-Next
+// Replace Program.cs with:
+
+using BCrypt.Net;
+
+if (args.Length == 0)
+{
+    Console.WriteLine("Usage: dotnet run -- <password>");
+    return;
+}
+
+var password = args[0];
+var hash = BCrypt.HashPassword(password, 12);
+Console.WriteLine($"BCrypt Hash (cost 12):\n{hash}");
+Console.WriteLine($"\nSet environment variable:");
+Console.WriteLine($"export DOWNR_ADMIN_PASSWORD_HASH='{hash}'");
 ```
 
 ### Security Considerations
@@ -1017,10 +1049,12 @@ export DOWNR_ADMIN_PASSWORD="your-secure-password"
    - **Future Scopes**: When adding GitHub repo features, add `repo` scope only then
 
 3. **Password Hashing** (When using static authentication)
-   - Use BCrypt or Argon2 for password hashing
-   - Never store plain text passwords
-   - Use strong work factors (BCrypt cost 12+, Argon2 recommended defaults)
-   - Hash passwords from environment variables on application startup
+   - **Store BCrypt hashes in environment variables, NEVER plaintext passwords**
+   - Use BCrypt with cost factor 12 or higher
+   - Generate hash once using helper script or BCrypt tool
+   - Store hash in `DOWNR_ADMIN_PASSWORD_HASH` environment variable
+   - Validate hash format on application startup (must start with $2a$, $2b$, or $2y$)
+   - Never hash passwords on every application startup (security and performance issue)
 
 4. **CSRF Protection**: ASP.NET Core's built-in anti-forgery tokens
    - Automatically validated for POST requests
