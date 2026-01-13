@@ -244,11 +244,30 @@ builder.Services.AddAuthentication(options =>
 // Add GitHub OAuth if configured
 if (authProvider == "github")
 {
+    // Validate required configuration
+    var clientId = builder.Configuration["downr:admin:github:clientId"];
+    var clientSecret = builder.Configuration["downr:admin:github:clientSecret"];
+    var allowedUsersConfig = builder.Configuration["downr:admin:github:allowedUsers"];
+    
+    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+    {
+        throw new InvalidOperationException(
+            "GitHub OAuth requires downr:admin:github:clientId and " +
+            "downr:admin:github:clientSecret to be configured");
+    }
+    
+    if (string.IsNullOrEmpty(allowedUsersConfig))
+    {
+        throw new InvalidOperationException(
+            "GitHub OAuth requires downr:admin:github:allowedUsers to be configured. " +
+            "Specify comma-separated GitHub usernames who can access the admin section.");
+    }
+    
     builder.Services.AddAuthentication()
         .AddGitHub(options =>
         {
-            options.ClientId = builder.Configuration["downr:admin:github:clientId"];
-            options.ClientSecret = builder.Configuration["downr:admin:github:clientSecret"];
+            options.ClientId = clientId;
+            options.ClientSecret = clientSecret;
             options.CallbackPath = "/signin-github";
             options.Scope.Add("user:email");
             // Future: Add "repo" scope for GitHub repository integration
@@ -261,16 +280,18 @@ if (authProvider == "github")
             options.Events.OnCreatingTicket = async context =>
             {
                 // Validate that the GitHub user is authorized
-                var allowedUsers = builder.Configuration["downr:admin:github:allowedUsers"]
-                    ?.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                // Parse allowed users from configuration (already validated as non-empty above)
+                var allowedUsers = allowedUsersConfig
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .Select(u => u.Trim())
-                    .ToList() ?? new List<string>();
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
                 
                 var username = context.Principal.FindFirst("urn:github:login")?.Value;
                 
-                if (allowedUsers.Any() && !allowedUsers.Contains(username))
+                // Fail-safe: deny access if username is missing or not in allowed list
+                if (string.IsNullOrEmpty(username) || !allowedUsers.Contains(username))
                 {
-                    context.Fail("User not authorized to access admin section");
+                    context.Fail($"User '{username}' is not authorized to access the admin section");
                 }
             };
         });
@@ -334,20 +355,36 @@ public class StaticAuthService : IStaticAuthService
         }
         
         // Validate that the hash looks like a BCrypt hash
-        if (!_passwordHash.StartsWith("$2a$") && !_passwordHash.StartsWith("$2b$") && !_passwordHash.StartsWith("$2y$"))
+        // BCrypt hashes start with $2a$, $2b$, $2x$, or $2y$ followed by cost factor
+        if (!System.Text.RegularExpressions.Regex.IsMatch(_passwordHash, @"^\$2[abxy]\$\d{2}\$.{53}$"))
         {
             throw new InvalidOperationException(
-                "DOWNR_ADMIN_PASSWORD_HASH must be a BCrypt hash (starts with $2a$, $2b$, or $2y$). " +
+                "DOWNR_ADMIN_PASSWORD_HASH must be a valid BCrypt hash. " +
                 "Generate one using: BCrypt.Net.BCrypt.HashPassword(\"your-password\", 12)");
         }
     }
 
     public bool ValidateCredentials(string username, string password)
     {
-        if (username != _username)
-            return false;
-            
-        return BCrypt.Net.BCrypt.Verify(password, _passwordHash);
+        // Use constant-time comparison to prevent timing attacks
+        // Always perform both username and password checks
+        
+        bool usernameMatches = string.Equals(username, _username, StringComparison.Ordinal);
+        bool passwordMatches = false;
+        
+        try
+        {
+            // Perform password verification even if username doesn't match
+            // This prevents timing attacks that could determine valid usernames
+            passwordMatches = BCrypt.Net.BCrypt.Verify(password, _passwordHash);
+        }
+        catch
+        {
+            // If verification fails (e.g., malformed hash), return false
+            passwordMatches = false;
+        }
+        
+        return usernameMatches && passwordMatches;
     }
 
     public string GetAuthorizedUsername() => _username;
@@ -380,6 +417,14 @@ public class LoginModel : PageModel
         _configuration = configuration;
         _staticAuthService = staticAuthService;
         _authProvider = configuration["downr:admin:authProvider"] ?? "github";
+        
+        // Validate that static auth service is available when using static provider
+        if (_authProvider == "static" && staticAuthService == null)
+        {
+            throw new InvalidOperationException(
+                "IStaticAuthService must be registered when using static authentication. " +
+                "Add 'services.AddSingleton<IStaticAuthService, StaticAuthService>();' to Program.cs");
+        }
     }
 
     public void OnGet(string returnUrl = null)
@@ -394,7 +439,8 @@ public class LoginModel : PageModel
             if (!ModelState.IsValid)
                 return Page();
 
-            if (_staticAuthService.ValidateCredentials(Username, Password))
+            // _staticAuthService is guaranteed to be non-null here due to constructor validation
+            if (_staticAuthService!.ValidateCredentials(Username, Password))
             {
                 var claims = new List<Claim>
                 {
@@ -1086,11 +1132,17 @@ Console.WriteLine($"export DOWNR_ADMIN_PASSWORD_HASH='{hash}'");
 
 9. **Content Security Policy**: Implement strict CSP headers to mitigate XSS risks
    ```csharp
-   // Program.cs - Production-ready CSP
+   // Program.cs - Production-ready CSP with proper nonce generation
    app.Use(async (context, next) => {
        if (context.Request.Path.StartsWithSegments("/admin")) {
-           // Use nonces for inline scripts or move all to external files
-           var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+           // Generate cryptographically secure nonce
+           byte[] nonceBytes = new byte[32];
+           using (var rng = RandomNumberGenerator.Create())
+           {
+               rng.GetBytes(nonceBytes);
+           }
+           var nonce = Convert.ToBase64String(nonceBytes);
+           
            context.Items["csp-nonce"] = nonce;
            context.Response.Headers.Add("Content-Security-Policy", 
                $"default-src 'self'; script-src 'self' 'nonce-{nonce}'; " +
