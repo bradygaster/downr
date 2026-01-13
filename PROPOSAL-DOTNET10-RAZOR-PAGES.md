@@ -244,6 +244,12 @@ public class PostEditorService : IPostEditorService
     private readonly DownrOptions _options;
     private readonly IWebHostEnvironment _env;
 
+    public async Task<Post> GetPostForEditing(string slug)
+    {
+        // Implementation: Load post from file system or Azure Storage
+        return await Task.FromResult(_indexer.Posts.FirstOrDefault(p => p.Slug == slug));
+    }
+
     public async Task<bool> SavePost(PostEditorModel model)
     {
         // 1. Validate model (slug uniqueness, required fields)
@@ -252,6 +258,19 @@ public class PostEditorService : IPostEditorService
         // 4. Write to disk: wwwroot/posts/{slug}/index.md
         // 5. Trigger content re-indexing
         // 6. Return success/failure
+        return await Task.FromResult(true);
+    }
+
+    public async Task<bool> CreatePost(PostEditorModel model)
+    {
+        // Similar to SavePost but create new directory structure
+        return await Task.FromResult(true);
+    }
+
+    public async Task<bool> DeletePost(string slug)
+    {
+        // Delete post directory and trigger re-indexing
+        return await Task.FromResult(true);
     }
 
     public async Task<string> UploadImage(string slug, IFormFile file)
@@ -261,6 +280,21 @@ public class PostEditorService : IPostEditorService
         // 3. Generate safe filename
         // 4. Save file to disk
         // 5. Return relative path: media/{filename}
+        return await Task.FromResult($"media/{file.FileName}");
+    }
+
+    public async Task<List<string>> GetPostImages(string slug)
+    {
+        // Get list of images in post's media folder
+        var mediaPath = Path.Combine(_env.WebRootPath, "posts", slug, "media");
+        if (!Directory.Exists(mediaPath))
+            return new List<string>();
+            
+        return await Task.FromResult(
+            Directory.GetFiles(mediaPath)
+                     .Select(f => Path.GetFileName(f))
+                     .ToList()
+        );
     }
 }
 ```
