@@ -308,7 +308,7 @@ builder.Services.AddResponseCompression(options =>
         new[] { "image/svg+xml", "application/font-woff2" });
 });
 
-// Add output caching (new in .NET 8+)
+// Add output caching (available in .NET 10)
 builder.Services.AddOutputCache(options =>
 {
     options.AddBasePolicy(builder => builder.Cache());
