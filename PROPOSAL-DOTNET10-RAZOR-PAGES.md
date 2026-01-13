@@ -439,30 +439,30 @@ Recommendation: Use Option 1 to maintain similar UX to current implementation.
 ## Timeline and Milestones
 
 ### Sprint 1 (Week 1)
-- ✅ Project setup and migration
-- ✅ Core services migration
-- ✅ Configuration system
+- [ ] Project setup and migration
+- [ ] Core services migration
+- [ ] Configuration system
 
 ### Sprint 2 (Week 2)
-- ✅ Index page implementation
-- ✅ Post page implementation
-- ✅ Basic styling
+- [ ] Index page implementation
+- [ ] Post page implementation
+- [ ] Basic styling
 
 ### Sprint 3 (Week 3)
-- ✅ Category pages
-- ✅ RSS feed migration
-- ✅ Complete styling
+- [ ] Category pages
+- [ ] RSS feed migration
+- [ ] Complete styling
 
 ### Sprint 4 (Week 4)
-- ✅ Storage adapters
-- ✅ Background workers
-- ✅ Performance optimization
+- [ ] Storage adapters
+- [ ] Background workers
+- [ ] Performance optimization
 
 ### Sprint 5 (Week 5)
-- ✅ Testing
-- ✅ Documentation
-- ✅ Migration guide
-- ✅ Release preparation
+- [ ] Testing
+- [ ] Documentation
+- [ ] Migration guide
+- [ ] Release preparation
 
 ## Package Updates
 
