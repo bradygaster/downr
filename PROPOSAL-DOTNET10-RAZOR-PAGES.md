@@ -172,10 +172,22 @@ A key enhancement for the .NET 10 rewrite is the addition of an optional admin s
 ### Features
 
 #### 1. **Authentication & Authorization**
-- Simple username/password authentication using ASP.NET Core Identity
+- **Primary**: GitHub OAuth authentication for seamless GitHub integration
+- **Alternative**: Static username/password from environment variables (no database required)
 - Cookie-based authentication for admin sessions
-- Configurable admin credentials in appsettings.json
-- Optional: Integration with Azure AD or other OAuth providers
+- Easy configuration to swap between authentication providers
+- Future-ready for GitHub repository integration (commit/push from admin UI)
+
+**GitHub OAuth Benefits:**
+- Leverage existing GitHub account (no separate credentials)
+- Natural fit for developers already using GitHub for content
+- Enables future features like committing posts directly to GitHub repo
+- Built-in security and 2FA support from GitHub
+
+**Static Credentials Option:**
+- Simple deployment without external dependencies
+- Username and password stored in environment variables
+- Suitable for single-user scenarios or air-gapped deployments
 
 #### 2. **Post Management Dashboard**
 - List all posts with search and filter capabilities
@@ -208,8 +220,73 @@ A key enhancement for the .NET 10 rewrite is the addition of an optional admin s
 
 #### Authentication Setup
 
+The admin section supports two authentication providers that can be easily swapped via configuration.
+
+**GitHub OAuth Authentication (Recommended)**
+
 ```csharp
 // Program.cs
+var authProvider = builder.Configuration["downr:admin:authProvider"] ?? "github";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = authProvider == "github" ? "GitHub" : CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "/admin/login";
+    options.LogoutPath = "/admin/logout";
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+});
+
+// Add GitHub OAuth if configured
+if (authProvider == "github")
+{
+    builder.Services.AddAuthentication()
+        .AddGitHub(options =>
+        {
+            options.ClientId = builder.Configuration["downr:admin:github:clientId"];
+            options.ClientSecret = builder.Configuration["downr:admin:github:clientSecret"];
+            options.CallbackPath = "/signin-github";
+            options.Scope.Add("user:email");
+            // Future: Add "repo" scope for GitHub repository integration
+            options.SaveTokens = true; // Save access token for future GitHub API calls
+            
+            options.ClaimActions.MapJsonKey("urn:github:login", "login");
+            options.ClaimActions.MapJsonKey("urn:github:url", "html_url");
+            options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
+            
+            options.Events.OnCreatingTicket = async context =>
+            {
+                // Validate that the GitHub user is authorized
+                var allowedUsers = builder.Configuration["downr:admin:github:allowedUsers"]
+                    ?.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(u => u.Trim())
+                    .ToList() ?? new List<string>();
+                
+                var username = context.Principal.FindFirst("urn:github:login")?.Value;
+                
+                if (allowedUsers.Any() && !allowedUsers.Contains(username))
+                {
+                    context.Fail("User not authorized to access admin section");
+                }
+            };
+        });
+}
+
+builder.Services.AddAuthorization();
+
+// After app.UseRouting()
+app.UseAuthentication();
+app.UseAuthorization();
+```
+
+**Static Username/Password Authentication**
+
+```csharp
+// Program.cs - When authProvider is "static"
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -220,9 +297,200 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization();
 
-// After app.UseRouting()
-app.UseAuthentication();
-app.UseAuthorization();
+// Register static credentials service
+builder.Services.AddSingleton<IStaticAuthService, StaticAuthService>();
+```
+
+**StaticAuthService Implementation**
+
+```csharp
+public interface IStaticAuthService
+{
+    bool ValidateCredentials(string username, string password);
+    string GetAuthorizedUsername();
+}
+
+public class StaticAuthService : IStaticAuthService
+{
+    private readonly string _username;
+    private readonly string _passwordHash;
+
+    public StaticAuthService(IConfiguration configuration)
+    {
+        // Read from environment variables
+        _username = Environment.GetEnvironmentVariable("DOWNR_ADMIN_USERNAME") 
+                   ?? configuration["downr:admin:static:username"];
+        
+        var plainPassword = Environment.GetEnvironmentVariable("DOWNR_ADMIN_PASSWORD");
+        if (!string.IsNullOrEmpty(plainPassword))
+        {
+            // Hash the password from environment variable
+            _passwordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword, 12);
+        }
+        else
+        {
+            _passwordHash = configuration["downr:admin:static:passwordHash"];
+        }
+        
+        if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_passwordHash))
+        {
+            throw new InvalidOperationException(
+                "Static auth requires DOWNR_ADMIN_USERNAME and DOWNR_ADMIN_PASSWORD environment variables, " +
+                "or downr:admin:static:username and downr:admin:static:passwordHash in configuration");
+        }
+    }
+
+    public bool ValidateCredentials(string username, string password)
+    {
+        if (username != _username)
+            return false;
+            
+        return BCrypt.Net.BCrypt.Verify(password, _passwordHash);
+    }
+
+    public string GetAuthorizedUsername() => _username;
+}
+```
+
+**Login Page Implementation**
+
+```csharp
+// Pages/Admin/Login.cshtml.cs
+public class LoginModel : PageModel
+{
+    private readonly IConfiguration _configuration;
+    private readonly IStaticAuthService _staticAuthService;
+    private readonly string _authProvider;
+
+    [BindProperty]
+    public string Username { get; set; }
+
+    [BindProperty]
+    public string Password { get; set; }
+
+    public string ReturnUrl { get; set; }
+
+    public LoginModel(IConfiguration configuration, IStaticAuthService staticAuthService = null)
+    {
+        _configuration = configuration;
+        _staticAuthService = staticAuthService;
+        _authProvider = configuration["downr:admin:authProvider"] ?? "github";
+    }
+
+    public void OnGet(string returnUrl = null)
+    {
+        ReturnUrl = returnUrl ?? "/admin/dashboard";
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (_authProvider == "static")
+        {
+            if (!ModelState.IsValid)
+                return Page();
+
+            if (_staticAuthService.ValidateCredentials(Username, Password))
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, Username),
+                    new Claim("auth_provider", "static")
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
+                };
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
+
+                return LocalRedirect(ReturnUrl);
+            }
+
+            ModelState.AddModelError("", "Invalid username or password");
+            return Page();
+        }
+        else // GitHub OAuth
+        {
+            // Trigger GitHub OAuth flow
+            return Challenge(new AuthenticationProperties { RedirectUri = ReturnUrl }, "GitHub");
+        }
+    }
+}
+```
+
+**Login Page UI**
+
+```html
+<!-- Pages/Admin/Login.cshtml -->
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Admin Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - downr</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/admin/css/admin.css" />
+</head>
+<body class="login-page">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">downr Admin</h2>
+                        
+                        @if (Model.AuthProvider == "github")
+                        {
+                            <form method="post">
+                                <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                                <button type="submit" class="btn btn-dark btn-lg w-100">
+                                    <svg width="20" height="20" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                                    </svg>
+                                    Sign in with GitHub
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post">
+                                <input type="hidden" asp-for="ReturnUrl" />
+                                <div class="mb-3">
+                                    <label asp-for="Username" class="form-label">Username</label>
+                                    <input asp-for="Username" class="form-control" autofocus />
+                                    <span asp-validation-for="Username" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Password" class="form-label">Password</label>
+                                    <input asp-for="Password" type="password" class="form-control" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                                <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+                <p class="text-center text-muted mt-3">
+                    <small>Authentication: @Model.AuthProvider</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```
 ```
 
 #### PostEditorService
@@ -662,6 +930,8 @@ class MarkdownEditor {
 
 Add admin settings to `appsettings.json`:
 
+**GitHub OAuth Configuration (Recommended)**
+
 ```json
 {
   "downr": {
@@ -671,50 +941,116 @@ Add admin settings to `appsettings.json`:
     "siteMode": "Blog",
     "admin": {
       "enabled": true,
-      "username": "admin",
-      "passwordHash": "$2a$11$...", // BCrypt hash
+      "authProvider": "github",
+      "github": {
+        "clientId": "[FROM_ENVIRONMENT]",
+        "clientSecret": "[FROM_ENVIRONMENT]",
+        "allowedUsers": "yourgithubusername,anothergithubuser"
+      },
       "sessionTimeoutMinutes": 480
     }
   }
 }
 ```
 
+**Environment Variables for GitHub OAuth:**
+```bash
+# Set these in your environment or hosting platform
+export DOWNR__ADMIN__GITHUB__CLIENTID="your-github-oauth-app-client-id"
+export DOWNR__ADMIN__GITHUB__CLIENTSECRET="your-github-oauth-app-client-secret"
+```
+
+**Setting up GitHub OAuth App:**
+1. Go to GitHub Settings → Developer settings → OAuth Apps
+2. Create a new OAuth App
+3. Set Authorization callback URL to: `https://yourdomain.com/signin-github`
+4. Copy Client ID and Client Secret to environment variables
+5. Add your GitHub username to `allowedUsers` in configuration
+
+**Static Username/Password Configuration**
+
+```json
+{
+  "downr": {
+    "title": "downr",
+    "rootUrl": "https://localhost:5001",
+    "pageSize": 4,
+    "siteMode": "Blog",
+    "admin": {
+      "enabled": true,
+      "authProvider": "static",
+      "static": {
+        "username": "[FROM_ENVIRONMENT]",
+        "passwordHash": "[FROM_ENVIRONMENT]"
+      },
+      "sessionTimeoutMinutes": 480
+    }
+  }
+}
+```
+
+**Environment Variables for Static Auth:**
+```bash
+# Set these in your environment - password will be hashed automatically
+export DOWNR_ADMIN_USERNAME="admin"
+export DOWNR_ADMIN_PASSWORD="your-secure-password"
+
+# Or use pre-hashed password (BCrypt hash)
+# export DOWNR__ADMIN__STATIC__PASSWORDHASH="$2a$12$..."
+```
+
 ### Security Considerations
 
 1. **Secrets Management**: **Never store credentials in appsettings.json**
-   - Use Azure Key Vault, AWS Secrets Manager, or HashiCorp Vault
+   - Use Azure Key Vault, AWS Secrets Manager, or HashiCorp Vault for production
    - Use environment variables for local development
+   - GitHub OAuth secrets: Store Client ID and Client Secret in environment variables
+   - Static auth: Store username and password in environment variables
    - Example: `builder.Configuration.AddAzureKeyVault()`
 
-2. **Password Hashing**: Use BCrypt or Argon2 for password hashing
+2. **GitHub OAuth Security** (When using GitHub authentication)
+   - **User Validation**: Always validate authorized users via `allowedUsers` list
+   - **Scope Limitations**: Only request necessary OAuth scopes (`user:email` is sufficient for auth)
+   - **Token Storage**: Access tokens stored securely in encrypted cookies
+   - **Callback URL**: Ensure callback URL matches OAuth app configuration exactly
+   - **State Validation**: ASP.NET Core OAuth middleware handles CSRF state validation automatically
+   - **Future Scopes**: When adding GitHub repo features, add `repo` scope only then
+
+3. **Password Hashing** (When using static authentication)
+   - Use BCrypt or Argon2 for password hashing
    - Never store plain text passwords
    - Use strong work factors (BCrypt cost 12+, Argon2 recommended defaults)
+   - Hash passwords from environment variables on application startup
 
-3. **CSRF Protection**: ASP.NET Core's built-in anti-forgery tokens
+4. **CSRF Protection**: ASP.NET Core's built-in anti-forgery tokens
    - Automatically validated for POST requests
    - Include `@Html.AntiForgeryToken()` in all forms
+   - OAuth flow includes state parameter for CSRF protection
 
-4. **Rate Limiting**: Limit login attempts to prevent brute force
+5. **Rate Limiting**: Limit login attempts to prevent brute force
    - Use ASP.NET Core rate limiting middleware (.NET 10)
-   - Lock accounts after N failed attempts
-   - Implement exponential backoff
+   - Apply rate limiting to `/admin/login` endpoint
+   - Implement exponential backoff for failed attempts
+   - GitHub OAuth has built-in rate limiting
 
-5. **HTTPS Only**: Require HTTPS for admin pages
+6. **HTTPS Only**: Require HTTPS for admin pages
    - Configure HSTS headers
    - Redirect HTTP to HTTPS
    - Use `[RequireHttps]` attribute on admin pages
+   - GitHub OAuth requires HTTPS callback URLs in production
 
-6. **Input Validation**: Validate all user input (file uploads, markdown content)
+7. **Input Validation**: Validate all user input (file uploads, markdown content)
    - Server-side validation is mandatory
    - Whitelist allowed characters in slugs
    - Sanitize file names
+   - Validate GitHub usernames against allowed list
 
-7. **File Upload Restrictions**: Whitelist allowed file types and sizes
+8. **File Upload Restrictions**: Whitelist allowed file types and sizes
    - Verify file content, not just extension
    - Limit file sizes (e.g., 5MB max)
    - Store uploads outside wwwroot if possible
 
-8. **Content Security Policy**: Implement strict CSP headers to mitigate XSS risks
+9. **Content Security Policy**: Implement strict CSP headers to mitigate XSS risks
    ```csharp
    // Program.cs - Production-ready CSP
    app.Use(async (context, next) => {
@@ -724,28 +1060,34 @@ Add admin settings to `appsettings.json`:
            context.Items["csp-nonce"] = nonce;
            context.Response.Headers.Add("Content-Security-Policy", 
                $"default-src 'self'; script-src 'self' 'nonce-{nonce}'; " +
-               $"style-src 'self' 'nonce-{nonce}'; img-src 'self' data:; " +
-               $"font-src 'self'; connect-src 'self'; frame-ancestors 'none'");
+               $"style-src 'self' 'nonce-{nonce}'; img-src 'self' data: https://avatars.githubusercontent.com; " +
+               $"font-src 'self'; connect-src 'self' https://github.com; frame-ancestors 'none'");
        }
        await next();
    });
    ```
 
-9. **HTML Sanitization**: Multi-layer defense against XSS
-   - Server-side sanitization using HtmlAgilityPack or AngleSharp
-   - Consider using DOMPurify on client-side as second layer
-   - Validate against known-good patterns
+10. **HTML Sanitization**: Multi-layer defense against XSS
+    - Server-side sanitization using HtmlAgilityPack or AngleSharp
+    - Consider using DOMPurify on client-side as second layer
+    - Validate against known-good patterns
 
-10. **Accessibility**: Implement proper UI patterns
+11. **Accessibility**: Implement proper UI patterns
     - Replace `prompt()` with custom modal dialogs
     - Use ARIA labels and roles
     - Ensure keyboard navigation works correctly
     - Test with screen readers
 
-11. **Error Handling**: Provide user-facing feedback
+12. **Error Handling**: Provide user-facing feedback
     - Show clear error messages for failed operations
     - Log detailed errors server-side only
     - Never expose stack traces or internal paths to users
+
+13. **Authorization**: Additional checks beyond authentication
+    - Verify user is in `allowedUsers` list (GitHub OAuth)
+    - Use `[Authorize]` attribute on all admin pages
+    - Check authorization on every admin API endpoint
+    - Log all admin actions for audit trail
 
 ### Benefits of Admin Section
 
@@ -753,9 +1095,58 @@ Add admin settings to `appsettings.json`:
 ✅ **Ease of Use**: No need for Git knowledge or VS Code  
 ✅ **Live Preview**: See rendered output while editing  
 ✅ **Reduced Errors**: Form validation for metadata  
-✅ **Faster Workflow**: No commit/push/pull cycle  
+✅ **Faster Workflow**: No commit/push/pull cycle (when using filesystem)  
 ✅ **Image Management**: Upload images directly through UI  
 ✅ **Auto-Save**: Prevent accidental data loss  
+✅ **GitHub Integration**: Native OAuth authentication with GitHub account  
+✅ **Future-Ready**: Foundation for GitHub repository integration features  
+
+### GitHub Integration Roadmap
+
+The GitHub OAuth authentication lays the groundwork for powerful future features:
+
+**Phase 1 (Current)**: GitHub OAuth Authentication
+- Authenticate using your GitHub account
+- Validate authorized users via GitHub username
+- Store GitHub access token for future use
+
+**Phase 2 (Future)**: Git Commit & Push from Admin UI
+- Save posts and automatically commit to GitHub repository
+- Generate meaningful commit messages (e.g., "Update post: post-title")
+- Push changes directly to your blog's GitHub repo
+- View commit history in admin dashboard
+
+**Phase 3 (Future)**: GitHub Repository as Storage
+- Pull latest posts from GitHub repository on startup
+- Sync local file system with GitHub repo
+- Enable collaboration: multiple authors can commit via GitHub
+- Content versioning through Git history
+
+**Phase 4 (Future)**: Advanced GitHub Features
+- Create pull requests from admin UI for draft posts
+- Review and approve posts via GitHub PR workflow
+- Branch management for different environments (staging/production)
+- Webhook integration for automatic deployments
+
+**Implementation Notes:**
+- Access token saved during OAuth flow enables GitHub API calls
+- `SaveTokens = true` in OAuth configuration stores access token
+- Future `PostEditorService` can use `Octokit` library for GitHub operations
+- Example future code:
+  ```csharp
+  public async Task<bool> SavePostToGitHub(PostEditorModel model)
+  {
+      var accessToken = await HttpContext.GetTokenAsync("access_token");
+      var github = new GitHubClient(new ProductHeaderValue("downr"))
+      {
+          Credentials = new Credentials(accessToken)
+      };
+      
+      // Create/update file in repository
+      // Generate commit message
+      // Push to GitHub
+  }
+  ```
 
 ### Optional vs. Default
 
@@ -764,6 +1155,7 @@ The admin section should be **optional** and disabled by default:
 - New users can opt-in to admin section via configuration
 - Both workflows can coexist (admin UI + Git commits)
 - Admin UI respects the same file structure
+- **Authentication provider is configurable**: GitHub OAuth or static credentials
 
 ## Migration Strategy
 
@@ -1151,9 +1543,14 @@ Recommendation: Use Option 1 to maintain similar UX to current implementation.
 - `HtmlAgilityPack` → Latest stable version
 
 ### Packages to Add (for Admin Section)
-- `BCrypt.Net-Next` → For password hashing
-- `Microsoft.AspNetCore.Identity.EntityFrameworkCore` (optional) → For advanced auth
+- `AspNet.Security.OAuth.GitHub` → For GitHub OAuth authentication
+- `BCrypt.Net-Next` → For static password hashing (optional)
 - `Bootstrap Icons` → For admin UI icons
+- `Octokit` (future) → For GitHub API integration (commit/push features)
+
+**Authentication Provider Packages:**
+- **GitHub OAuth**: `AspNet.Security.OAuth.GitHub` (required)
+- **Static Auth**: `BCrypt.Net-Next` (required only if using static auth)
 
 ### Packages to Keep
 - `Microsoft.AspNetCore.ResponseCompression`
@@ -1162,6 +1559,8 @@ Recommendation: Use Option 1 to maintain similar UX to current implementation.
 ## Configuration Changes
 
 Minimal changes required. Current `appsettings.json` structure remains compatible, with optional admin section:
+
+**Example 1: GitHub OAuth Authentication (Recommended)**
 
 ```json
 {
@@ -1180,8 +1579,12 @@ Minimal changes required. Current `appsettings.json` structure remains compatibl
     "showPhaseLabels": true,
     "admin": {
       "enabled": false,
-      "username": "admin",
-      "passwordHash": "",
+      "authProvider": "github",
+      "github": {
+        "clientId": "[FROM_ENVIRONMENT]",
+        "clientSecret": "[FROM_ENVIRONMENT]",
+        "allowedUsers": "yourgithubusername"
+      },
       "sessionTimeoutMinutes": 480,
       "maxImageUploadSizeMB": 5,
       "allowedImageExtensions": [".jpg", ".jpeg", ".png", ".gif", ".webp"]
@@ -1194,7 +1597,47 @@ Minimal changes required. Current `appsettings.json` structure remains compatibl
 }
 ```
 
-**Note**: Admin section is disabled by default. Users who want to use the web-based editor can enable it by setting `admin.enabled` to `true` and configuring credentials.
+**Example 2: Static Username/Password Authentication**
+
+```json
+{
+  "downr": {
+    "title": "downr",
+    "rootUrl": "https://localhost:5001",
+    "pageSize": 4,
+    "author": "author name",
+    "indexPageText": "my blog",
+    "imagePathFormat": "/posts/{0}/media/",
+    "autoRefreshInterval": 0,
+    "googleTrackingCode": "",
+    "siteMode": "Blog",
+    "showTopMostTitleBar": true,
+    "showCategoryMenu": true,
+    "showPhaseLabels": true,
+    "admin": {
+      "enabled": false,
+      "authProvider": "static",
+      "static": {
+        "username": "[FROM_ENVIRONMENT]",
+        "passwordHash": "[FROM_ENVIRONMENT]"
+      },
+      "sessionTimeoutMinutes": 480,
+      "maxImageUploadSizeMB": 5,
+      "allowedImageExtensions": [".jpg", ".jpeg", ".png", ".gif", ".webp"]
+    }
+  },
+  "downr.AzureStorage": {
+    "ConnectionString": "",
+    "Container": "posts"
+  }
+}
+```
+
+**Notes**: 
+- Admin section is disabled by default
+- Authentication provider is configurable: `"github"` or `"static"`
+- Secrets (OAuth keys, passwords) should come from environment variables, not appsettings.json
+- To swap auth providers, simply change `authProvider` value and provide appropriate configuration
 
 ## SEO Enhancements (Bonus)
 
@@ -1232,22 +1675,32 @@ The migration is straightforward, maintains backward compatibility for content a
 
 1. **Core Migration**: Move from Blazor WebAssembly to server-rendered Razor Pages
 2. **Admin Section** (Optional): Web-based Markdown editor with live preview, making downr accessible to users who prefer not to use Git/VS Code
-3. **Dual Workflow Support**: Continue using Git + VS Code, or use the new admin UI, or both
+3. **Flexible Authentication**: 
+   - **GitHub OAuth** (recommended): Natural fit for developers, enables future GitHub integration
+   - **Static credentials**: Simple alternative for air-gapped or single-user deployments
+   - Easy to swap between providers via configuration
+4. **Future GitHub Integration**: Foundation for committing/pushing posts directly to GitHub repository
+5. **Dual Workflow Support**: Continue using Git + VS Code, or use the new admin UI, or both
 
 ## Next Steps
 
 1. **Community Feedback**: Gather feedback on this proposal
-2. **Prototype**: Create proof-of-concept with Index, Post pages, and basic admin editor
-3. **Performance Testing**: Benchmark proposed vs current architecture
-4. **Admin UI Mockups**: Design mockups for admin section
-5. **Implementation**: Follow the migration strategy outlined above
-6. **Documentation**: Update all documentation for new architecture
-7. **Release**: Ship .NET 10 version as downr 4.0
+2. **GitHub OAuth Setup**: Create GitHub OAuth App and test authentication flow
+3. **Prototype**: Create proof-of-concept with Index, Post pages, and admin editor with GitHub auth
+4. **Performance Testing**: Benchmark proposed vs current architecture
+5. **Admin UI Mockups**: Design mockups for admin section
+6. **Implementation**: Follow the migration strategy outlined above
+7. **Documentation**: Update all documentation for new architecture
+8. **GitHub Integration Planning**: Design workflow for future GitHub repository features
+9. **Release**: Ship .NET 10 version as downr 4.0
 
 ---
 
-**Proposal Version**: 1.1  
+**Proposal Version**: 1.2  
 **Date**: January 2026  
 **Author**: GitHub Copilot Agent  
 **Status**: Draft for Review  
-**Last Updated**: Added admin section with online Markdown editor
+**Last Updated**: 
+- Added admin section with online Markdown editor
+- Changed authentication to GitHub OAuth (primary) with static credentials fallback
+- Added GitHub integration roadmap for future features
