@@ -117,6 +117,460 @@ downr/
 4. **HTML Response**: Complete HTML page sent to browser
 5. **Progressive Enhancement**: Optional JavaScript for syntax highlighting
 
+## .NET Aspire Support for Local Development
+
+### Overview
+
+.NET Aspire integration provides a modern cloud-ready development experience while maintaining simple deployment options. The downr application can run as a standalone Razor Pages app OR as an Aspire-orchestrated application, giving developers flexibility without compromising simplicity.
+
+### Why Aspire for downr?
+
+**Benefits:**
+- **Local Development Dashboard**: Visual overview of app health, logs, and telemetry
+- **Service Discovery**: Easy integration if you want to add databases, Redis, or other services
+- **Observability**: Built-in OpenTelemetry support for distributed tracing and metrics
+- **Configuration Management**: Centralized configuration and secrets across services
+- **Future Extensibility**: Simple path to add APIs, background jobs, or other microservices
+- **Testing**: Easy to test with Azure resources (storage, databases) locally via emulators
+
+**Key Design Principle:**
+- Aspire is **optional** for development - the app runs perfectly fine without it
+- Deployment remains simple - deploy as a standard Linux App Service
+- OR deploy full Aspire solution to Azure Container Apps for advanced scenarios
+
+### Project Structure with Aspire
+
+```
+downr/
+├── downr.AppHost/              # Aspire orchestration (optional)
+│   ├── downr.AppHost.csproj
+│   ├── Program.cs              # Aspire app host configuration
+│   └── appsettings.json
+├── downr.ServiceDefaults/      # Shared Aspire defaults (optional)
+│   ├── downr.ServiceDefaults.csproj
+│   └── Extensions.cs           # Health checks, telemetry, resilience
+├── downr.Web/                  # Main application (can run standalone)
+│   ├── downr.Web.csproj        # Updated with Aspire references
+│   ├── Program.cs              # Works with or without Aspire
+│   ├── Pages/                  # Razor Pages
+│   ├── Services/               # Business logic
+│   └── wwwroot/
+└── downr.sln                   # Solution file
+```
+
+### AppHost Configuration (Program.cs)
+
+```csharp
+// downr.AppHost/Program.cs
+var builder = DistributedApplication.CreateBuilder(args);
+
+// Add the main downr web application
+var web = builder.AddProject<Projects.downr_Web>("downr-web")
+    .WithExternalHttpEndpoints(); // Allow external access
+
+// Optional: Add Azure Storage emulator for local development
+var storage = builder.AddAzureStorage("storage")
+    .RunAsEmulator();
+
+var blobs = storage.AddBlobs("posts");
+
+// Configure downr to use the storage
+web.WithReference(blobs);
+
+// Optional: Add Redis for output caching (future enhancement)
+// var redis = builder.AddRedis("cache");
+// web.WithReference(redis);
+
+// Optional: Add Application Insights for telemetry
+// var appInsights = builder.AddAzureApplicationInsights("insights");
+// web.WithReference(appInsights);
+
+builder.Build().Run();
+```
+
+### ServiceDefaults Configuration
+
+```csharp
+// downr.ServiceDefaults/Extensions.cs
+public static class Extensions
+{
+    public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
+    {
+        // Add health checks
+        builder.Services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy());
+
+        // Add default OpenTelemetry configuration
+        builder.Services.AddOpenTelemetry()
+            .WithMetrics(metrics =>
+            {
+                metrics.AddAspNetCoreInstrumentation()
+                       .AddHttpClientInstrumentation()
+                       .AddRuntimeInstrumentation();
+            })
+            .WithTracing(tracing =>
+            {
+                tracing.AddAspNetCoreInstrumentation()
+                       .AddHttpClientInstrumentation();
+            });
+
+        // Configure logging with OpenTelemetry
+        builder.Logging.AddOpenTelemetry(logging =>
+        {
+            logging.IncludeFormattedMessage = true;
+            logging.IncludeScopes = true;
+        });
+
+        // Add default resilience patterns (retry, circuit breaker)
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            http.AddStandardResilienceHandler();
+        });
+
+        return builder;
+    }
+}
+```
+
+### Updated downr.Web Program.cs
+
+```csharp
+// downr.Web/Program.cs
+var builder = WebApplication.CreateBuilder(args);
+
+// Add Aspire service defaults if available (graceful degradation)
+if (builder.Environment.IsDevelopment())
+{
+    try
+    {
+        builder.AddServiceDefaults();
+    }
+    catch
+    {
+        // Aspire not available, continue without it
+    }
+}
+
+// Standard downr configuration
+builder.Services.AddResponseCompression(options =>
+{
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "image/svg+xml", "application/font-woff2" });
+});
+
+builder.Services.AddRazorPages();
+
+// Add downr services
+builder.Services.AddDownr(builder.Configuration)
+    .WithWebServerFileSystemStorage();
+    // OR .WithAzureStorage(); // Aspire can inject Azure Storage connection
+
+// Admin section
+var authProvider = builder.Configuration["downr:admin:authProvider"] ?? "github";
+if (authProvider == "github")
+{
+    builder.Services.AddAuthentication()
+        .AddCookie()
+        .AddGitHub(options =>
+        {
+            options.ClientId = builder.Configuration["downr:admin:github:clientId"];
+            options.ClientSecret = builder.Configuration["downr:admin:github:clientSecret"];
+        });
+}
+
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+
+// Map default endpoints (includes health checks from Aspire)
+if (builder.Environment.IsDevelopment())
+{
+    try
+    {
+        app.MapDefaultEndpoints(); // Aspire health checks
+    }
+    catch
+    {
+        // Aspire not available
+    }
+}
+
+// Standard downr middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseResponseCompression();
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+app.MapControllers();
+
+app.UseDownr()
+    .WithWebServerFileSystemStorage();
+
+app.Run();
+```
+
+### Running with Aspire (Local Development)
+
+**Option 1: With Aspire Dashboard**
+```bash
+# Run the Aspire AppHost - launches dashboard and all services
+cd downr.AppHost
+dotnet run
+
+# Opens browser to Aspire dashboard (typically http://localhost:15888)
+# Shows:
+# - downr-web running with health status
+# - Logs and traces from the application
+# - Metrics and performance data
+# - Connected resources (storage emulator, etc.)
+```
+
+**Option 2: Standalone (Traditional)**
+```bash
+# Run just the web app without Aspire
+cd downr.Web
+dotnet run
+
+# App runs normally on https://localhost:5001
+```
+
+### Deployment Options
+
+#### Option 1: Simple Linux App Service (Recommended for Most)
+
+Deploy the `downr.Web` project as a standard web app:
+
+```bash
+# Build and publish
+dotnet publish downr.Web -c Release -o ./publish
+
+# Deploy to Azure App Service
+az webapp up --name my-downr-blog --runtime "DOTNETCORE:10.0"
+```
+
+**Characteristics:**
+- Simple, single-container deployment
+- Low cost (can use free tier for testing)
+- No Aspire dependencies in production
+- Standard App Service features (auto-scaling, deployment slots, etc.)
+
+#### Option 2: Azure Container Apps with Aspire (Advanced Scenarios)
+
+Use when you need:
+- Multiple services (future APIs, background workers)
+- Service-to-service communication
+- Advanced observability
+- Microservices architecture
+
+```bash
+# Install Aspire tooling
+dotnet tool install -g Microsoft.NET.Aspire.Hosting.Orchestration
+
+# Deploy entire Aspire solution
+azd init
+azd up
+
+# Deploys:
+# - downr.Web to Container Apps
+# - Azure Storage account (if configured)
+# - Application Insights
+# - Container Apps Environment with all infrastructure
+```
+
+### Aspire Dashboard Features
+
+When running with Aspire locally, developers get:
+
+**1. Resources View**
+- Health status of downr.Web application
+- Connected resources (storage, cache, databases)
+- Resource endpoints and connection strings
+
+**2. Console Logs**
+- Real-time log streaming from the application
+- Filterable by log level and source
+- Search across all logs
+
+**3. Structured Logs**
+- Detailed log entries with structured data
+- Correlation IDs for request tracking
+- Exception details and stack traces
+
+**4. Traces**
+- Distributed tracing for HTTP requests
+- Database query performance
+- External service calls
+- Visual timeline of request flow
+
+**5. Metrics**
+- Request rates and durations
+- Memory and CPU usage
+- Custom business metrics
+- Historical data visualization
+
+### Adding Azure Storage via Aspire
+
+Example: Switch from filesystem to Azure Storage for posts
+
+```csharp
+// downr.AppHost/Program.cs
+var storage = builder.AddAzureStorage("storage");
+var blobs = storage.AddBlobs("posts");
+
+var web = builder.AddProject<Projects.downr_Web>("downr-web")
+    .WithReference(blobs)
+    .WithEnvironment("downr__StorageMode", "AzureBlobs");
+
+// downr.Web/Program.cs automatically receives:
+// - Connection string via environment variables
+// - Configuration from Aspire service discovery
+builder.Services.AddDownr(builder.Configuration)
+    .WithAzureStorage(); // Uses connection from Aspire
+```
+
+### Future Extensions Made Easy
+
+With Aspire foundation, adding features becomes simple:
+
+**Example 1: Add Redis for Output Caching**
+```csharp
+// AppHost
+var redis = builder.AddRedis("cache");
+web.WithReference(redis);
+
+// Web app automatically gets Redis connection
+builder.Services.AddOutputCache()
+    .AddRedisOutputCache();
+```
+
+**Example 2: Add Background Worker for GitHub Sync**
+```csharp
+// AppHost
+var worker = builder.AddProject<Projects.downr_SyncWorker>("sync-worker");
+worker.WithReference(storage);
+
+// Both web and worker can access same storage
+```
+
+**Example 3: Add SQL Database for Comments Feature**
+```csharp
+// AppHost
+var sql = builder.AddSqlServer("sql")
+    .AddDatabase("comments");
+web.WithReference(sql);
+
+// Web app receives connection string automatically
+```
+
+### Package Updates for Aspire
+
+```xml
+<!-- downr.AppHost/downr.AppHost.csproj -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsAspireHost>true</IsAspireHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" Version="10.0.0" />
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\downr.Web\downr.Web.csproj" />
+  </ItemGroup>
+</Project>
+
+<!-- downr.ServiceDefaults/downr.ServiceDefaults.csproj -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
+  </ItemGroup>
+</Project>
+
+<!-- downr.Web/downr.Web.csproj - ADD these for Aspire support -->
+<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+  <PackageReference Include="Aspire.Microsoft.Extensions.ServiceDiscovery" Version="10.0.0" />
+  <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.0.0" />
+  <ProjectReference Include="..\downr.ServiceDefaults\downr.ServiceDefaults.csproj" />
+</ItemGroup>
+```
+
+### Benefits Summary
+
+| Aspect | Without Aspire | With Aspire |
+|--------|---------------|-------------|
+| **Local Development** | Run with `dotnet run` | Run with `dotnet run` (same!) OR use AppHost for dashboard |
+| **Observability** | Basic logging | Full distributed tracing, metrics, structured logs |
+| **Service Integration** | Manual configuration | Auto-configured service discovery |
+| **Testing** | Manual emulator setup | One-click emulator launch |
+| **Deployment (Simple)** | App Service | App Service (unchanged) |
+| **Deployment (Advanced)** | Manual ACA setup | `azd up` for full stack |
+| **Adding Services** | Manual wiring | Add one line to AppHost |
+
+### Migration Path
+
+**Phase 1 (Optional)**: Add Aspire for Development
+1. Add `downr.AppHost` and `downr.ServiceDefaults` projects
+2. Update `downr.Web` to reference ServiceDefaults (conditional, Debug only)
+3. Developers can choose to use Aspire dashboard or not
+
+**Phase 2 (Optional)**: Leverage Aspire for Testing
+1. Configure Azure Storage emulator in AppHost
+2. Configure Redis for caching experiments
+3. Test observability and monitoring locally
+
+**Phase 3 (Optional)**: Production Aspire Deployment
+1. Only if you add microservices or need advanced features
+2. Deploy to Azure Container Apps using `azd`
+3. Get automatic infrastructure setup
+
+### Key Design Decisions
+
+1. **Aspire is Development-Time Only by Default**
+   - Production deployments don't require Aspire
+   - Simple App Service deployment remains the primary path
+   - Aspire dependencies only in Debug configuration
+
+2. **Graceful Degradation**
+   - App works perfectly without Aspire
+   - Try/catch blocks around Aspire-specific calls
+   - No breaking changes to existing deployment
+
+3. **Opt-In Complexity**
+   - Developers choose whether to use Aspire dashboard
+   - `dotnet run` on downr.Web still works without AppHost
+   - Advanced features only when you need them
+
+4. **Future-Proof**
+   - Easy to add databases, caching, APIs later
+   - Aspire handles service discovery and configuration
+   - Standardized patterns for cloud-native features
+
 ## Benefits of Razor Pages Approach
 
 ### 1. Performance Improvements
@@ -1612,6 +2066,17 @@ Recommendation: Use Option 1 to maintain similar UX to current implementation.
 - [ ] Complete documentation
 - [ ] Release preparation
 
+### Sprint 8 (Optional) - Aspire Integration
+- [ ] Create AppHost and ServiceDefaults projects
+- [ ] Configure Aspire orchestration
+- [ ] Add Azure Storage emulator support
+- [ ] Setup OpenTelemetry and observability
+- [ ] Test local development with Aspire dashboard
+- [ ] Document Aspire setup and usage
+- [ ] Verify standalone deployment still works
+
+**Note**: Aspire integration is optional and doesn't block release. Can be added post-launch for developers who want enhanced local development experience.
+
 ## Package Updates
 
 ### Packages to Remove
@@ -1637,6 +2102,29 @@ Recommendation: Use Option 1 to maintain similar UX to current implementation.
 **Authentication Provider Packages:**
 - **GitHub OAuth**: `AspNet.Security.OAuth.GitHub` (required)
 - **Static Auth**: `BCrypt.Net-Next` (required only if using static auth)
+
+### Packages to Add (for Aspire Support - Optional)
+
+**downr.AppHost Project:**
+- `Aspire.Hosting` → Core Aspire orchestration
+- `Aspire.Hosting.Azure.Storage` → Azure Storage emulator support
+- `Aspire.Hosting.Redis` (optional) → Redis caching support
+
+**downr.ServiceDefaults Project:**
+- `Microsoft.Extensions.Http.Resilience` → Retry and circuit breaker patterns
+- `Microsoft.Extensions.ServiceDiscovery` → Service discovery
+- `OpenTelemetry.Exporter.OpenTelemetryProtocol` → Telemetry export
+- `OpenTelemetry.Extensions.Hosting` → OpenTelemetry hosting integration
+- `OpenTelemetry.Instrumentation.AspNetCore` → ASP.NET Core metrics
+- `OpenTelemetry.Instrumentation.Http` → HTTP client metrics
+- `OpenTelemetry.Instrumentation.Runtime` → .NET runtime metrics
+
+**downr.Web Project (Development Only):**
+- `Aspire.Microsoft.Extensions.ServiceDiscovery` → Service discovery client
+- `Microsoft.Extensions.Http.Resilience` → Resilience patterns
+- Reference to `downr.ServiceDefaults` project (Debug configuration only)
+
+**Note**: Aspire packages are only required if you want to use the Aspire dashboard for local development. The application runs perfectly without them.
 
 ### Packages to Keep
 - `Microsoft.AspNetCore.ResponseCompression`
@@ -1754,6 +2242,8 @@ Rewriting downr in .NET 10 with Razor Pages offers significant advantages:
 ✅ **Easier Maintenance**: Standard ASP.NET Core patterns  
 ✅ **Future-Proof**: LTS framework with long-term support  
 ✅ **Enhanced Workflow**: Optional admin section for browser-based editing  
+✅ **Developer Experience**: Optional .NET Aspire support for local development  
+✅ **Flexible Deployment**: Simple App Service OR advanced Container Apps  
 
 The migration is straightforward, maintains backward compatibility for content and configuration, and provides a solid foundation for the next 5+ years of downr development.
 
@@ -1767,6 +2257,12 @@ The migration is straightforward, maintains backward compatibility for content a
    - Easy to swap between providers via configuration
 4. **Future GitHub Integration**: Foundation for committing/pushing posts directly to GitHub repository
 5. **Dual Workflow Support**: Continue using Git + VS Code, or use the new admin UI, or both
+6. **.NET Aspire Integration** (Optional):
+   - Enhanced local development with dashboard, logs, and telemetry
+   - Easy service integration (storage, databases, caching)
+   - Simple testing with Azure emulators
+   - Optional advanced deployment to Container Apps
+   - Graceful degradation: works perfectly without Aspire
 
 ## Next Steps
 
@@ -1775,14 +2271,16 @@ The migration is straightforward, maintains backward compatibility for content a
 3. **Prototype**: Create proof-of-concept with Index, Post pages, and admin editor with GitHub auth
 4. **Performance Testing**: Benchmark proposed vs current architecture
 5. **Admin UI Mockups**: Design mockups for admin section
-6. **Implementation**: Follow the migration strategy outlined above
-7. **Documentation**: Update all documentation for new architecture
-8. **GitHub Integration Planning**: Design workflow for future GitHub repository features
-9. **Release**: Ship .NET 10 version as downr 4.0
+6. **Aspire Evaluation** (Optional): Test local development with Aspire dashboard
+7. **Implementation**: Follow the migration strategy outlined above
+8. **Documentation**: Update all documentation for new architecture
+9. **GitHub Integration Planning**: Design workflow for future GitHub repository features
+10. **Aspire Setup** (Optional): Add AppHost project for developers who want enhanced local dev experience
+11. **Release**: Ship .NET 10 version as downr 4.0
 
 ---
 
-**Proposal Version**: 1.2  
+**Proposal Version**: 1.3  
 **Date**: January 2026  
 **Author**: GitHub Copilot Agent  
 **Status**: Draft for Review  
@@ -1790,3 +2288,4 @@ The migration is straightforward, maintains backward compatibility for content a
 - Added admin section with online Markdown editor
 - Changed authentication to GitHub OAuth (primary) with static credentials fallback
 - Added GitHub integration roadmap for future features
+- Added .NET Aspire support for enhanced local development (optional)
