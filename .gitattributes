@@ -1,0 +1,8 @@
+# Squad: merge and line-ending rules for team state files
+.squad/decisions.md merge=union
+.squad/agents/*/history.md merge=union
+.squad/log/** merge=union
+.squad/orchestration-log/** merge=union
+.squad/rai/audit-trail.md merge=union
+.squad/fact-checker/audit-trail.md merge=union
+.squad/casting/*.json text eol=lf
