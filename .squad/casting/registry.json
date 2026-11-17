@@ -1,0 +1,54 @@
+{
+  "schema": "squad-agent-provenance/v1",
+  "schema_version": 1,
+  "revision": 6,
+  "generated_at": "2026-11-17T21:07:26.053Z",
+  "agents": {
+    "web": {
+      "display_name": "Web",
+      "persistent_name": "Web",
+      "role": "Frontend Developer",
+      "universe": "cli-cast",
+      "status": "active",
+      "created_at": "2026-11-17T21:05:54.258Z",
+      "updated_at": "2026-11-17T21:05:54.258Z"
+    },
+    "server": {
+      "display_name": "Server",
+      "persistent_name": "Server",
+      "role": "Backend Developer",
+      "universe": "cli-cast",
+      "status": "active",
+      "created_at": "2026-11-17T21:05:54.720Z",
+      "updated_at": "2026-11-17T21:05:54.720Z"
+    },
+    "content": {
+      "display_name": "Content",
+      "persistent_name": "Content",
+      "role": "Content Engineer",
+      "universe": "cli-cast",
+      "status": "active",
+      "created_at": "2026-11-17T21:05:55.083Z",
+      "updated_at": "2026-11-17T21:05:55.083Z"
+    },
+    "quality": {
+      "display_name": "Quality",
+      "persistent_name": "Quality",
+      "role": "Test Engineer",
+      "universe": "cli-cast",
+      "status": "active",
+      "created_at": "2026-11-17T21:05:55.445Z",
+      "updated_at": "2026-11-17T21:05:55.445Z"
+    },
+    "lead": {
+      "display_name": "Lead",
+      "persistent_name": "Lead",
+      "role": "Lead / Architect",
+      "universe": "cli-cast",
+      "status": "active",
+      "created_at": "2026-11-17T21:07:26.053Z",
+      "updated_at": "2026-11-17T21:07:26.053Z"
+    }
+  },
+  "transaction_id": "5544100e-53b5-480c-8d9d-0d69fd27d6ea"
+}
